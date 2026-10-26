@@ -1,6 +1,6 @@
-# 来源注册表
+# 独立研究入口
 
-这是搜索路由，不是固定素材包。使用时访问最新页面并核对条款，不凭这份文件复制资产。
+这是 `qs-ios-design` 自己的 iOS 研究路由，不是固定素材包，也不是从其他设计 skill 继承的来源清单。使用时访问最新页面并核对条款，不凭这份文件复制资产。若某个入口来自二手文章或别人的清单，必须回到原始来源重新核实后再记录。
 
 ## Apple 官方
 
@@ -10,6 +10,8 @@
 | https://developer.apple.com/design/resources/ | 官方 UI Kit、Product Bezels、图标模板 | Apple Design Resources 有平台与再分发限制 |
 | https://developer.apple.com/sf-symbols/ | 系统符号与动画 | 检查最低系统版本和受限符号；不能用于 Logo/商标 |
 | https://developer.apple.com/videos/ | WWDC 设计与 SwiftUI 实现 | 优先看章节与 sample code，不只看宣传片 |
+| https://developer.apple.com/documentation/swiftui/view-presentation | Sheet、Popover、detent 与交互式关闭 | 结合目标系统版本检查 API 可用性 |
+| https://developer.apple.com/forums/ | 原生 API 的真实边界与开发者问题 | 论坛回答不是规范；用来发现问题，再回官方文档确认 |
 
 ## 真实产品流程
 
@@ -19,6 +21,7 @@
 | https://pageflows.com/ | 查看 onboarding、支付、搜索等录屏流程 | 核对采集时间和 App 版本 |
 | https://screensdesign.com/ | iOS 页面与交互参考 | 重点看任务流而非视觉拼贴 |
 | Apple Design Awards | 看视觉、交互、包容性与创新案例 | 奖项是启发，不是模板 |
+| App Store 产品页、版本记录与评论 | 核对真实功能、维护状态和长期使用反馈 | 截图是营销材料；必须结合实际流程或录屏 |
 
 ## GitHub 实现研究
 
@@ -38,6 +41,7 @@
 - YouTube：适合观察完整动效和 SwiftUI 实现；区分 showcase 与真实产品决策。
 - 小红书：适合中文用户审美、App 使用痛点和国内产品语境；内容真实性与授权逐条判断。
 - Reddit / Apple Developer Forums：适合发现边界问题、性能坑和长期使用后的疲劳点。
+- App Store 评论：适合发现真实任务里反复出现的退出困难、误触、信息缺失与性能抱怨；单条评论不直接变成设计结论。
 
 ## 动效与插画素材
 
@@ -51,3 +55,5 @@
 ## 搜索后保存什么
 
 保存 URL、日期、功能、借鉴原则、明确不复制的部分和授权信息。不要把整站内容、付费预览或未经授权的素材收进 skill。
+
+任何来源都必须经过“事实 → 摩擦 → 不复制部分 → 本产品转化”四步，详见 [originality-and-sources.md](originality-and-sources.md)。
