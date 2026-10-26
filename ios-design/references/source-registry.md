@@ -32,6 +32,7 @@
 | https://github.com/notsobigcompany/CardStack | 叠卡和牌组隐喻 |
 | https://github.com/tobi404/SwipeCardsKit | 手势阈值、方向和后层补位 |
 | https://github.com/exyte/AnimatedTabBar | 自定义 Tab 动效的实现与边界 |
+| https://github.com/cvs-health/ios-swiftui-accessibility-techniques | Reduce Motion、VoiceOver 与 SwiftUI 无障碍实现 | 读取具体技术页并回到 Apple 文档核实 |
 
 每次使用前检查 license、最新提交、issues、最低系统版本和依赖体积。优先学习结构并重写最小实现，除非用户明确愿意增加依赖。
 
@@ -40,7 +41,9 @@
 - X：搜索设计师、独立开发者和新系统反馈；登录墙与索引不完整时不要假装看到了全部内容。
 - YouTube：适合观察完整动效和 SwiftUI 实现；区分 showcase 与真实产品决策。
 - 小红书：适合中文用户审美、App 使用痛点和国内产品语境；内容真实性与授权逐条判断。
+- 抖音：适合观察真机录屏、系统版本对比和用户对流畅度的直观反应；短视频结论需要用官方或技术资料交叉确认。
 - Reddit / Apple Developer Forums：适合发现边界问题、性能坑和长期使用后的疲劳点。
+- Stack Overflow：适合定位 List、LazyVStack、ScrollView、手势、键盘和 matched geometry 的具体失败条件；答案日期与系统版本必须一起记录。
 - App Store 评论：适合发现真实任务里反复出现的退出困难、误触、信息缺失与性能抱怨；单条评论不直接变成设计结论。
 
 ## 动效与插画素材

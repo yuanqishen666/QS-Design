@@ -2,7 +2,7 @@
 name: qs-ios-design
 description: 为 iOS 与 iPadOS 设计主题鲜明、视觉精致、交互流畅且性能友好的界面与 SwiftUI 原型。用户要求设计或实现 iPhone/iPad App、页面、流程、组件、原生交互、动效、设计方向或现有产品中的新功能时使用。先理解产品主题并把页面拆成独立功能单元，再有针对性地研究优秀实现并组合成自己的设计；信息充分时直接工作，只在关键歧义会改变结果时提问。不用于 Android、通用网页、后端系统、纯代码性能优化或独立 UI 审计。
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
   author: "QS"
 ---
 
@@ -23,6 +23,7 @@ metadata:
 5. **交互必须有目的。** 动效用于状态、连续性、进度、引导、反馈或少量品牌愉悦，不为炫技而存在。
 6. **审美不能以性能为代价。** 在构思时就选择性能友好的结构，不把性能问题留给实现阶段。
 7. **视觉暗示必须兑现。** 遮罩、拖动把手、按钮、可点击卡片和手势线索都是对用户的承诺；原型里出现了，就必须具有对应行为或明确说明为何不可用。
+8. **方向必须是不同的产品解释。** 同一信息架构、同一主交互和同一视觉主角，仅换排版、颜色或卡片样式，仍然是一个方向。
 
 ## 先判断上下文，再决定动作
 
@@ -62,7 +63,12 @@ metadata:
 
 - 核心首页、品牌尚未建立、signature interaction 不明确或用户要求探索时，先给 2–3 个真正不同的方向。
 - 标准页面、明确参考、已有设计系统、现有方向下扩展功能或用户要求直接实现时，直接做。
-- 多方向必须在信息组织、交互模型或视觉主角上不同，不能只是换颜色。
+- 多方向必须先写出各自的一句话产品主张，再分别推导视觉主角、任务节奏、核心交互、色彩来源、材质和 motion personality。
+- 至少改变产品主张、视觉主角、主要交互、内容模型、色彩/材质来源、运动语法中的三个基础轴；不能只换颜色、排版、圆角或卡片组合。
+- 如果三个方向仍共享同一套 Tab、同一批首页模块、同一主按钮和同一任务顺序，先判断它们是否其实只是一个方向的三个布局稿。是的话合并重做。
+- 方向板除首屏外，还要展示各自最能证明主题的一个关键时刻；不能用三张几乎相同的静态首页冒充三种产品体验。
+
+需要探索方向时先读 [references/direction-system.md](references/direction-system.md)。
 
 ### 5. 形成统一系统并实现
 
@@ -87,10 +93,12 @@ metadata:
 | Sheet、Popover、Dialog、Menu、遮罩、临时编辑器 | [references/patterns/transient-surfaces.md](references/patterns/transient-surfaces.md) |
 | 叠卡、卡片展开、滑动牌组 | [references/patterns/stacked-cards.md](references/patterns/stacked-cards.md) |
 | 新首页、品牌关键页、视觉方向 | `product-theme.md` + `function-unit-design.md` + `aesthetic-system.md` |
+| 多方向探索、方向稿差异不足 | [references/direction-system.md](references/direction-system.md) |
 | 方向稿、原型截图与用户展示 | [references/prototype-output.md](references/prototype-output.md) |
 | 核心产品页面的创意质量 | [references/creative-quality.md](references/creative-quality.md) |
 | 交互动效、触觉、拖拽、shared element | `interaction-grammar.md` + `performance-aware-design.md` |
 | 从参考产品或社媒寻找灵感 | `reference-research.md` + `source-registry.md` |
+| 用户痛点、动效疲劳、手势与性能争议 | [references/community-pain-patterns.md](references/community-pain-patterns.md) |
 | 检查来源独立性、授权和原创转化 | [references/originality-and-sources.md](references/originality-and-sources.md) |
 | SwiftUI 原型或现有工程中的新功能 | `swiftui-delivery.md` + 当前功能对应手册 |
 
@@ -99,12 +107,14 @@ metadata:
 ## 交互与性能底线
 
 - 高频操作不播放妨碍任务的显眼动画；动画期间尽量允许继续输入或反向操作。
+- 装饰性动画不能锁住输入；状态动画在状态已经成立时也不能拖延下一步。
 - 优先使用系统控件反馈、局部状态变化、`transform`、`opacity` 和可中断 spring。
 - 大面积 blur、连续材质重算、多层 shadow、mask、粒子与 3D 只在收益明确时使用。
 - 触觉只用于阈值、选择、完成、警告或错误；不要给每个 tap 都加 haptic。
 - 手势必须有可发现线索，并提供点击、按钮、菜单或辅助功能替代路径。
 - Sheet 有拖动把手就必须支持对应拖动或 detent；有遮罩就必须定义点击行为；轻量、非破坏性的自定义 Sheet 默认允许点遮罩和下拉取消。存在未保存内容时，所有取消路径走同一套保存、放弃或保留草稿策略。
 - 内容是主角；Glass、浮层和动效是功能层，不是全页装饰。
+- 保持主要操作位置稳定，不用会漂移的控件、隐藏手势或迟到的布局重排破坏肌肉记忆。
 - 一个核心流程通常只需要一处 signature interaction，其余交互支持它。
 
 ## 输出原则
