@@ -36,11 +36,35 @@
 
 ## 安装
 
-一条命令装到 Codex：
+需要 Node.js 22.20 或更高版本。下面选自己正在使用的工具，执行一条命令即可；`-g` 表示安装后在所有项目中都能使用。
+
+### Codex
 
 ```bash
 npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a codex -y
 ```
+
+### Cursor
+
+```bash
+npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a cursor -y
+```
+
+### Claude Code
+
+```bash
+npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a claude-code -y
+```
+
+如果三款工具都在用，也可以一次装好：
+
+```bash
+npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a codex cursor claude-code -y
+```
+
+Skills CLI 还支持 GitHub Copilot、Gemini CLI、Cline 和 OpenCode；把最后的 agent 名称换成 `github-copilot`、`gemini-cli`、`cline` 或 `opencode` 即可。
+
+这些命令会按照 [Codex](https://developers.openai.com/cookbook/examples/agents_api/apps/sev_bot/readme)、[Cursor](https://cursor.com/docs/skills) 和 [Claude Code](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) 的 Skill 目录规范完成安装。装好后重新打开工具或开始一个新会话，就可以直接使用。
 
 ## 怎么用
 
