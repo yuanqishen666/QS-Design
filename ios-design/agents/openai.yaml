@@ -1,0 +1,6 @@
+interface:
+  display_name: "QS iOS Design"
+  short_description: "主题驱动、功能拆解、审美与性能并重的原生 iOS 设计"
+  default_prompt: "Use $qs-ios-design to turn this product idea into a polished, theme-led iOS experience."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tidefold · QS iOS Design Showcase</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+      --ink: #102f3a;
+      --muted: #5f747c;
+      --aqua: #1aa8a0;
+      --foam: #ecfbf5;
+      --sand: #f2ebdd;
+      --night: #071b28;
+      --night-2: #0b2a38;
+      --moon: #9be8d5;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; min-height: 100%; }
+    body {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(72, 210, 188, .18), transparent 27%),
+        radial-gradient(circle at 82% 75%, rgba(43, 113, 173, .18), transparent 28%),
+        #06131d;
+    }
+
+    .board {
+      position: relative;
+      width: 1800px;
+      height: 1100px;
+      overflow: hidden;
+      padding: 66px 82px 70px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.04), transparent 34%),
+        linear-gradient(160deg, #071b25 0%, #07151f 58%, #051019 100%);
+    }
+
+    .board::before {
+      content: "";
+      position: absolute;
+      width: 760px;
+      height: 760px;
+      border: 1px solid rgba(126, 226, 204, .08);
+      border-radius: 50%;
+      right: -350px;
+      top: -310px;
+      box-shadow: 0 0 0 80px rgba(126, 226, 204, .018), 0 0 0 170px rgba(126, 226, 204, .012);
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      color: #73d9c5;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 13px 0 0;
+      color: #f5fbf9;
+      font-size: 54px;
+      line-height: .98;
+      letter-spacing: -.045em;
+      font-weight: 680;
+    }
+
+    .subtitle {
+      margin: 13px 0 0;
+      color: #90a8b2;
+      font-size: 17px;
+      letter-spacing: .02em;
+    }
+
+    .direction-pill {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 4px;
+      padding: 10px 14px 10px 11px;
+      border: 1px solid rgba(163, 229, 216, .15);
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      color: #b7c8ce;
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+
+    .direction-pill i {
+      display: block;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #f6eddc 0 50%, #0c2d3a 50% 100%);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.24);
+    }
+
+    .stage {
+      position: absolute;
+      left: 78px;
+      right: 78px;
+      top: 205px;
+      bottom: 54px;
+      display: grid;
+      grid-template-columns: 355px 1fr 355px;
+      align-items: center;
+      gap: 58px;
+    }
+
+    .phone-wrap { position: relative; }
+    .phone-wrap::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      height: 46px;
+      bottom: -24px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.43);
+      filter: blur(24px);
+      z-index: 0;
+    }
+
+    .phone {
+      position: relative;
+      z-index: 1;
+      width: 355px;
+      height: 770px;
+      padding: 9px;
+      border-radius: 54px;
+      background: linear-gradient(145deg, #45535a, #0f171b 32%, #66757c 100%);
+      box-shadow: 0 40px 90px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.24);
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 46px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .screen.light {
+      --bg: #f4efe5;
+      --text: #0c3039;
+      --subtle: #62787e;
+      --surface: #fffaf1;
+      --line: rgba(21, 85, 92, .13);
+      --wave: #0d8b8b;
+      --accent: #f3a55d;
+      --chip: rgba(255,255,255,.66);
+    }
+
+    .screen.dark {
+      --bg: #071f2c;
+      --text: #effaf7;
+      --subtle: #91aeb4;
+      --surface: #0c2d3a;
+      --line: rgba(171, 226, 216, .14);
+      --wave: #61d9c5;
+      --accent: #ffc382;
+      --chip: rgba(255,255,255,.055);
+    }
+
+    .island {
+      position: absolute;
+      z-index: 12;
+      top: 12px;
+      left: 50%;
+      width: 104px;
+      height: 29px;
+      margin-left: -52px;
+      border-radius: 20px;
+      background: #050708;
+    }
+
+    .status {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 50px;
+      padding: 13px 23px 0;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .status-icons { display: flex; gap: 5px; align-items: center; }
+    .signal { width: 13px; height: 8px; border-bottom: 7px solid currentColor; clip-path: polygon(0 100%, 0 74%, 18% 74%, 18% 55%, 42% 55%, 42% 35%, 68% 35%, 68% 10%, 100% 10%, 100% 100%); }
+    .wifi { width: 12px; height: 9px; border: 2px solid currentColor; border-color: currentColor transparent transparent transparent; border-radius: 50%; transform: translateY(2px); }
+    .battery { width: 18px; height: 9px; border: 1.5px solid currentColor; border-radius: 3px; position: relative; }
+    .battery::after { content:""; position:absolute; right:-3px; top:2px; width:2px; height:4px; background:currentColor; border-radius:0 2px 2px 0; }
+    .battery::before { content:""; position:absolute; inset:1.5px; background:currentColor; border-radius:1px; }
+
+    .appbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px 0;
+    }
+
+    .place { font-size: 13px; font-weight: 620; letter-spacing: -.01em; }
+    .place small { display:block; color: var(--subtle); margin-top: 2px; font-weight: 500; font-size: 10px; }
+    .round-button {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--chip);
+      color: var(--text);
+      font-size: 17px;
+    }
+
+    .hero {
+      position: relative;
+      height: 365px;
+      padding: 40px 20px 0;
+    }
+
+    .kicker { color: var(--subtle); font-size: 11px; font-weight: 650; letter-spacing: .08em; }
+    .time { margin-top: 6px; font-size: 54px; line-height: 1; letter-spacing: -.055em; font-weight: 700; }
+    .time span { margin-left: 5px; font-size: 13px; color: var(--subtle); letter-spacing: 0; font-weight: 600; }
+    .answer { margin-top: 9px; color: var(--subtle); font-size: 12px; }
+    .answer b { color: var(--text); font-weight: 650; }
+
+    .sun {
+      position: absolute;
+      right: 34px;
+      top: 62px;
+      width: 47px;
+      height: 47px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .dark .sun {
+      width: 40px;
+      height: 40px;
+      background: #d8ece8;
+      box-shadow: -9px 0 0 0 var(--bg), 0 0 0 8px rgba(216,236,232,.06);
+    }
+
+    .tide-chart {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 2px;
+      height: 210px;
+    }
+
+    .tide-chart svg { width: 100%; height: 100%; overflow: visible; }
+    .wave-fill { fill: color-mix(in srgb, var(--wave) 12%, transparent); }
+    .wave-line { fill: none; stroke: var(--wave); stroke-width: 3.2; stroke-linecap: round; }
+    .wave-ghost { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 7; }
+    .marker-line { stroke: var(--text); stroke-opacity: .28; stroke-width: 1; stroke-dasharray: 3 4; }
+    .marker-dot { fill: var(--bg); stroke: var(--wave); stroke-width: 4; }
+
+    .chart-time {
+      position: absolute;
+      left: 187px;
+      top: 85px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      border-radius: 10px;
+      color: var(--text);
+      background: var(--chip);
+      border: 1px solid var(--line);
+      font-size: 10px;
+      font-weight: 650;
+      backdrop-filter: blur(10px);
+    }
+
+    .ticks { position:absolute; left:20px; right:20px; bottom:8px; display:flex; justify-content:space-between; color:var(--subtle); font-size:9px; }
+
+    .stack {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 27px;
+      height: 256px;
+    }
+
+    .card {
+      position: absolute;
+      left: 0;
+      right: 0;
+      min-height: 190px;
+      padding: 17px 17px 14px;
+      border-radius: 29px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: 0 17px 40px rgba(31,65,67,.14);
+      transform-origin: center bottom;
+    }
+
+    .dark .card { box-shadow: 0 20px 48px rgba(0,0,0,.24); }
+    .card.back-2 { bottom: 5px; transform: scale(.89) translateY(1px); opacity: .42; }
+    .card.back-1 { bottom: 14px; transform: scale(.945) translateY(-2px); opacity: .72; }
+    .card.front { bottom: 28px; }
+    .card-handle { width: 34px; height: 4px; margin: -5px auto 13px; border-radius: 4px; background: var(--line); }
+    .card-top { display:flex; justify-content:space-between; align-items:flex-start; }
+    .card-title { font-size: 18px; line-height:1.05; font-weight: 690; letter-spacing:-.025em; }
+    .card-title small { display:block; margin-top:6px; color:var(--subtle); font-size:10px; font-weight:520; letter-spacing:.01em; }
+    .score { width:43px; height:43px; display:grid; place-items:center; border-radius:15px; color:#063733; background:#8ae2ca; font-size:14px; font-weight:750; transform:rotate(3deg); }
+    .metrics { display:grid; grid-template-columns: repeat(3,1fr); gap:7px; margin-top:18px; }
+    .metric { padding-top:10px; border-top:1px solid var(--line); color:var(--subtle); font-size:9px; }
+    .metric strong { display:block; margin-top:3px; color:var(--text); font-size:13px; letter-spacing:-.01em; }
+    .card-action { display:flex; align-items:center; justify-content:space-between; margin-top:17px; color:var(--subtle); font-size:10px; }
+    .go { display:flex; align-items:center; gap:6px; color:var(--text); font-weight:650; }
+    .go i { width:23px; height:23px; display:grid; place-items:center; border-radius:50%; background:var(--text); color:var(--bg); font-style:normal; }
+
+    .home-indicator { position:absolute; left:50%; bottom:8px; width:122px; height:4px; margin-left:-61px; border-radius:3px; background:var(--text); opacity:.82; z-index:11; }
+
+    .story {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+      position: relative;
+    }
+
+    .story::before {
+      content:"";
+      position:absolute;
+      width:420px;
+      height:420px;
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(61,197,174,.11), transparent 66%);
+      pointer-events:none;
+    }
+
+    .story-title { position:relative; text-align:center; color:#edf8f5; font-size:19px; font-weight:640; letter-spacing:-.02em; }
+    .story-title small { display:block; margin-top:7px; color:#78949f; font-size:11px; font-weight:520; letter-spacing:.07em; }
+
+    .interaction {
+      position: relative;
+      width: 610px;
+      height: 442px;
+      margin: 0 auto;
+    }
+
+    .mini-card {
+      position:absolute;
+      width:250px;
+      height:176px;
+      padding:18px;
+      border-radius:27px;
+      border:1px solid rgba(157,225,211,.15);
+      background:linear-gradient(145deg, rgba(19,58,69,.94), rgba(10,37,49,.97));
+      color:#ecf9f5;
+      box-shadow:0 25px 65px rgba(0,0,0,.25);
+    }
+
+    .mini-card.one { left:20px; top:190px; transform:rotate(-5deg); opacity:.58; }
+    .mini-card.two { left:90px; top:150px; transform:rotate(-2deg); opacity:.82; }
+    .mini-card.active { left:178px; top:70px; transform:rotate(3deg); background:linear-gradient(145deg,#f7f0e3,#e8f6ef); color:#143842; border-color:rgba(255,255,255,.55); box-shadow:0 34px 90px rgba(0,0,0,.35); }
+    .mini-card.active .mini-label { color:#75888b; }
+    .mini-card.active .mini-line { background:rgba(18,75,77,.12); }
+    .mini-card.next { right:12px; top:206px; transform:rotate(8deg) scale(.77); opacity:.30; }
+    .mini-label { color:#8ba7ad; font-size:10px; font-weight:650; letter-spacing:.09em; }
+    .mini-name { margin-top:8px; font-size:25px; font-weight:700; letter-spacing:-.04em; }
+    .mini-line { height:1px; margin:17px 0 12px; background:rgba(177,226,216,.12); }
+    .mini-meta { display:flex; justify-content:space-between; color:inherit; font-size:11px; opacity:.72; }
+    .finger {
+      position:absolute;
+      z-index:5;
+      left:378px;
+      top:256px;
+      width:46px;
+      height:46px;
+      border:1px solid rgba(255,255,255,.32);
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+      box-shadow:0 0 0 11px rgba(255,255,255,.035);
+    }
+    .finger::after { content:""; position:absolute; inset:14px; border-radius:50%; background:#d9f8ef; }
+    .path {
+      position:absolute;
+      left:296px;
+      top:170px;
+      width:126px;
+      height:111px;
+      border-right:1.5px dashed rgba(129,219,201,.42);
+      border-top:1.5px dashed rgba(129,219,201,.42);
+      border-radius:0 70px 0 0;
+      transform:rotate(-14deg);
+    }
+    .path::after { content:""; position:absolute; right:-5px; top:-3px; width:8px; height:8px; border-top:1.5px solid #79dac6; border-right:1.5px solid #79dac6; transform:rotate(-8deg); }
+
+    .steps { position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:610px; margin:0 auto; }
+    .step { padding:13px 14px; border-radius:15px; border:1px solid rgba(157,225,211,.10); background:rgba(255,255,255,.025); color:#78949f; font-size:10px; line-height:1.42; }
+    .step b { display:block; margin-bottom:3px; color:#dcece8; font-size:11px; }
+    .step em { color:#69d2bd; font-style:normal; }
+
+    .label {
+      position:absolute;
+      z-index:3;
+      left:50%;
+      bottom:-42px;
+      transform:translateX(-50%);
+      color:#6f8994;
+      font-size:11px;
+      font-weight:650;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .footer-note {
+      position:absolute;
+      z-index:4;
+      left:82px;
+      bottom:28px;
+      color:#536f7a;
+      font-size:11px;
+      letter-spacing:.04em;
+    }
+
+    .footer-brand { position:absolute; right:82px; bottom:26px; color:#6b8992; font-size:12px; font-weight:680; letter-spacing:.13em; }
+
+    @media (max-width: 1000px) {
+      body { overflow:auto; }
+      .board { transform-origin: top left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="board" aria-label="Tidefold iOS app design showcase">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">QS iOS Design · Original Showcase</div>
+        <h1>潮间 Tidefold</h1>
+        <p class="subtitle">把潮汐从一张图，变成一次可以触摸的决策。</p>
+      </div>
+      <div class="direction-pill"><i aria-hidden="true"></i> 同一方向 · Light + Dark</div>
+    </header>
+
+    <section class="stage">
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="screen light">
+            <div class="island"></div>
+            <div class="status"><span>9:41</span><span class="status-icons"><i class="signal"></i><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="appbar">
+              <div class="place">东山岛 · 马銮湾<small>福建 · 轻风 · 能见度佳</small></div>
+              <div class="round-button">⌖</div>
+            </div>
+            <div class="hero">
+              <div class="kicker">下一段好浪窗口</div>
+              <div class="time">06:42<span>开始</span></div>
+              <div class="answer"><b>1 小时 18 分钟</b> · 潮高 1.4 m</div>
+              <div class="sun"></div>
+              <div class="tide-chart">
+                <svg viewBox="0 0 337 210" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="wave-ghost" d="M0 54 C55 16 94 26 134 74 S212 170 337 88" />
+                  <path class="wave-fill" d="M0 118 C57 70 102 65 145 105 S229 184 337 105 L337 210 L0 210 Z" />
+                  <path class="wave-line" d="M0 118 C57 70 102 65 145 105 S229 184 337 105" />
+                  <line class="marker-line" x1="203" y1="0" x2="203" y2="178" />
+                  <circle class="marker-dot" cx="203" cy="145" r="7" />
+                </svg>
+                <div class="chart-time">● 08:00</div>
+                <div class="ticks"><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span></div>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="card back-2"></div>
+              <div class="card back-1"></div>
+              <div class="card front">
+                <div class="card-handle"></div>
+                <div class="card-top">
+                  <div class="card-title">今天值得下水<small>浪向与风向正在靠拢</small></div>
+                  <div class="score">86</div>
+                </div>
+                <div class="metrics">
+                  <div class="metric">浪高<strong>0.9 m</strong></div>
+                  <div class="metric">周期<strong>9.2 s</strong></div>
+                  <div class="metric">风速<strong>6 kn</strong></div>
+                </div>
+                <div class="card-action"><span>向上展开完整窗口</span><span class="go">路线 <i>↗</i></span></div>
+              </div>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+        <div class="label">Light · 日间强光可读</div>
+      </div>
+
+      <div class="story">
+        <div class="story-title">拖过浪线，卡片跟着“潮”起来<small>一处标志性交互，负责时间试算、空间连续性和阈值反馈</small></div>
+        <div class="interaction" aria-label="stacked card interaction stages">
+          <div class="mini-card one"><div class="mini-label">UP NEXT · 09:20</div><div class="mini-name">金銮湾</div><div class="mini-line"></div><div class="mini-meta"><span>离岸风 4 kn</span><span>78</span></div></div>
+          <div class="mini-card two"><div class="mini-label">LATER · 08:10</div><div class="mini-name">南门湾</div><div class="mini-line"></div><div class="mini-meta"><span>涨潮中</span><span>81</span></div></div>
+          <div class="mini-card active"><div class="mini-label">CURRENT WINDOW · 06:42</div><div class="mini-name">马銮湾</div><div class="mini-line"></div><div class="mini-meta"><span>拖过阈值 · 单次触觉</span><strong>86</strong></div></div>
+          <div class="mini-card next"><div class="mini-label">SAVED</div><div class="mini-name">苏峰角</div><div class="mini-line"></div><div class="mini-meta"><span>明天</span><span>74</span></div></div>
+          <div class="path"></div>
+          <div class="finger"></div>
+        </div>
+        <div class="steps">
+          <div class="step"><b>01 · 跟手</b>潮线与当前时刻同步，<em>不用等动画播完</em>。</div>
+          <div class="step"><b>02 · 过阈值</b>只在选择成立时给一次轻触觉，未越过就自然回弹。</div>
+          <div class="step"><b>03 · 原位展开</b>当前卡变成详情，后层补位，位置关系不会突然断掉。</div>
+        </div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="screen dark">
+            <div class="island"></div>
+            <div class="status"><span>21:06</span><span class="status-icons"><i class="signal"></i><i class="wifi"></i><i class="battery"></i></span></div>
+            <div class="appbar">
+              <div class="place">东山岛 · 马銮湾<small>福建 · 夜潮 · 浪况稳定</small></div>
+              <div class="round-button">⌖</div>
+            </div>
+            <div class="hero">
+              <div class="kicker">明早第一段窗口</div>
+              <div class="time">06:42<span>开始</span></div>
+              <div class="answer"><b>1 小时 18 分钟</b> · 潮高 1.4 m</div>
+              <div class="sun"></div>
+              <div class="tide-chart">
+                <svg viewBox="0 0 337 210" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="wave-ghost" d="M0 54 C55 16 94 26 134 74 S212 170 337 88" />
+                  <path class="wave-fill" d="M0 118 C57 70 102 65 145 105 S229 184 337 105 L337 210 L0 210 Z" />
+                  <path class="wave-line" d="M0 118 C57 70 102 65 145 105 S229 184 337 105" />
+                  <line class="marker-line" x1="203" y1="0" x2="203" y2="178" />
+                  <circle class="marker-dot" cx="203" cy="145" r="7" />
+                </svg>
+                <div class="chart-time">● 08:00</div>
+                <div class="ticks"><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span></div>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="card back-2"></div>
+              <div class="card back-1"></div>
+              <div class="card front">
+                <div class="card-handle"></div>
+                <div class="card-top">
+                  <div class="card-title">明早值得下水<small>退潮前有一段干净窗口</small></div>
+                  <div class="score">86</div>
+                </div>
+                <div class="metrics">
+                  <div class="metric">浪高<strong>0.9 m</strong></div>
+                  <div class="metric">周期<strong>9.2 s</strong></div>
+                  <div class="metric">风速<strong>6 kn</strong></div>
+                </div>
+                <div class="card-action"><span>向上展开完整窗口</span><span class="go">提醒 <i>＋</i></span></div>
+              </div>
+            </div>
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+        <div class="label">Dark · 夜间低刺激层级</div>
+      </div>
+    </section>
+
+    <div class="footer-note">Product theme → function units → one signature interaction → performance-aware motion</div>
+    <div class="footer-brand">QS DESIGN / iOS</div>
+  </main>
+</body>
+</html>
