@@ -28,12 +28,11 @@
 
 ~~~bash
 node ios-design/scripts/package-prototype.mjs source.html output.html
-node ios-design/scripts/package-prototype.mjs --showcase
 ~~~
 
 支持相对路径的 classic JS、CSS（含本地 url 资源）、img/source/audio/video 的 src/poster 及 SVG image 引用。导航链接保留。CSS @import、srcset、ES modules、网络依赖不在支持范围内，先使用项目构建工具处理。脚本内部动态加载、style 属性内 URL、iframe 等仍由作者自行避免或处理；它不是通用网页归档器。
 
-输出源代码与自包含 HTML。多方向分别打包，通过总览的普通链接连接；复制单页可独立运行，复制整个 showcase 目录保留总览导航。
+输出源代码与自包含 HTML。多方向分别打包，通过总览的普通链接连接；每个成品页面都可独立运行。
 
 ## 展示与入口
 

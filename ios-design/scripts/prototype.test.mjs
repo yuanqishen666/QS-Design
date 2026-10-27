@@ -5,7 +5,6 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { packagePrototype } from './package-prototype.mjs';
 import '../assets/prototype-core.js';
-import '../showcase/src/tidefold-data.js';
 
 test('stores isolate inputs, snapshots, listeners and separate models', () => {
   const initial = { rows: [] }, a = PrototypeCore.createStore(initial), b = PrototypeCore.createStore(initial);
@@ -24,19 +23,6 @@ test('draft cancel never commits; a commit cannot be repeated', () => {
   const next = PrototypeCore.createDraft(saved, v => commits.push(v));
   next.update(v => ({ ...v, note: 'new' })); assert.equal(next.commit(), true); assert.equal(next.commit(), false);
   assert.deepEqual(commits, [{ note: 'new' }]);
-});
-test('Tidefold upserts, restores, resets and keeps each theme independent', () => {
-  const a = Tidefold.createModel('A'), b = Tidefold.createModel('B');
-  a.selectBeach('nanmen'); a.selectTime(2000); assert.equal(a.getState().selectedTime, 1200);
-  a.selectTime(NaN); assert.equal(a.getState().selectedTime, 1200);
-  a.saveReminder({ beachId:'nanmen', windowId:'morning', note:'one', lead:15 });
-  a.saveReminder({ beachId:'nanmen', windowId:'morning', note:'two', lead:60 });
-  assert.equal(a.getState().reminders.length, 1); assert.equal(a.getState().reminders[0].note, 'two');
-  const removed = a.removeReminder('nanmen:morning'); assert.equal(a.getState().reminders.length, 0);
-  a.restoreReminder(removed); assert.equal(a.getState().reminders[0].lead, 60);
-  assert.deepEqual(b.getState(), { beachId:'maluan', selectedTime:540, reminders:[] });
-  a.reset(); assert.deepEqual(a.getState(), b.getState());
-  for (const place of Tidefold.beaches) assert.equal(Tidefold.conditionsAt(place.id, 540).height, Tidefold.heightAt(place.id, 540));
 });
 test('drag cancellation and lost capture cannot commit; scrolling intent is respected', () => {
   const handlers = new Map(); let captured = null, commits = 0, cancellations = 0, starts = 0;

@@ -59,9 +59,6 @@ export async function packagePrototype(source, output) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
-  if (args[0] === '--showcase') {
-    const folder = resolve(dirname(fileURLToPath(import.meta.url)), '../showcase');
-    for (const name of ['tidefold-prototype','tidefold-atlas','tidefold-journal']) console.log(await packagePrototype(`${folder}/src/${name}.html`, `${folder}/${name}.html`));
-  } else if (args.length === 2) console.log(await packagePrototype(args[0], args[1]));
-  else { console.error('Usage: node package-prototype.mjs source.html output.html | --showcase'); process.exitCode = 1; }
+  if (args.length === 2) console.log(await packagePrototype(args[0], args[1]));
+  else { console.error('Usage: node package-prototype.mjs source.html output.html'); process.exitCode = 1; }
 }
