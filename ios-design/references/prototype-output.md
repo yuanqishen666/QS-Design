@@ -2,6 +2,17 @@
 
 设计探索默认 HTML，已有工程沿用工程；原生要求见 [SwiftUI](swiftui-delivery.md)。总览、截图与产品界面分开：总览解释方向并链接原型，手机视口展示产品。桌面可居中预览，移动端自然铺满与滚动，不整体缩小展板。
 
+## 产物目录
+
+独立 HTML 原型开始制作前，先按 [版本与会话隔离](run-isolation.md) 创建本次目录。全新设计不带父版本；跨会话继续时显式指定一个父版本。同一会话内的小调整继续写当前目录。不要把旧原型散放在项目根目录，也不要把真实 SwiftUI 业务代码放进版本目录。
+
+~~~bash
+node /path/to/qs-ios-design/scripts/design-run.mjs create --project . --feature feature-name
+node /path/to/qs-ios-design/scripts/design-run.mjs finish --project . --feature feature-name --run RUN_ID --entry prototype.html --preview preview.jpg
+~~~
+
+脚本返回实际目录与版本号。完成命令会记录真实入口并更新该功能的已选版本；这份内部信息默认不需要展示给用户。
+
 ## 行为随制作完成
 
 主要入口、选择、详情、保存、取消和返回产生正确结果，状态在页面上可见；提示消息只作辅助。用可信示例内容，明确模拟数据。声明状态的持续范围，不让“提醒已保存”暗示已注册系统通知。

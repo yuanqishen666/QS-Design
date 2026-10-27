@@ -4,6 +4,7 @@ import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { packagePrototype } from './package-prototype.mjs';
+import { createRun, finishRun, getSelectedRun, listRuns, normalizeFeature } from './design-run.mjs';
 import '../assets/prototype-core.js';
 
 test('stores isolate inputs, snapshots, listeners and separate models', () => {
@@ -65,5 +66,40 @@ test('packager inlines actual scripts, CSS and media, escapes closing script, re
     assert.match(result,/data:image\/svg\+xml;base64/);assert.match(result,/<\\\/script>/);assert.doesNotMatch(result,/<script src/);assert.match(result,/href="index.html"/);
     await writeFile(join(dir,'input.html'),'<script src="https://example.com/code.js"></script>');
     await assert.rejects(()=>packagePrototype(join(dir,'input.html'),join(dir,'output.html')),/relative local/);
+  } finally { await rm(dir,{recursive:true,force:true}); }
+});
+test('new design runs stay isolated and never inherit the selected run implicitly', async () => {
+  const dir=await mkdtemp(join(tmpdir(),'qs-design-runs-'));
+  try {
+    const first=await createRun({projectRoot:dir,feature:'Vocabulary Home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
+    const second=await createRun({projectRoot:dir,feature:'Vocabulary Home',now:new Date('2026-10-27T01:02:04.000Z'),token:'c3d4'});
+    assert.notEqual(first.directory,second.directory);
+    assert.equal(first.manifest.mode,'new');assert.equal(first.manifest.parent_run_id,null);
+    assert.equal(second.manifest.mode,'new');assert.equal(second.manifest.parent_run_id,null);
+    assert.equal(await getSelectedRun({projectRoot:dir,feature:'Vocabulary Home'}),null);
+    assert.equal(normalizeFeature(' Vocabulary Home '),'vocabulary-home');
+  } finally { await rm(dir,{recursive:true,force:true}); }
+});
+test('cross-session iteration names one parent and finishing selects only the child', async () => {
+  const dir=await mkdtemp(join(tmpdir(),'qs-design-lineage-'));
+  try {
+    const parent=await createRun({projectRoot:dir,feature:'vocabulary',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
+    const child=await createRun({projectRoot:dir,feature:'vocabulary',parentRunId:parent.manifest.run_id,now:new Date('2026-10-27T02:03:04.000Z'),token:'c3d4'});
+    await writeFile(join(child.directory,'prototype.html'),'<!doctype html><title>Prototype</title>');
+    await finishRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,entry:'prototype.html',now:new Date('2026-10-27T02:04:00.000Z')});
+    const selected=await getSelectedRun({projectRoot:dir,feature:'vocabulary'});
+    assert.equal(child.manifest.mode,'iterate');assert.equal(child.manifest.parent_run_id,parent.manifest.run_id);
+    assert.equal(selected.manifest.run_id,child.manifest.run_id);assert.equal(selected.manifest.status,'ready');
+    assert.equal(parent.manifest.status,'draft');assert.equal((await listRuns({projectRoot:dir,feature:'vocabulary'})).length,2);
+  } finally { await rm(dir,{recursive:true,force:true}); }
+});
+test('run paths reject traversal and unknown parents', async () => {
+  const dir=await mkdtemp(join(tmpdir(),'qs-design-safety-'));
+  try {
+    assert.throws(()=>normalizeFeature('../../'),/letters or numbers/);
+    await assert.rejects(()=>createRun({projectRoot:dir,feature:'home',parentRunId:'latest'}),/Invalid run ID/);
+    const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
+    await writeFile(join(dir,'outside.html'),'outside');
+    await assert.rejects(()=>finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'../../../../outside.html'}),/leaves the run directory/);
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
