@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="./ios-design/showcase/index.html"><img src="./ios-design/showcase/tidefold-showcase.jpg" alt="Tidefold 同一任务的三套可操作主题：潮汐仪表、海岸图鉴、出海手札" width="100%" /></a>
+  <a href="https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/index.html"><img src="./ios-design/showcase/tidefold-showcase.jpg" alt="Tidefold 同一任务的三套可操作主题：潮汐仪表、海岸图鉴、出海手札" width="100%" /></a>
 </p>
 
 <h1 align="center">QS Design</h1>
@@ -18,13 +18,13 @@
 
 ## 体验 Tidefold
 
-先把仓库放到本机，直接打开 [原型总览](ios-design/showcase/index.html)，点击封面进入三个独立页面。GitHub 中的 HTML 链接显示源码，需要下载后打开；本仓库未提供托管预览地址。
+[在线体验原型](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/index.html)，点击封面进入三个独立页面。
 
 | 方向 | 体验重点 |
 |---|---|
-| [潮汐仪表](ios-design/showcase/tidefold-prototype.html) | 调整时间，潮线读数与推荐窗口同步变化。 |
-| [海岸图鉴](ios-design/showcase/tidefold-atlas.html) | 点选海岸地点，以地图与地方信息组织海况。 |
-| [出海手札](ios-design/showcase/tidefold-journal.html) | 原位展开时段，把提醒写进今日行程。 |
+| [潮汐仪表](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/tidefold-prototype.html) | 调整时间，潮线读数与推荐窗口同步变化。 |
+| [海岸图鉴](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/tidefold-atlas.html) | 点选海岸地点，以地图与地方信息组织海况。 |
+| [出海手札](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/tidefold-journal.html) | 原位展开时段，把提醒写进今日行程。 |
 
 三者都支持切换海湾、选择时间、查看窗口与路线，以及提醒保存、编辑、取消、移除和重置。数据与路线为固定演示；提醒保存在当前页面内存，刷新清空，不会发送系统通知。图形均为原创 SVG/CSS，无远程字体或 CDN 依赖。每个打包后的原型 HTML 可独立打开。
 

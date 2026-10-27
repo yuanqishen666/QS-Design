@@ -1,6 +1,6 @@
 # Tidefold：同一任务，三种产品解释
 
-[打开总览](../../showcase/index.html)。这是本仓库原创、可运行的 HTML 示例；外部案例仍是有出处的研究参考。
+[打开总览](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/index.html)。这是本仓库原创、可运行的 HTML 示例；外部案例仍是有出处的研究参考。
 
 [v0.5 静态展板](../../showcase/archive/tidefold-v0.5-static.png) 仅保留为构图参考，不是可操作原型，也不代表当前三方向的画面。
 
@@ -8,9 +8,9 @@
 
 | 方向 | 可操作入口 | 核心决定与操作 |
 |---|---|---|
-| 潮汐仪表 | [A](../../showcase/tidefold-prototype.html) | 时间与潮位成为主角，刻度、曲线和数字同步响应选时；紧凑指标、窗口列表与编辑面各有分工。 |
-| 海岸图鉴 | [B](../../showcase/tidefold-atlas.html) | 原创海岸地图组织地点，点选标记同步地点信息与条件；沿海地名与纸面留白建立图鉴气质。 |
-| 出海手札 | [C](../../showcase/tidefold-journal.html) | 日期与当天计划组织信息，窗口原位展开，保存后在行程中留下可编辑记录。 |
+| 潮汐仪表 | [A](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/tidefold-prototype.html) | 时间与潮位成为主角，刻度、曲线和数字同步响应选时；紧凑指标、窗口列表与编辑面各有分工。 |
+| 海岸图鉴 | [B](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/tidefold-atlas.html) | 原创海岸地图组织地点，点选标记同步地点信息与条件；沿海地名与纸面留白建立图鉴气质。 |
+| 出海手札 | [C](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/tidefold-journal.html) | 日期与当天计划组织信息，窗口原位展开，保存后在行程中留下可编辑记录。 |
 
 ## 可迁移的原则
 
