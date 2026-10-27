@@ -1,61 +1,74 @@
 <p align="center">
-  <img src="./ios-design/showcase/tidefold-showcase.png" alt="QS iOS Design 制作的潮间 Tidefold iOS App 设计稿，包含同一设计方向的浅色、交互展开与深色状态" width="100%" />
+  <a href="./ios-design/showcase/index.html"><img src="./ios-design/showcase/tidefold-showcase.jpg" alt="Tidefold 同一任务的三套可操作主题：潮汐仪表、海岸图鉴、出海手札" width="100%" /></a>
 </p>
 
 <h1 align="center">QS Design</h1>
 
-<p align="center">
-  为 iPhone 和 iPad 设计好看、好用、能真实点击的原生界面。
-</p>
+<p align="center">为 iPhone 和 iPad 设计有主题、有细节、能真正操作的页面。</p>
 
-## qs-ios-design
+## qs-ios-design · 0.6.0
 
-`qs-ios-design` 会先理解产品在做什么，再完成页面结构、视觉风格、交互和动效设计。它既可以从零设计一款 App，也可以读取现有截图、产品说明或 SwiftUI 工程，在保留原有功能的基础上继续设计。
+从用户任务与真实内容出发，独立形成主题，为功能模块选择合适的结构，再把视觉与交互一起实现。
 
-- 从产品主题出发确定版式、颜色、字体、图像、材质和动效，让每款 App 有自己的视觉性格。
-- 首页、搜索、学习、详情、设置等功能会分别设计，再用统一的视觉语言连成完整产品。
-- 需要探索时会提供 2–3 个完整方向。每个方向都保留同一份功能，并拥有不同的视觉主角、布局和标志性交互。
-- 每个方向默认同时提供 Light 与 Dark，两种模式属于同一套设计。
-- 动效会贯穿按压、选中、展开、拖拽、保存、返回和完成状态，让页面之间的变化自然连贯。
-- 样板图会连接可点击原型，主要 Tab、卡片、按钮和功能页都可以实际操作。
-- 页面文案简短自然，交付内容只保留原型、方向说明和使用入口。
+- 多方向使用同一份任务和数据，分别决定产品解释、视觉主角与主要操作。
+- 模块根据时间、地点、比较、组织和输入等关系设计，通过一致的视觉语言组成页面。
+- 参考库包含 117 个来源条目、55 个案例与选材配方，覆盖产品流程、中文排印、原生与网页交互、原创作者、素材、领域数据和社区反馈。按问题读取，允许继续搜索或不用现有范例。
+- 草稿、保存、取消、返回和连续输入随原型制作；可选行为工具不包含视觉模板。
+- Light/Dark 按需求与产品场景决定。日常工作不设置评分、审计或固定审批轮次。
 
-## 设计示例
+## 体验 Tidefold
 
-上面的「潮间 Tidefold」是一款查看潮汐与下水时段的 iOS 概念。潮线是首页的主要交互：拖动它可以查看下一段适合下水的时间，松手后当前海滩卡片会展开，后面的地点顺势补位。
+先把仓库放到本机，直接打开 [原型总览](ios-design/showcase/index.html)，点击封面进入三个独立页面。GitHub 中的 HTML 链接显示源码，需要下载后打开；本仓库未提供托管预览地址。
 
-浅色与深色模式使用同一套信息结构和几何语言，并分别处理了海面亮度、文字对比和材质层次。
+| 方向 | 体验重点 |
+|---|---|
+| [潮汐仪表](ios-design/showcase/tidefold-prototype.html) | 调整时间，潮线读数与推荐窗口同步变化。 |
+| [海岸图鉴](ios-design/showcase/tidefold-atlas.html) | 点选海岸地点，以地图与地方信息组织海况。 |
+| [出海手札](ios-design/showcase/tidefold-journal.html) | 原位展开时段，把提醒写进今日行程。 |
+
+三者都支持切换海湾、选择时间、查看窗口与路线，以及提醒保存、编辑、取消、移除和重置。数据与路线为固定演示；提醒保存在当前页面内存，刷新清空，不会发送系统通知。图形均为原创 SVG/CSS，无远程字体或 CDN 依赖。每个打包后的原型 HTML 可独立打开。
+
+[案例与实现说明](ios-design/references/examples/tidefold.md) · [资料入口](ios-design/references/source-registry.md) · [案例索引](ios-design/references/examples/index.md)
 
 ## 安装
 
-需要 Node.js 22.20 或更高版本。选择自己使用的工具，执行一条命令即可。
+需要 Node.js 22.20 或更高版本。选择自己使用的工具执行：
 
 ### Codex
 
-```bash
+~~~bash
 npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a codex -y
-```
+~~~
 
 ### Cursor
 
-```bash
+~~~bash
 npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a cursor -y
-```
+~~~
 
 ### Claude Code
 
-```bash
+~~~bash
 npx skills add yuanqishen666/QS-Design --skill qs-ios-design -g -a claude-code -y
-```
+~~~
 
-安装完成后，重新打开工具或开始一个新会话。
+安装完成后重新打开工具或开始新会话。这些命令从 GitHub 安装远程版本；本机未推送的改动不会通过远程命令安装。
 
 ## 使用
 
-直接描述产品和需要设计的页面：
-
-```text
+~~~text
 用 $qs-ios-design 给我的 iPhone 记账 App 设计一个能单手快速记录的首页。
-```
+~~~
 
-也可以附上现有截图、产品说明或 SwiftUI 工程。信息明确时会直接开始设计；遇到会明显改变结果的问题时，才会询问必要信息。
+可以附上现有截图、产品说明或 SwiftUI 工程。信息明确时直接开始，仅在关键歧义影响结果时询问。
+
+## 维护示例
+
+修改 showcase/src 中的源文件后重新生成单文件原型：
+
+~~~bash
+node ios-design/scripts/package-prototype.mjs --showcase
+node --test ios-design/scripts/prototype.test.mjs
+~~~
+
+无需依赖安装。测试覆盖共享行为和打包器，属于维护工具时的开发验证，不是每次使用 skill 必须执行的设计审计。打包器支持范围见 [交付说明](ios-design/references/prototype-output.md)。

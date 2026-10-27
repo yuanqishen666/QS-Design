@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f0e6">
+  <title>Tidefold · 海岸图鉴</title>
+  <style>
+    :root{color-scheme:light;--paper:#f2f0e6;--ink:#173e34;--muted:#62766a;--line:#ccd2c3;--sea:#cee1d6;--accent:#b95436;--serif:"Songti SC","STSong","Noto Serif CJK SC",serif;--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif}
+    *{box-sizing:border-box}body{margin:0;background:#dce3d7;color:var(--ink);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased}button,input,select,textarea{font:inherit}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button{color:inherit;cursor:pointer}a{color:inherit}button{border:0;background:none}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:4px}button:disabled{opacity:.5;cursor:default}svg{display:block}p,h1,h2,h3{margin:0}button svg{flex-shrink:0}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}.serif{font-family:var(--serif)}.eyebrow{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}.muted{color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .workspace{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 470px 1fr;align-items:start;padding:36px 24px 60px;gap:38px}.cover{position:sticky;top:64px;padding-top:38px;min-width:160px}.cover-number{display:block;font-size:11px;letter-spacing:.2em;margin-bottom:34px}.cover h2{font-family:var(--serif);font-size:56px;font-weight:500;line-height:1.35;letter-spacing:.12em}.cover p{font-size:12px;line-height:2.1;margin-top:24px;color:#506557;max-width:170px}.cover .cover-line{width:36px;border-top:1px solid #859684;margin:36px 0 20px}.cover a{text-decoration:none;font-size:12px;display:inline-flex;gap:10px;align-items:center;min-height:44px}.side-note{writing-mode:vertical-rl;justify-self:center;position:sticky;top:88px;font-size:10px;letter-spacing:.24em;color:#667b69;display:flex;gap:30px;align-items:center}.side-note:before{content:"";display:block;width:1px;height:72px;background:#99aa98}
+    .book{background:var(--paper);box-shadow:0 12px 50px #193b2514;min-width:0;overflow:hidden;border:1px solid #d0d5c7}.app-header{height:72px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:10px}.brand-name{font-size:13px;font-weight:750;letter-spacing:.17em}.brand-caption{font-size:9px;letter-spacing:.15em;margin-top:4px}.issue{font-size:10px;line-height:1.7;text-align:right;letter-spacing:.08em}.place-heading{padding:25px 28px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}.place-heading h1{font-family:var(--serif);font-size:46px;line-height:1.3;letter-spacing:.09em;font-weight:500;margin-top:8px}.place-heading .english{font-size:9px;letter-spacing:.22em;margin-top:5px}.place-index{font-family:var(--serif);font-style:italic;font-size:47px;line-height:1.2;color:#a8b39e;font-weight:400}.place-index small{font-size:13px;font-style:normal;color:var(--muted)}
+    .map{position:relative;margin:0 13px;isolation:isolate;aspect-ratio:390/350;background:var(--sea);overflow:hidden;border:1px solid #c3d3c4}.map-art{width:100%;height:100%}.coast-highlight{opacity:0;transition:opacity .4s;stroke:var(--accent);stroke-width:3.5;fill:none;stroke-linecap:round}.coast-highlight.active{opacity:1}.map-marker{position:absolute;left:var(--x);top:var(--y);transform:translate(-15px,-15px);padding:0;min-height:44px;display:flex;align-items:flex-start;gap:5px;text-align:left;z-index:2;white-space:nowrap;touch-action:manipulation}.marker-dot{width:30px;height:30px;border-radius:50%;background:var(--paper);border:1px solid #789c88;display:grid;place-items:center;transition:background .25s,transform .25s,box-shadow .25s}.marker-dot:after{content:"";width:6px;height:6px;border-radius:50%;background:#547b66}.marker-label{padding:7px 7px 6px 2px;font-size:12px;font-weight:600;text-shadow:0 1px 4px #d3e4d8;background:#d3e4d899;border-radius:2px}.map-marker[aria-pressed=true]{z-index:3}.map-marker[aria-pressed=true] .marker-dot{background:var(--accent);border-color:var(--paper);box-shadow:0 0 0 5px #b9543618;transform:scale(1.1)}.map-marker[aria-pressed=true] .marker-dot:after{background:var(--paper)}.map-marker[aria-pressed=true] .marker-label{color:#8d3c26}.map-marker:hover .marker-dot{box-shadow:0 0 0 6px #173e3412}.map-legend{position:absolute;bottom:13px;left:16px;right:15px;display:flex;align-items:center;justify-content:space-between;color:#577563;font-size:8px;letter-spacing:.1em;pointer-events:none}.map-legend span:last-child{font-size:9px;letter-spacing:0}.map-coordinate{position:absolute;right:14px;bottom:38px;color:#517562;font-size:8px;letter-spacing:.02em}.place-line{padding:18px 28px 19px;display:flex;align-items:center;justify-content:space-between;gap:12px}.place-line p{font-family:var(--serif);font-size:16px;line-height:1.5}.text-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;padding:0 2px;font-size:11px;white-space:nowrap}.text-button svg{width:15px;height:15px}.section{margin:0 28px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.section-number{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--accent);margin-right:8px}.section-title{font-size:12px;font-weight:600;letter-spacing:.1em}.time-section{border-top:1px solid var(--line);padding-top:22px}.time-now{font-family:var(--serif);font-size:32px;letter-spacing:.01em;font-variant-numeric:tabular-nums}.time-now span{font-family:var(--sans);font-size:11px;letter-spacing:0;margin-left:7px;color:var(--muted)}.time-strip{margin-top:12px}.tide-spark{height:37px;width:100%;overflow:visible}.time-range{display:block;appearance:none;-webkit-appearance:none;width:100%;height:24px;margin:0;background:transparent;cursor:ew-resize;touch-action:pan-y}.time-range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(to right,var(--ink) 0 var(--progress),#c0cabe var(--progress) 100%)}.time-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:18px;height:18px;border-radius:50%;border:5px solid var(--paper);background:var(--ink);box-shadow:0 0 0 1px var(--ink);margin-top:-8px}.time-range::-moz-range-track{height:2px;background:#c0cabe}.time-range::-moz-range-progress{height:2px;background:var(--ink)}.time-range::-moz-range-thumb{width:9px;height:9px;border:5px solid var(--paper);background:var(--ink);box-shadow:0 0 0 1px var(--ink);border-radius:50%}.time-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);padding-top:4px}.conditions{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:14px;padding:24px 0 23px}.condition{border-right:1px solid var(--line)}.condition:last-child{border:0}.condition-value{font-family:var(--serif);font-size:29px;line-height:1.1;font-variant-numeric:tabular-nums}.condition-value small{font-family:var(--sans);font-size:10px;margin-left:4px}.condition-label{font-size:10px;color:var(--muted);margin-top:7px}.condition-label span{font-size:9px;padding-left:5px}.window-section{padding-top:22px;border-top:1px solid var(--line)}.window-state{font-size:9px;color:var(--muted)}.window-list{margin-top:15px}.window-row{width:100%;padding:14px 0;display:grid;grid-template-columns:30px 1fr auto 16px;align-items:center;gap:10px;text-align:left;border-bottom:1px solid var(--line);min-height:65px}.window-row:last-child{border:0}.window-glyph{width:25px;height:25px;color:#78907a}.window-row.is-current .window-glyph{color:var(--accent)}.window-row .window-label{font-size:11px;display:block}.window-row .window-sub{font-size:9px;color:var(--muted);margin-top:4px;display:block}.window-row .window-time{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.window-row>svg:last-child{width:14px;height:14px}.window-row:hover .window-label{text-decoration:underline;text-underline-offset:3px}.action-zone{padding:17px 28px 22px}.primary{width:100%;min-height:51px;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:13px;border:1px solid var(--ink);border-radius:2px}.primary svg{width:18px;height:18px}.primary:hover{background:#285346}.primary:active{transform:translateY(1px)}.action-note{font-size:9px;line-height:1.6;color:var(--muted);text-align:center;margin-top:10px}.field-note{margin:0 28px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.field-note summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:30px}.field-note summary::-webkit-details-marker{display:none}.field-note summary .plus{font-size:21px;font-weight:300;transition:transform .2s}.field-note[open] summary .plus{transform:rotate(45deg)}.note-body{padding:14px 0 2px}.note-body h3{font-family:var(--serif);font-size:22px;font-weight:500;line-height:1.5;margin-bottom:8px}.note-body p{font-size:12px;color:var(--muted);line-height:1.9}.note-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:13px}.note-tags span{border:1px solid #c8cfc0;font-size:9px;padding:5px 8px}.saved-section{margin:0 28px;padding:22px 0 3px}.saved-title{display:flex;align-items:center;justify-content:space-between}.saved-count{font-size:10px;color:var(--muted)}.saved-list{list-style:none;margin:12px 0 0;padding:0}.saved-list li{display:flex;align-items:center;gap:12px;border-top:1px dashed var(--line);padding:12px 0}.saved-info{flex:1;min-width:0}.saved-info strong{font-weight:500;font-size:11px}.saved-info p{font-size:10px;color:var(--muted);line-height:1.7;margin-top:4px;overflow-wrap:anywhere}.saved-info .user-note{font-family:var(--serif);font-size:12px;color:var(--ink)}.saved-edit{font-size:11px;min-height:44px;padding:0 4px;text-decoration:underline;text-underline-offset:4px}.saved-empty{font-size:11px;color:var(--muted);line-height:1.8;padding:13px 0 8px}.book-footer{padding:28px 28px calc(25px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;gap:20px}.footer-mark{font-family:var(--serif);font-size:23px;letter-spacing:.08em}.footer-mark small{font-family:var(--sans);display:block;font-size:8px;letter-spacing:.15em;margin-top:7px}.footer-meta{font-size:9px;line-height:1.8;text-align:right;color:var(--muted)}.demo-toolbar{grid-column:2;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:11px;color:#526956;margin-top:-18px}.demo-toolbar a,.demo-toolbar button{padding:10px 0;min-height:44px;font-size:11px;text-underline-offset:4px}.demo-notice{grid-column:2;font-size:10px;line-height:1.8;color:#526956;margin-top:-32px}.status{font-size:11px;line-height:1.7;color:var(--accent);min-height:0;padding:0 28px}.status:empty{display:none}.status:not(:empty){padding-bottom:10px}
+    dialog{border:1px solid #cbd2c3;background:var(--paper);color:var(--ink);padding:0;width:min(440px,calc(100% - 28px));max-height:86dvh;overflow:auto;box-shadow:0 18px 60px #0e322344;border-radius:10px}dialog::backdrop{background:#13372d66;backdrop-filter:blur(3px)}.dialog-inner{padding:26px}.dialog-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}.dialog-heading h2{font-family:var(--serif);font-size:28px;font-weight:500;line-height:1.4;margin-top:9px}.icon-close{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;margin-top:-5px;flex-shrink:0}.icon-close svg{width:18px;height:18px}.dialog-times{font-family:var(--serif);font-size:35px;margin:26px 0 8px;font-variant-numeric:tabular-nums}.dialog-copy{font-size:12px;color:var(--muted);line-height:1.9}.detail-metrics{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0;padding:19px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.detail-metrics p{font-size:10px;color:var(--muted)}.detail-metrics strong{font-family:var(--serif);font-weight:500;font-size:23px;display:block;margin-top:7px}.dialog-actions{display:flex;flex-direction:column;gap:10px;margin-top:23px}.secondary{border:1px solid var(--line);min-height:47px;width:100%;font-size:12px;border-radius:2px}.secondary:hover{background:#e8ebdf}.detail-footnote{font-size:10px;line-height:1.8;color:var(--muted);margin-top:19px}.route-summary{display:flex;align-items:baseline;gap:10px;margin:22px 0 15px}.route-summary strong{font-family:var(--serif);font-size:35px;font-weight:400}.route-summary span{font-size:11px;color:var(--muted)}.route-graphic{width:100%;height:145px;background:#d8e4d6;border:1px solid #c6d4c2;margin-bottom:22px}.route-steps{list-style:none;margin:0;padding:0}.route-steps li{position:relative;display:flex;align-items:center;gap:14px;min-height:48px;font-size:12px}.route-steps li:not(:last-child):after{content:"";position:absolute;width:1px;background:#a7b79f;left:13px;top:38px;height:22px}.step-number{font-size:9px;width:27px;height:27px;border:1px solid #a7b79f;border-radius:50%;display:grid;place-items:center;flex-shrink:0}.route-steps li:last-child .step-number{background:var(--ink);color:var(--paper);border-color:var(--ink)}.reminder-place{font-size:12px;color:var(--muted);line-height:1.8;margin:18px 0 20px}.form-label{display:block;font-size:11px;margin-bottom:9px}.form-field{margin-top:18px}select,textarea{width:100%;border:1px solid #b8c7b5;border-radius:2px;background:#fbfaf5;color:var(--ink);padding:12px;line-height:1.5}select{min-height:46px}textarea{resize:vertical;min-height:94px;display:block}.field-help{display:flex;justify-content:space-between;gap:12px;font-size:9px;color:var(--muted);line-height:1.5;margin-top:7px}.remove-button{color:#9c4933;font-size:11px;min-height:44px;width:100%;margin-top:7px}.remove-button[hidden]{display:none}.reminder-disclaimer{font-size:10px;line-height:1.8;color:var(--muted);padding:13px 0 0}.dialog-split{display:grid;grid-template-columns:1fr 1.7fr;gap:10px;margin-top:22px}.dialog-split .primary{justify-content:center}.dialog-split .secondary{min-height:51px}
+    @media(max-width:900px){.workspace{grid-template-columns:1fr 470px;max-width:780px;gap:26px}.side-note{display:none}.cover h2{font-size:44px}.cover p{max-width:150px}}
+    @media(max-width:680px){body{background:var(--paper)}.workspace{display:block;padding:0;max-width:470px}.cover,.side-note{display:none}.book{border:0;box-shadow:none;overflow:hidden}.app-header{padding-top:env(safe-area-inset-top);height:calc(68px + env(safe-area-inset-top))}.demo-toolbar{margin:0 28px;border-top:1px solid var(--line);padding-top:5px}.demo-notice{margin:0;padding:0 28px calc(24px + env(safe-area-inset-bottom))}.book-footer{padding-bottom:23px}dialog{margin:auto auto 0;width:100%;max-width:470px;border-radius:16px 16px 0 0;max-height:89dvh}.dialog-inner{padding:25px 28px calc(24px + env(safe-area-inset-bottom))}}
+    @media(max-width:360px){.app-header{padding-left:22px;padding-right:22px}.place-heading{padding-left:22px;padding-right:22px}.section,.field-note,.saved-section{margin-left:22px;margin-right:22px}.place-heading h1{font-size:42px}.place-line{padding-left:22px;padding-right:22px}.place-line p{font-size:14px}.window-row{gap:7px;grid-template-columns:26px 1fr auto 12px}.window-row .window-time{font-size:11px}.map-marker{gap:2px}.marker-label{font-size:11px}.map-marker[data-beach=nanmen]{transform:translate(-24px,-15px)}.dialog-times{font-size:30px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="workspace">
+    <aside class="cover" aria-label="原型方向介绍">
+      <span class="cover-number mono">TIDEFOLD / EDITION B</span>
+      <h2>海岸<br>图鉴</h2>
+      <p>把一座岛摊开，<br>顺着海岸读时间。<br>给下一次出发，留一页。</p>
+      <div class="cover-line"></div>
+      <a href="index.html"><span aria-hidden="true">←</span> 返回原型总览</a>
+    </aside>
+    <main class="book">
+      <header class="app-header">
+        <div class="brand">
+          <svg width="25" height="29" viewBox="0 0 25 29" fill="none" aria-hidden="true"><path d="M1 4 9 1l7 3 8-3v24l-8 3-7-3-8 3V4Z" stroke="currentColor"/><path d="M9 1v24M16 4v24M4 17c4-8 11 5 17-8" stroke="currentColor" stroke-width=".8"/></svg>
+          <div><div class="brand-name">TIDEFOLD</div><div class="brand-caption">潮 汐 折 页</div></div>
+        </div>
+        <div class="issue mono">COASTAL ATLAS<br>10.27 / TUESDAY</div>
+      </header>
+      <section class="place-heading" aria-labelledby="place-title">
+        <div><p class="eyebrow muted">福建 · 东山岛 / 海岸观察</p><h1 id="place-title">马銮湾</h1><p class="english mono" id="place-english">MALUAN BAY</p></div>
+        <div class="place-index" aria-hidden="true"><span id="place-index">01</span><small> / 03</small></div>
+      </section>
+      <section class="map" aria-label="东山岛海岸示意图，选择一个海湾查看">
+        <svg class="map-art" viewBox="0 0 390 350" fill="none" aria-hidden="true">
+          <defs>
+            <pattern id="atlas-grid" width="39" height="35" patternUnits="userSpaceOnUse"><path d="M39 0H0V35" stroke="#a9c5b1" stroke-width=".5" opacity=".5"/></pattern>
+            <pattern id="atlas-land" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".55" fill="#a6b69b" opacity=".35"/><circle cx="7" cy="7" r=".4" fill="#a6b69b" opacity=".3"/></pattern>
+            <path id="land-shape" d="M0 0H310C305 33 326 47 312 68C298 88 265 98 252 126C247 152 232 166 213 182C192 204 186 218 174 239C159 253 157 277 127 293C105 311 90 334 70 350H0Z"/>
+          </defs>
+          <path fill="#cee1d6" d="M0 0h390v350H0z"/><path fill="url(#atlas-grid)" d="M0 0h390v350H0z"/>
+          <path d="M330-5c-3 31 22 50 3 82-16 26-45 30-57 59-8 32-26 45-43 62-20 22-29 40-41 60-17 28-24 33-52 53-17 14-25 29-33 43" stroke="#a8cbb8" stroke-width=".8"/>
+          <path d="M351-5c-7 27 23 57 4 91-16 26-46 30-58 59-8 32-26 45-43 62-20 22-29 40-41 60-17 28-24 33-52 53-17 14-21 24-27 34" stroke="#a8cbb8" stroke-width=".8" opacity=".7"/>
+          <path d="M376-5c-8 30 18 63-2 98-16 26-46 32-58 61-8 32-26 45-43 62-20 22-29 40-41 60-17 28-24 33-52 53-11 9-19 19-24 28" stroke="#a8cbb8" stroke-width=".8" opacity=".45"/>
+          <use href="#land-shape" fill="#e5e8d5" stroke="#7f9e81" stroke-width="1"/><use href="#land-shape" fill="url(#atlas-land)"/>
+          <path d="M19 59c38-14 64 18 112 5s67-32 104-18 37 21 57 7M-8 191c40-18 58 3 95-11s41-46 82-43 44 17 71 3M-6 279c36-20 55-9 84-28s55-37 81-31" stroke="#b1c0a1" stroke-width=".8"/>
+          <path d="M6 73c47-12 65 15 119 3s71-31 106-18M-6 205c40-18 58 3 95-11s41-46 82-43 44 17 62 3M-4 291c36-20 53-9 82-28s55-37 81-31" stroke="#c1ccaf" stroke-width=".6"/>
+          <path d="M48 4c26 28 56 39 75 80s17 77 31 97-5 55-22 79-20 56-12 81" stroke="#b1bba2" stroke-dasharray="3 4" stroke-width="1.1"/>
+          <path d="M122 84c62 22 87-15 167-14M150 170c31-19 58-27 82-22M141 244l24 1" stroke="#b1bba2" stroke-dasharray="3 4" stroke-width="1.1"/>
+          <path id="coast-nanmen" class="coast-highlight" d="M311 60c-3 23-26 31-43 45"/>
+          <path id="coast-maluan" class="coast-highlight active" d="M253 125c-4 27-15 41-33 51"/>
+          <path id="coast-jinluan" class="coast-highlight" d="M182 225c-13 20-20 35-31 48"/>
+          <g fill="#688163" font-family="Songti SC, STSong, serif" font-size="21" letter-spacing="8"><text x="67" y="128" transform="rotate(-12 67 128)">东山岛</text></g>
+          <text x="63" y="149" fill="#7b8f70" font-family="monospace" font-size="7" letter-spacing="1.2" transform="rotate(-12 63 149)">DONGSHAN ISLAND</text>
+          <text x="265" y="249" fill="#65947e" font-family="Songti SC, STSong, serif" font-size="13" letter-spacing="5" transform="rotate(-23 265 249)">台湾海峡</text>
+          <g transform="translate(29 27)" stroke="#607f67" stroke-width=".8"><path d="M0 0v31M-5 10 0 0l5 10M-5 21H5"/><text x="-3" y="-8" fill="#607f67" stroke="none" font-family="monospace" font-size="8">N</text></g>
+          <g transform="translate(33 308)" stroke="#7e9274" stroke-width=".8"><path d="M0 0h40M0-3v6M20-3v6M40-3v6"/><text x="1" y="15" fill="#7e9274" stroke="none" font-family="monospace" font-size="6">0</text><text x="27" y="15" fill="#7e9274" stroke="none" font-family="monospace" font-size="6">2 km*</text></g>
+          <g stroke="#83ad96" stroke-width=".9" opacity=".7"><path d="M310 307c4-4 8-4 12 0s8 4 12 0M318 315c4-4 8-4 12 0s8 4 12 0M348 174c4-4 8-4 12 0s8 4 12 0"/></g>
+        </svg>
+        <button type="button" class="map-marker" data-beach="maluan" style="--x:62%;--y:43%" aria-pressed="true" aria-label="查看马銮湾"><span class="marker-dot"></span><span class="marker-label">马銮湾</span></button>
+        <button type="button" class="map-marker" data-beach="nanmen" style="--x:79%;--y:22%" aria-pressed="false" aria-label="查看南门湾"><span class="marker-dot"></span><span class="marker-label">南门湾</span></button>
+        <button type="button" class="map-marker" data-beach="jinluan" style="--x:43%;--y:70%" aria-pressed="false" aria-label="查看金銮湾"><span class="marker-dot"></span><span class="marker-label">金銮湾</span></button>
+        <span class="map-coordinate mono" id="place-coordinate">23.69° N · 117.45° E</span>
+        <div class="map-legend"><span class="mono">PLATE 01 / COASTLINE STUDY</span><span>* 海岸示意 · 非导航地图</span></div>
+      </section>
+      <div class="place-line"><p id="place-descriptor">弧形沙岸，向海打开</p><button type="button" class="text-button" id="open-route">路线预览 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 15 15 4M5 4h10v10" stroke="currentColor" stroke-width="1.2"/></svg></button></div>
+      <section class="section time-section" aria-labelledby="time-heading">
+        <div class="section-head"><h2 class="section-title" id="time-heading"><span class="section-number">01.</span>读一段潮汐</h2><p class="time-now"><output id="selected-time" for="time-range">09:00</output><span>的海</span></p></div>
+        <div class="time-strip">
+          <svg class="tide-spark" viewBox="0 0 400 37" preserveAspectRatio="none" aria-hidden="true"><path id="tide-area" fill="#dfe5d6"/><path id="tide-line" stroke="#93a989" stroke-width="1.2" fill="none"/><circle id="tide-cursor" r="3.5" fill="#b95436" stroke="#f2f0e6" stroke-width="1.5"/></svg>
+          <label class="sr-only" for="time-range">选择海况时间，从 06:00 到 20:00</label><input class="time-range" id="time-range" type="range" min="360" max="1200" step="1" value="540" style="--progress:21.43%" aria-valuetext="09:00">
+          <div class="time-labels mono" aria-hidden="true"><span>06:00</span><span>09:30</span><span>13:00</span><span>16:30</span><span>20:00</span></div>
+        </div>
+        <div class="conditions" aria-label="所选时间的演示海况">
+          <div class="condition"><p class="condition-value"><span id="tide-height">1.90</span><small>m</small></p><p class="condition-label">潮高 <span id="tide-trend">退潮中</span></p></div>
+          <div class="condition"><p class="condition-value"><span id="wind-value">7</span><small>km/h</small></p><p class="condition-label">海风</p></div>
+          <div class="condition"><p class="condition-value"><span id="wave-value">0.4</span><small>m</small></p><p class="condition-label">浪高</p></div>
+        </div>
+      </section>
+      <section class="section window-section" aria-labelledby="window-heading">
+        <div class="section-head"><h2 class="section-title" id="window-heading"><span class="section-number">02.</span>可以靠近海的时间</h2><span class="window-state" id="window-state">此刻在晨间窗口</span></div>
+        <div class="window-list" id="window-list"></div>
+      </section>
+      <div class="action-zone"><button type="button" class="primary" id="open-reminder"><span id="reminder-cta">把这段时间，留给海</span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10h14M11 4l6 6-6 6" stroke="currentColor" stroke-width="1.2"/></svg></button><p class="action-note" id="action-note">为晨间窗口留一条出发提醒</p></div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <details class="field-note"><summary><span class="section-title"><span class="section-number">03.</span>地方笔记</span><span class="plus" aria-hidden="true">+</span></summary><div class="note-body"><h3 id="note-title">海湾把风，轻轻收拢</h3><p id="note-copy"></p><div class="note-tags" id="note-tags"></div></div></details>
+      <section class="saved-section" aria-labelledby="saved-heading"><div class="saved-title"><h2 class="section-title" id="saved-heading">我的出发手册</h2><span class="saved-count" id="saved-count">0 条提醒</span></div><p class="saved-empty" id="saved-empty">还没有写下出发时间。<br>选一段潮汐，让今天有一点期待。</p><ul class="saved-list" id="saved-list"></ul></section>
+      <footer class="book-footer"><div class="footer-mark">向海而行<small>A LITTLE CLOSER TO THE SEA</small></div><div class="footer-meta mono">DONGSHAN / FUJIAN<br>2026.10.27 · 原创演示</div></footer>
+    </main>
+    <aside class="side-note" aria-hidden="true">A FIELD GUIDE TO SLOW MOMENTS <span>24° N — 117° E</span></aside>
+    <div class="demo-toolbar"><a href="index.html">← 原型总览</a><button type="button" id="reset-demo">重置演示 ↺</button></div>
+    <p class="demo-notice">可交互概念原型 · 海况为演示数据，提醒仅在本次页面中保存。</p>
+  </div>
+  <dialog id="window-dialog" aria-labelledby="window-dialog-title"><div class="dialog-inner"><div class="dialog-heading"><div><p class="eyebrow muted" id="window-dialog-eyebrow"></p><h2 id="window-dialog-title">一段刚好的海边时间</h2></div><button type="button" class="icon-close" data-close aria-label="关闭时间详情"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.2"/></svg></button></div><p class="dialog-times" id="window-dialog-times"></p><p class="dialog-copy" id="window-dialog-copy"></p><div class="detail-metrics"><div><p>窗口内潮高</p><strong id="window-dialog-height"></strong></div><div><p>海风 / 浪高</p><strong id="window-dialog-conditions"></strong></div></div><p class="dialog-copy" id="window-dialog-activity"></p><div class="dialog-actions"><button type="button" class="primary" id="window-remind"><span>为这段时间留个提醒</span><span aria-hidden="true">↗</span></button><button type="button" class="secondary" id="window-explore">在图鉴中查看这个时段</button></div><p class="detail-footnote">窗口用于体验原型中的时间规划；演示数据不代表实际海况或下水安全建议。</p></div></dialog>
+  <dialog id="route-dialog" aria-labelledby="route-dialog-title"><div class="dialog-inner"><div class="dialog-heading"><div><p class="eyebrow muted">A WAY TO THE COAST</p><h2 id="route-dialog-title">从小镇，走向海</h2></div><button type="button" class="icon-close" data-close aria-label="关闭路线预览"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.2"/></svg></button></div><p class="route-summary"><strong id="route-duration"></strong><span id="route-distance"></span></p><svg class="route-graphic" viewBox="0 0 350 145" fill="none" aria-hidden="true"><path d="M0 0h240c-17 28-22 50-45 72s-15 54-38 73H0V0Z" fill="#e7e9d7"/><path d="M240 0c-17 28-22 50-45 72s-15 54-38 73" stroke="#8ba485"/><path d="M264 0c-17 28-22 50-45 72s-15 54-38 73M286 0c-17 28-22 50-45 72s-15 54-38 73" stroke="#afc9b2" stroke-width=".8"/><path d="M45 104V48h69l42 40 39-15" stroke="#42694f" stroke-width="1.5" stroke-dasharray="4 4"/><g fill="#f2f0e6" stroke="#42694f"><circle cx="45" cy="104" r="5"/><circle cx="114" cy="48" r="4"/><circle cx="156" cy="88" r="4"/></g><circle cx="195" cy="73" r="8" fill="#b95436" stroke="#f2f0e6" stroke-width="3"/><text x="20" y="128" fill="#5e775b" font-size="9" font-family="sans-serif">游客中心</text><text x="210" y="78" fill="#486e54" font-size="10" font-family="sans-serif" id="route-map-place">马銮湾</text><text x="265" y="125" fill="#6e8d74" font-size="8" font-family="sans-serif">路线示意</text></svg><ol class="route-steps" id="route-steps"></ol><p class="detail-footnote">固定起点为东山岛游客中心。里程与时间为演示，路线图用于预览，不提供实时导航。</p><div class="dialog-actions"><button type="button" class="secondary" data-close>返回海岸图鉴</button></div></div></dialog>
+  <dialog id="reminder-dialog" aria-labelledby="reminder-dialog-title"><form class="dialog-inner" id="reminder-form"><div class="dialog-heading"><div><p class="eyebrow muted">A NOTE FOR THE SEA</p><h2 id="reminder-dialog-title">留一页，给出发</h2></div><button type="button" class="icon-close" data-close aria-label="取消编辑提醒"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.2"/></svg></button></div><p class="reminder-place" id="reminder-place"></p><div class="form-field"><label class="form-label" for="reminder-lead">在窗口开始前，提前多久提醒</label><select id="reminder-lead" name="lead"><option value="0">窗口开始时</option><option value="15">提前 15 分钟</option><option value="30" selected>提前 30 分钟</option><option value="60">提前 1 小时</option></select></div><div class="form-field"><label class="form-label" for="reminder-note">给出发的自己写句话</label><textarea id="reminder-note" name="note" rows="3" maxlength="140" placeholder="带上相机，走慢一点。"></textarea><div class="field-help"><span>这句话会留在你的出发手册里</span><span id="note-length">0 / 140</span></div></div><p class="reminder-disclaimer">这是本次页面中的提醒记录，不会发送系统通知。</p><div class="dialog-split"><button type="button" class="secondary" data-close>取消</button><button type="submit" class="primary" id="save-reminder">保存提醒</button></div><button type="button" class="remove-button" id="remove-reminder" hidden>移除这条提醒</button></form></dialog>
+  <script>
+/* QS Design: optional behavior helpers, no visual components. */
+(function (root) {
+  'use strict';
+  const copy = value => typeof structuredClone === 'function' ? structuredClone(value) : JSON.parse(JSON.stringify(value));
+
+  function createStore(initial) {
+    let state = copy(initial);
+    const listeners = new Set();
+    const getState = () => copy(state);
+    const setState = next => {
+      state = copy(next);
+      listeners.forEach(fn => fn(getState()));
+      return getState();
+    };
+    return { getState, setState, update: fn => setState(fn(getState())),
+      subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); } };
+  }
+
+  // Start a new session each time an editor opens. Closing never commits.
+  function createDraft(initial, onCommit) {
+    let value = copy(initial), active = true;
+    return {
+      getValue: () => copy(value),
+      update(fn) { if (active) value = copy(fn(copy(value))); return copy(value); },
+      commit() { if (!active) return false; active = false; onCommit(copy(value)); return true; },
+      cancel() { if (!active) return false; active = false; return true; },
+      isActive: () => active
+    };
+  }
+
+  // render(route) returns the destination heading or control to focus.
+  function createNavigator(initial, render, env = root) {
+    let current = copy(initial);
+    const history = [];
+    const show = (route, focus, scrollY = 0) => {
+      current = copy(route);
+      const target = render(copy(current));
+      env.scrollTo?.(0, scrollY);
+      (focus?.isConnected ? focus : target)?.focus?.({ preventScroll: true });
+    };
+    return {
+      getRoute: () => copy(current),
+      go(route) { history.push({ route: copy(current), focus: env.document?.activeElement, y: env.scrollY || 0 }); show(route); },
+      back() { const previous = history.pop(); if (!previous) return false; show(previous.route, previous.focus, previous.y); return true; },
+      reset(route = initial) { history.length = 0; show(route); }
+    };
+  }
+
+  // Apply touch-action: pan-y to horizontal handles, pan-x to vertical handles.
+  // Use a range input for simple values. Bind this only to the actual drag region.
+  function bindDrag(element, { axis = 'x', threshold = 6, onStart, onMove, onEnd, onCancel } = {}) {
+    let gesture = null, suppressClick = false;
+    const point = event => ({ x: event.clientX, y: event.clientY });
+    const payload = event => ({ ...point(event), dx: event.clientX - gesture.x, dy: event.clientY - gesture.y, pointerId: event.pointerId });
+    const finish = (event, cancelled) => {
+      if (!gesture || event.pointerId !== gesture.id) return;
+      const started = gesture.started, result = payload(event), id = gesture.id;
+      gesture = null;
+      if (element.hasPointerCapture?.(id)) element.releasePointerCapture(id);
+      if (started) { suppressClick = true; (cancelled ? onCancel : onEnd)?.(result); }
+    };
+    const down = event => {
+      if (gesture || event.isPrimary === false || (event.button != null && event.button !== 0)) return;
+      if (event.target.closest?.('input,textarea,select,[contenteditable]:not([contenteditable="false"])')) return;
+      suppressClick = false;
+      gesture = { ...point(event), id: event.pointerId, started: false };
+    };
+    const move = event => {
+      if (!gesture || gesture.id !== event.pointerId) return;
+      const result = payload(event), primary = Math.abs(axis === 'x' ? result.dx : result.dy), cross = Math.abs(axis === 'x' ? result.dy : result.dx);
+      if (!gesture.started) {
+        if (cross > threshold && cross > primary) { gesture = null; return; }
+        if (primary < threshold) return;
+        gesture.started = true;
+        element.setPointerCapture?.(event.pointerId);
+        onStart?.(result);
+      }
+      onMove?.(result);
+    };
+    const up = event => finish(event, false);
+    const cancel = event => finish(event, true);
+    const click = event => { if (suppressClick) { suppressClick = false; event.preventDefault(); event.stopImmediatePropagation(); } };
+    const leave = event => { if (gesture && !gesture.started) cancel(event); };
+    const handlers = { pointerdown: down, pointermove: move, pointerup: up, pointercancel: cancel, lostpointercapture: cancel, pointerleave: leave, click };
+    for (const [type, fn] of Object.entries(handlers)) element.addEventListener(type, fn, type === 'click');
+    return () => {
+      if (gesture) cancel({ pointerId: gesture.id, clientX: gesture.x, clientY: gesture.y });
+      for (const [type, fn] of Object.entries(handlers)) element.removeEventListener(type, fn, type === 'click');
+    };
+  }
+
+  function createMotion(initial, onUpdate, env = root) {
+    let value = initial, frame = null;
+    const cancel = () => { if (frame !== null) env.cancelAnimationFrame(frame); frame = null; };
+    return {
+      getValue: () => value, cancel,
+      to(target, duration = 220) {
+        cancel();
+        if (duration <= 0 || env.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { value = target; onUpdate(value); return; }
+        const start = value, began = env.performance.now();
+        const tick = now => {
+          const progress = Math.min(1, Math.max(0, (now - began) / duration));
+          value = start + (target - start) * (1 - Math.pow(1 - progress, 3));
+          onUpdate(value);
+          frame = progress < 1 ? env.requestAnimationFrame(tick) : null;
+        };
+        frame = env.requestAnimationFrame(tick);
+      }
+    };
+  }
+  root.PrototypeCore = Object.freeze({ createStore, createDraft, createNavigator, bindDrag, createMotion });
+})(globalThis);
+
+</script>
+  <script>
+/* Original demo data. No live forecast, geolocation or notification service. */
+(function (root) {
+  'use strict';
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const beaches = [
+    { id: 'maluan', name: '马銮湾', english: 'MALUAN BAY', region: '福建 · 东山岛', descriptor: '弧形沙岸，向海打开', coordinate: '23.69° N · 117.45° E', distance: '3.2 km', routeMinutes: 12, wind: 7, wave: .4, water: 24, offset: 0, map: {x: 62, y: 43}, windows: [{id:'morning',start:510,end:600,label:'晨间窗口'}, {id:'evening',start:975,end:1050,label:'傍晚窗口'}], route: ['东山岛游客中心', '沿海滨路向东', '马銮湾公共入口', '海滩观景点'] },
+    { id: 'nanmen', name: '南门湾', english: 'NANMEN BAY', region: '福建 · 东山岛', descriptor: '沿着老街，走到海边', coordinate: '23.73° N · 117.53° E', distance: '6.8 km', routeMinutes: 24, wind: 10, wave: .6, water: 24, offset: 24, map: {x: 79, y: 22}, windows: [{id:'morning',start:540,end:630,label:'晨间窗口'}, {id:'evening',start:990,end:1065,label:'傍晚窗口'}], route: ['东山岛游客中心', '铜陵镇步行街', '南门湾石阶', '海湾观景点'] },
+    { id: 'jinluan', name: '金銮湾', english: 'JINLUAN BAY', region: '福建 · 东山岛', descriptor: '一条长岸线，留给日出', coordinate: '23.66° N · 117.43° E', distance: '5.1 km', routeMinutes: 18, wind: 8, wave: .5, water: 23, offset: -18, map: {x: 43, y: 70}, windows: [{id:'morning',start:495,end:585,label:'晨间窗口'}, {id:'evening',start:960,end:1035,label:'傍晚窗口'}], route: ['东山岛游客中心', '金銮大道', '金銮湾木栈道', '日出观景点'] }
+  ];
+  const date = { iso:'2026-10-27', label:'10 月 27 日', weekday:'星期二', short:'TUE / 27 OCT' };
+  function beach(id) { return beaches.find(b => b.id === id) || beaches[0]; }
+  function formatTime(minutes) { const value = Math.round(minutes); return String(Math.floor(value/60)).padStart(2,'0')+':'+String(value%60).padStart(2,'0'); }
+  function heightAt(id, minutes) { const b=beach(id); return Math.round((1.45 + .85*Math.cos((minutes-420-b.offset)*Math.PI/372))*100)/100; }
+  function conditionsAt(id, minutes) { const b=beach(id); return { height:heightAt(id,minutes), trend:heightAt(id,minutes+5)>heightAt(id,minutes)?'涨潮中':'退潮中', wind:b.wind, wave:b.wave, water:b.water, window:b.windows.find(w=>minutes>=w.start&&minutes<=w.end)||null }; }
+  function nearestWindow(id, minutes) { return beach(id).windows.reduce((best,w)=>Math.abs((w.start+w.end)/2-minutes)<Math.abs((best.start+best.end)/2-minutes)?w:best); }
+  function createModel(namespace) {
+    const initial={beachId:'maluan',selectedTime:540,reminders:[]};
+    const store=root.PrototypeCore.createStore(initial);
+    const change=fn=>store.update(fn);
+    return {
+      namespace,
+      getState:store.getState,
+      subscribe:store.subscribe,
+      selectBeach(id) { if(beaches.some(b=>b.id===id))change(s=>({...s,beachId:id})); },
+      selectTime(minutes) { const n=Number(minutes); if(Number.isFinite(n))change(s=>({...s,selectedTime:Math.max(360,Math.min(1200,Math.round(n)))})); },
+      saveReminder(input) {
+        const b=beach(input.beachId), w=b.windows.find(w=>w.id===input.windowId)||nearestWindow(b.id,input.start||540);
+        const reminder={id:b.id+':'+w.id,beachId:b.id,windowId:w.id,start:w.start,end:w.end,lead:[0,15,30,60].includes(Number(input.lead))?Number(input.lead):30,note:String(input.note||'').slice(0,140)};
+        change(s=>({...s,reminders:[...s.reminders.filter(r=>r.id!==reminder.id),reminder]}));
+        return clone(reminder);
+      },
+      removeReminder(id) { const old=store.getState().reminders.find(r=>r.id===id); change(s=>({...s,reminders:s.reminders.filter(r=>r.id!==id)})); return old?clone(old):null; },
+      restoreReminder(reminder) { if(reminder)this.saveReminder(reminder); },
+      reset() { store.setState(clone(initial)); }
+    };
+  }
+  root.Tidefold=Object.freeze({beaches:clone(beaches),date,beach,formatTime,heightAt,conditionsAt,nearestWindow,createModel});
+})(globalThis);
+
+</script>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const model = Tidefold.createModel('atlas');
+      const notes = {
+        maluan:{title:'海湾把风，轻轻收拢',copy:'地图上的一段弧线，到了眼前，是慢慢铺开的沙岸。从公共入口沿岸走，海面逐渐占满视野。给自己留一点停下来的时间，观察一层浪如何退回另一层浪。',tags:['弧形沙岸','沿岸散步','开阔海景']},
+        nanmen:{title:'街巷的尽头，就是海',copy:'从老街穿过来，脚下的路忽然变成石阶。房子沿着海湾依次展开，岸边的日常和海风在这里交叠。找一处观景点坐下，读一会儿小镇，也读一会儿海。',tags:['老街与海','石阶观景','小镇漫游']},
+        jinluan:{title:'把目光，放到岸线尽头',copy:'长长的沙岸让视线有了更远的去处。从木栈道望出去，天空、海面和岸线铺成三层。清晨适合等待光线，也可以在傍晚沿着岸边，给一天收个尾。',tags:['绵长沙岸','木栈道','光线观察']}
+      };
+      const sunIcon = evening => `<svg class="window-glyph" viewBox="0 0 28 28" fill="none" aria-hidden="true"><path d="M3 19h22M6 23h16M8 19a6 6 0 0 1 12 0M14 3v4M3 10l3 3M25 10l-3 3" stroke="currentColor" stroke-width="1.1"/>${evening?'<path d="M14 9v7m-3-3 3 3 3-3" stroke="currentColor" stroke-width=".9"/>':'<path d="M14 15V9m-3 3 3-3 3 3" stroke="currentColor" stroke-width=".9"/>'}</svg>`;
+      const arrow = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1"/></svg>';
+      let detailContext = null;
+      let reminderContext = null;
+      const dialogTriggers = new WeakMap();
+      function setText(id,value){ $(id).textContent = value; }
+      function announce(message){ setText('status',message); }
+      function openDialog(dialog,trigger){
+        dialogTriggers.set(dialog,trigger || document.activeElement);
+        dialog.showModal();
+      }
+      document.querySelectorAll('dialog').forEach(dialog => {
+        dialog.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click',()=>dialog.close()));
+        dialog.addEventListener('click',event=>{
+          const r=dialog.getBoundingClientRect();
+          if(event.target===dialog && (event.clientX<r.left || event.clientX>r.right || event.clientY<r.top || event.clientY>r.bottom))dialog.close();
+        });
+        dialog.addEventListener('close',()=>{
+          let trigger=dialogTriggers.get(dialog);
+          if(trigger && !trigger.isConnected && trigger.dataset.focusKey){trigger=Array.from(document.querySelectorAll('[data-focus-key]')).find(button=>button.dataset.focusKey===trigger.dataset.focusKey);}
+          if(!document.querySelector('dialog[open]'))(trigger && trigger.isConnected?trigger:$('open-reminder')).focus({preventScroll:true});
+        });
+      });
+      function render(){
+        const state=model.getState(), b=Tidefold.beach(state.beachId), c=Tidefold.conditionsAt(b.id,state.selectedTime), nearest=Tidefold.nearestWindow(b.id,state.selectedTime);
+        setText('place-title',b.name);setText('place-english',b.english);setText('place-index',String(Tidefold.beaches.findIndex(item=>item.id===b.id)+1).padStart(2,'0'));
+        setText('place-coordinate',b.coordinate);setText('place-descriptor',b.descriptor);
+        document.querySelectorAll('.map-marker').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.beach===b.id)));
+        document.querySelectorAll('.coast-highlight').forEach(path=>path.classList.toggle('active',path.id==='coast-'+b.id));
+        const formatted=Tidefold.formatTime(state.selectedTime), progress=(state.selectedTime-360)/840*100;
+        setText('selected-time',formatted);$('time-range').value=state.selectedTime;$('time-range').style.setProperty('--progress',progress+'%');$('time-range').setAttribute('aria-valuetext',formatted+'，潮高 '+c.height.toFixed(2)+' 米，'+c.trend);
+        setText('tide-height',c.height.toFixed(2));setText('tide-trend',c.trend);setText('wind-value',c.wind);setText('wave-value',c.wave.toFixed(1));
+        const points=[];for(let minutes=360;minutes<=1200;minutes+=12){points.push([((minutes-360)/840*400).toFixed(2),(35-Tidefold.heightAt(b.id,minutes)/2.4*31).toFixed(2)]);}
+        const curve=points.map((point,index)=>(index?'L':'M')+point.join(',')).join(' ');
+        $('tide-line').setAttribute('d',curve);$('tide-area').setAttribute('d',curve+' L400,37 L0,37 Z');$('tide-cursor').setAttribute('cx',progress*4);$('tide-cursor').setAttribute('cy',35-c.height/2.4*31);
+        setText('window-state',c.window?'此刻在'+c.window.label:'下一段留白，等你选');
+        $('window-list').replaceChildren();
+        b.windows.forEach(w=>{
+          const saved=state.reminders.some(r=>r.id===b.id+':'+w.id), active=c.window && c.window.id===w.id;
+          const button=document.createElement('button');button.type='button';button.className='window-row'+(active?' is-current':'');button.dataset.focusKey='window-'+b.id+'-'+w.id;
+          button.innerHTML=sunIcon(w.id==='evening')+'<span><span class="window-label"></span><span class="window-sub"></span></span><span class="window-time"></span>'+arrow;
+          button.querySelector('.window-label').textContent=w.label;
+          button.querySelector('.window-sub').textContent=saved?'已写入出发手册':active?'此刻正好 · 查看详情':w.id==='morning'?'沿着海岸，慢慢走':'等光线温柔下来';
+          button.querySelector('.window-time').textContent=Tidefold.formatTime(w.start)+'–'+Tidefold.formatTime(w.end);
+          button.setAttribute('aria-label',b.name+' '+w.label+' '+Tidefold.formatTime(w.start)+' 至 '+Tidefold.formatTime(w.end)+'，查看详情');
+          button.addEventListener('click',()=>openWindow(b.id,w.id,button));$('window-list').append(button);
+        });
+        const isSaved=state.reminders.some(r=>r.id===b.id+':'+nearest.id);
+        setText('reminder-cta',isSaved?'翻开这段出发提醒':'把这段时间，留给海');
+        setText('action-note',(isSaved?'已留好':'为')+nearest.label+(isSaved?' · 点击编辑提醒':'留一条出发提醒'));
+        const note=notes[b.id];setText('note-title',note.title);setText('note-copy',note.copy);$('note-tags').replaceChildren(...note.tags.map(tag=>{const span=document.createElement('span');span.textContent=tag;return span;}));
+        setText('saved-count',state.reminders.length+' 条提醒');$('saved-empty').hidden=state.reminders.length>0;$('saved-list').replaceChildren();
+        state.reminders.forEach(reminder=>{
+          const place=Tidefold.beach(reminder.beachId), w=place.windows.find(item=>item.id===reminder.windowId);
+          const item=document.createElement('li'), info=document.createElement('div'), title=document.createElement('strong'), meta=document.createElement('p'), edit=document.createElement('button');info.className='saved-info';
+          title.textContent=place.name+' · '+w.label;meta.textContent=Tidefold.formatTime(reminder.start)+'–'+Tidefold.formatTime(reminder.end)+' / '+(reminder.lead?'提前 '+reminder.lead+' 分钟':'开始时')+'提醒';
+          info.append(title,meta);
+          if(reminder.note){const userNote=document.createElement('p');userNote.className='user-note';userNote.textContent=reminder.note;info.append(userNote);}
+          edit.type='button';edit.className='saved-edit';edit.textContent='编辑';edit.dataset.focusKey='reminder-'+reminder.id;edit.setAttribute('aria-label','编辑'+place.name+w.label+'提醒');edit.addEventListener('click',()=>openReminder(place.id,w.id,edit));item.append(info,edit);$('saved-list').append(item);
+        });
+      }
+      function openWindow(beachId,windowId,trigger){
+        const b=Tidefold.beach(beachId), w=b.windows.find(item=>item.id===windowId);detailContext={beachId,windowId};
+        setText('window-dialog-eyebrow',b.name+' / '+w.label);setText('window-dialog-times',Tidefold.formatTime(w.start)+' — '+Tidefold.formatTime(w.end));
+        setText('window-dialog-copy',w.id==='morning'?'在一天开始的时候，把这一段时间留给海岸。窗口共 '+(w.end-w.start)+' 分钟，可以走到观景点，再慢慢折返。':'在天色转柔的时段，给一天留一段海边散步。窗口共 '+(w.end-w.start)+' 分钟，适合沿岸停留、观察光线。');
+        setText('window-dialog-height',Tidefold.heightAt(b.id,w.start).toFixed(2)+' → '+Tidefold.heightAt(b.id,w.end).toFixed(2)+' m');
+        setText('window-dialog-conditions',b.wind+' km/h · '+b.wave.toFixed(1)+' m');
+        setText('window-dialog-activity',b.id==='nanmen'?'可以这样安排：从老街走到石阶，在海湾观景点停留；把路线预览当作出发前的一页笔记。':b.id==='jinluan'?'可以这样安排：从木栈道走向长岸线，在观景点观察海面与天空的层次。':'可以这样安排：从公共入口进入，在海滩观景点停留，沿着弧形岸线感受潮汐的进退。');
+        openDialog($('window-dialog'),trigger);
+      }
+      function openReminder(beachId,windowId,trigger){
+        const b=Tidefold.beach(beachId), w=b.windows.find(item=>item.id===windowId), existing=model.getState().reminders.find(r=>r.id===beachId+':'+windowId);
+        reminderContext={beachId,windowId};
+        setText('reminder-dialog-title',existing?'翻开这页出发提醒':'留一页，给出发');
+        setText('reminder-place',b.name+' · '+Tidefold.date.label+' · '+w.label+'\n'+Tidefold.formatTime(w.start)+'–'+Tidefold.formatTime(w.end));
+        $('reminder-lead').value=existing?String(existing.lead):'30';$('reminder-note').value=existing?existing.note:'';setText('note-length',$('reminder-note').value.length+' / 140');
+        setText('save-reminder',existing?'保存修改':'保存提醒');$('remove-reminder').hidden=!existing;
+        openDialog($('reminder-dialog'),trigger);
+      }
+      document.querySelectorAll('.map-marker').forEach(button=>button.addEventListener('click',()=>{model.selectBeach(button.dataset.beach);announce('');}));
+      $('time-range').addEventListener('input',event=>model.selectTime(event.target.value));
+      $('open-reminder').addEventListener('click',event=>{const state=model.getState();openReminder(state.beachId,Tidefold.nearestWindow(state.beachId,state.selectedTime).id,event.currentTarget);});
+      $('window-remind').addEventListener('click',()=>{const trigger=dialogTriggers.get($('window-dialog'));$('window-dialog').close();openReminder(detailContext.beachId,detailContext.windowId,trigger);});
+      $('window-explore').addEventListener('click',()=>{const b=Tidefold.beach(detailContext.beachId),w=b.windows.find(item=>item.id===detailContext.windowId);model.selectBeach(b.id);model.selectTime(Math.round((w.start+w.end)/2));dialogTriggers.set($('window-dialog'),$('time-range'));$('window-dialog').close();$('time-range').focus({preventScroll:true});$('time-heading').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});announce('已翻到'+b.name+'的'+w.label+'。');});
+      $('open-route').addEventListener('click',event=>{
+        const b=Tidefold.beach(model.getState().beachId);setText('route-duration',b.routeMinutes+' 分钟');setText('route-distance','约 '+b.distance+' · 前往'+b.name);setText('route-map-place',b.name);$('route-steps').replaceChildren(...b.route.map((step,index)=>{const li=document.createElement('li'),number=document.createElement('span'),label=document.createElement('span');number.className='step-number mono';number.textContent=String(index+1).padStart(2,'0');label.textContent=step;li.append(number,label);return li;}));openDialog($('route-dialog'),event.currentTarget);
+      });
+      $('reminder-note').addEventListener('input',()=>setText('note-length',$('reminder-note').value.length+' / 140'));
+      $('reminder-form').addEventListener('submit',event=>{event.preventDefault();if(!reminderContext)return;const reminder=model.saveReminder({...reminderContext,lead:Number($('reminder-lead').value),note:$('reminder-note').value});$('reminder-dialog').close();announce(Tidefold.beach(reminder.beachId).name+'的出发提醒已保存，可在「我的出发手册」中编辑。');});
+      $('remove-reminder').addEventListener('click',()=>{if(!reminderContext)return;model.removeReminder(reminderContext.beachId+':'+reminderContext.windowId);$('reminder-dialog').close();announce('已从出发手册移除这条提醒。');});
+      $('reset-demo').addEventListener('click',()=>{document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());model.reset();$('reminder-form').reset();document.querySelector('.field-note').open=false;announce('已回到马銮湾的 09:00，出发手册已清空。');});
+      model.subscribe(render);render();
+    })();
+  </script>
+</body>
+</html>
