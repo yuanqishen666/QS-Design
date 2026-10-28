@@ -1,0 +1,17 @@
+{
+  "id": "liquid-capacity",
+  "category": "material",
+  "title": "液态容量语法",
+  "lesson": "仅在容量、流动或守恒成立时使用连续液面。",
+  "anti_pattern": "把液体作为任意页面背景或加载装饰。",
+  "states": [
+    "low",
+    "changing",
+    "limit"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

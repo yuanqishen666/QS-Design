@@ -1,0 +1,9 @@
+{
+  "original": true,
+  "sources": [],
+  "assets": [],
+  "novel_decisions": [
+    "大数字、负数、缺失和异常峰值不破坏图表与表格。"
+  ],
+  "redistribution": "allowed"
+}

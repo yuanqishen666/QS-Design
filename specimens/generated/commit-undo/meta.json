@@ -1,0 +1,17 @@
+{
+  "id": "commit-undo",
+  "category": "behavior",
+  "title": "提交与撤销",
+  "lesson": "可逆动作即时完成并提供有限撤销。",
+  "anti_pattern": "每次普通操作都弹二次确认。",
+  "states": [
+    "ready",
+    "committed",
+    "undone"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

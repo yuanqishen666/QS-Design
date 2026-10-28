@@ -1,0 +1,9 @@
+{
+  "original": true,
+  "sources": [],
+  "assets": [],
+  "novel_decisions": [
+    "用连续反馈保护重要提交，并在阈值前允许取消。"
+  ],
+  "redistribution": "allowed"
+}

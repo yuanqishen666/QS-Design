@@ -1,0 +1,9 @@
+{
+  "original": true,
+  "sources": [],
+  "assets": [],
+  "novel_decisions": [
+    "移除位移与视差后仍保留状态、焦点和结果。"
+  ],
+  "redistribution": "allowed"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "canvas-inspector",
+  "category": "layout",
+  "title": "画布与检查器",
+  "lesson": "创作对象保持主舞台，属性按当前选择渐进出现。",
+  "anti_pattern": "工具栏覆盖画布，属性永远全部展开。",
+  "states": [
+    "canvas",
+    "selected",
+    "inspecting"
+  ],
+  "platforms": [
+    "web",
+    "ipados",
+    "android-tablet"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

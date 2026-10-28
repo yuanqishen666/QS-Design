@@ -1,0 +1,17 @@
+{
+  "id": "slow-network",
+  "category": "stress",
+  "title": "慢网与渐进内容",
+  "lesson": "保留布局、展示已知信息并允许取消或重试。",
+  "anti_pattern": "整页无限旋转，加载失败后空白。",
+  "states": [
+    "skeleton",
+    "partial",
+    "complete"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

@@ -1,0 +1,17 @@
+{
+  "id": "semantic-canvas",
+  "category": "fallback",
+  "title": "Canvas 语义镜像",
+  "lesson": "复杂绘制另有结构化信息和真实控制层。",
+  "anti_pattern": "整页 Canvas 只加一个模糊 aria-label。",
+  "states": [
+    "visual",
+    "semantic",
+    "failure"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

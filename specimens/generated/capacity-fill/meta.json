@@ -1,0 +1,17 @@
+{
+  "id": "capacity-fill",
+  "category": "behavior",
+  "title": "容量与填充",
+  "lesson": "用有限容器解释配额、进度与溢出。",
+  "anti_pattern": "任何百分比都装进杯子或液体。",
+  "states": [
+    "empty",
+    "near-limit",
+    "full"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

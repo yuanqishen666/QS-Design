@@ -1,0 +1,17 @@
+{
+  "id": "ordered-set",
+  "category": "behavior",
+  "title": "排序与落位",
+  "lesson": "拖动与按钮共同完成优先级变化。",
+  "anti_pattern": "只支持拖拽且没有焦点与读屏反馈。",
+  "states": [
+    "idle",
+    "moving",
+    "settled"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

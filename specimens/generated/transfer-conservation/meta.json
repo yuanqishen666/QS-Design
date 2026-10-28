@@ -1,0 +1,17 @@
+{
+  "id": "transfer-conservation",
+  "category": "behavior",
+  "title": "转移与守恒",
+  "lesson": "资源移动时总量和归属始终可见。",
+  "anti_pattern": "只有粒子飞过，没有数字与状态结果。",
+  "states": [
+    "idle",
+    "manipulating",
+    "settled"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

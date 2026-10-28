@@ -1,0 +1,17 @@
+{
+  "id": "interrupt-resume",
+  "category": "behavior",
+  "title": "打断与恢复",
+  "lesson": "长任务可暂停、取消、恢复并显示保留进度。",
+  "anti_pattern": "自动动画接管界面，离开后状态丢失。",
+  "states": [
+    "running",
+    "paused",
+    "recovered"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

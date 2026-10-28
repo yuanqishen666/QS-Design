@@ -1,0 +1,17 @@
+{
+  "id": "resistance-threshold",
+  "category": "behavior",
+  "title": "阻力与承诺点",
+  "lesson": "用连续反馈保护重要提交，并在阈值前允许取消。",
+  "anti_pattern": "所有按钮都需要长按或拖动确认。",
+  "states": [
+    "idle",
+    "armed",
+    "committed"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

@@ -1,0 +1,17 @@
+{
+  "id": "paper-layer",
+  "category": "material",
+  "title": "纸张层级",
+  "lesson": "折叠、边缘和层叠只在内容有文档/凭证关系时使用。",
+  "anti_pattern": "所有卡片做纸张阴影但没有层级含义。",
+  "states": [
+    "stacked",
+    "opened",
+    "filed"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

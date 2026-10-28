@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "dimensions": [
+    {"id":"task-clarity","weight":20,"question":"核心任务、对象和下一步是否无需解释即可理解？"},
+    {"id":"visual-specificity","weight":15,"question":"视觉是否来自当前内容与产品，而不是通用风格拼贴？"},
+    {"id":"interaction-causality","weight":15,"question":"输入、反馈、阈值与结果是否连续且因果一致？"},
+    {"id":"state-completeness","weight":15,"question":"提交、取消、返回、异常、打断和恢复是否覆盖当前核心路径？"},
+    {"id":"platform-correctness","weight":15,"question":"导航、控件、系统行为和实现能力是否符合目标平台？"},
+    {"id":"accessibility","weight":10,"question":"文本缩放、读屏/键盘、触控目标和减弱动态是否完成等价任务？"},
+    {"id":"evidence-originality","weight":10,"question":"来源、许可、推断边界和原创转译是否可追溯？"}
+  ],
+  "release_threshold": 80,
+  "blocking_rules": ["核心任务不可完成","无法返回或取消可逆动作","减弱动态后任务不可完成","平台能力未经验证且没有降级","外部资产来源或许可缺失"]
+}

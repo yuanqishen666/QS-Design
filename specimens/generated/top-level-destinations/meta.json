@@ -1,0 +1,17 @@
+{
+  "id": "top-level-destinations",
+  "category": "translation",
+  "title": "顶层目的地翻译",
+  "lesson": "根据窗口和频率选择 tab、rail、sidebar 或小程序页面入口。",
+  "anti_pattern": "桌面 Web 也固定五个底部 tab。",
+  "states": [
+    "compact",
+    "medium",
+    "expanded"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

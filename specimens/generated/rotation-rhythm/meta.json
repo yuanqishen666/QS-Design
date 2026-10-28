@@ -1,0 +1,17 @@
+{
+  "id": "rotation-rhythm",
+  "category": "behavior",
+  "title": "旋转与节律",
+  "lesson": "角度和速度表达周期位置与时间。",
+  "anti_pattern": "为装饰让卡片无意义自转。",
+  "states": [
+    "idle",
+    "scrubbing",
+    "settled"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

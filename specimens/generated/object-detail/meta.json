@@ -1,0 +1,17 @@
+{
+  "id": "object-detail",
+  "category": "layout",
+  "title": "对象中心详情",
+  "lesson": "让单一核心对象承担状态、动作与关联信息的共同锚点。",
+  "anti_pattern": "把所有信息切成同权卡片，失去主角。",
+  "states": [
+    "summary",
+    "expanded",
+    "editing"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

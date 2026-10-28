@@ -1,0 +1,18 @@
+{
+  "id": "dense-dashboard",
+  "category": "layout",
+  "title": "高密度操作台",
+  "lesson": "通过稳定对齐、分组和少数视觉角色承载密度。",
+  "anti_pattern": "每个指标独立卡片、彩色图标和阴影。",
+  "states": [
+    "normal",
+    "alert",
+    "filtered"
+  ],
+  "platforms": [
+    "web",
+    "tablet"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

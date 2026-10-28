@@ -1,0 +1,17 @@
+{
+  "id": "rtl-bidi",
+  "category": "stress",
+  "title": "RTL 与双向文本",
+  "lesson": "布局方向、图标语义、数字和混排文本分别处理。",
+  "anti_pattern": "整页镜像包括播放、图表或品牌标记。",
+  "states": [
+    "ltr",
+    "rtl",
+    "mixed"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

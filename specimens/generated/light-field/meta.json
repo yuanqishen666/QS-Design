@@ -1,0 +1,17 @@
+{
+  "id": "light-field",
+  "category": "material",
+  "title": "光场与注意力",
+  "lesson": "光线指向状态和焦点，静止时仍保持层级。",
+  "anti_pattern": "跟随鼠标的泛光覆盖文字和控件。",
+  "states": [
+    "ambient",
+    "focused",
+    "dimmed"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

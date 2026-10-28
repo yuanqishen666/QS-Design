@@ -1,0 +1,17 @@
+{
+  "id": "back-cancel",
+  "category": "translation",
+  "title": "返回、取消与系统手势",
+  "lesson": "区分导航返回、关闭浮层和取消业务动作。",
+  "anti_pattern": "自定义横滑同时抢占系统返回与内容拖动。",
+  "states": [
+    "page",
+    "surface",
+    "unsaved"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

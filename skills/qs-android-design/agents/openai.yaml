@@ -1,0 +1,6 @@
+interface:
+  display_name: "QS Android Design"
+  short_description: "设计 Android、平板与折叠屏的可操作体验"
+  default_prompt: "Use $qs-android-design to design this Android flow with platform-correct navigation, behavior, and motion."
+policy:
+  allow_implicit_invocation: true

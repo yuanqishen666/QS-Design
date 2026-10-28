@@ -1,0 +1,15 @@
+{
+  "original": true,
+  "sources": [
+    {"url":"https://www.cs.tufts.edu/~jacob/papers/chi08.pdf","observed":"Use everyday causal knowledge while preserving design tradeoffs."},
+    {"url":"https://developer.apple.com/documentation/SwiftUI/Controlling-the-timing-and-movements-of-your-animations","observed":"State-driven, interruptible native animation concepts."},
+    {"url":"https://developer.android.com/develop/ui/compose/animation/customize","observed":"Spring and decay behavior concepts for direct manipulation."}
+  ],
+  "assets": [],
+  "novel_decisions": [
+    "Organize probes by transferable causal grammar instead of named real-world objects.",
+    "Place reduced-motion and keyboard equivalents inside the same live laboratory.",
+    "Show state names and purpose beside each probe so the specimen teaches decisions, not appearance."
+  ],
+  "redistribution": "allowed"
+}

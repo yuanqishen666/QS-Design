@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "title": "QS Behavior Lab — Foundation Set",
+  "version": "1.0.0",
+  "families": [
+    {"id":"transfer-conservation","grammar":["transfer","conservation"],"purpose":"Make movement between two owners legible.","inputs":["range","keyboard"],"states":["idle","manipulating","settled"],"platforms":["cross-platform"]},
+    {"id":"resistance-threshold","grammar":["resistance","threshold"],"purpose":"Protect a consequential commit without a modal detour.","inputs":["range","keyboard"],"states":["idle","preview","armed","committed"]},
+    {"id":"separation-residue","grammar":["separation","residue"],"purpose":"Communicate split or redemption and leave a trace.","inputs":["range","keyboard"],"states":["joined","separating","separated"]},
+    {"id":"rotation-rhythm","grammar":["rotation","rhythm"],"purpose":"Control cyclical position or time.","inputs":["range","keyboard"],"states":["idle","scrubbing","settled"]},
+    {"id":"inertia-bounds","grammar":["inertia","constraint"],"purpose":"Continue a direct manipulation while respecting limits.","inputs":["pointer","keyboard"],"states":["idle","dragging","decaying","settled"]},
+    {"id":"assembly-alignment","grammar":["assembly","alignment"],"purpose":"Make configuration and completion spatially explicit.","inputs":["button","keyboard"],"states":["loose","partial","assembled"]},
+    {"id":"reveal-comparison","grammar":["reveal","comparison"],"purpose":"Compare two aligned states with one gesture.","inputs":["range","keyboard"],"states":["before","mixed","after"]},
+    {"id":"capacity-fill","grammar":["capacity","fill"],"purpose":"Show progress against a finite limit.","inputs":["range","keyboard"],"states":["empty","filling","near-limit","full"]},
+    {"id":"ordered-set","grammar":["ordering","settling"],"purpose":"Reprioritize items with explicit alternatives to drag.","inputs":["buttons","keyboard"],"states":["idle","moving","settled"]},
+    {"id":"interrupt-resume","grammar":["interruption","recovery"],"purpose":"Keep long-running work controllable and recoverable.","inputs":["buttons","keyboard"],"states":["idle","running","paused","cancelled","done"]},
+    {"id":"commit-undo","grammar":["commit","residue","undo"],"purpose":"Make a reversible result immediate without confirmation spam.","inputs":["buttons","keyboard"],"states":["ready","committed","undone"]},
+    {"id":"object-continuity","grammar":["continuity","shared-object"],"purpose":"Maintain identity when an object changes context.","inputs":["button","keyboard"],"states":["collection","detail"]}
+  ]
+}

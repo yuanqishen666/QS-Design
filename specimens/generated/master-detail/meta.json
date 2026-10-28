@@ -1,0 +1,17 @@
+{
+  "id": "master-detail",
+  "category": "translation",
+  "title": "主从关系响应式翻译",
+  "lesson": "宽屏并列、窄屏推进，但选择与滚动状态保持连续。",
+  "anti_pattern": "窄屏把两列压缩成不可读小窗。",
+  "states": [
+    "compact",
+    "medium",
+    "expanded"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

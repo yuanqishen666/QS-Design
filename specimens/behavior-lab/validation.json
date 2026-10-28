@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "validated_at": "2026-10-28",
+  "checks": {
+    "source_runs_offline": true,
+    "external_runtime_dependencies": false,
+    "keyboard_alternatives": true,
+    "reduced_motion": true,
+    "semantic_controls": true,
+    "duplicate_ids": false,
+    "provenance_present": true
+  },
+  "known_limits": [
+    "The laboratory demonstrates interaction grammar in the browser; native haptics and platform navigation require adapter-specific implementation.",
+    "Material deformation is represented geometrically rather than simulated as fluid or tear physics."
+  ]
+}

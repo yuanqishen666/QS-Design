@@ -1,0 +1,17 @@
+{
+  "id": "texture-restraint",
+  "category": "material",
+  "title": "纹理克制",
+  "lesson": "纹理只建立材质或文化语境，并有纯色降级。",
+  "anti_pattern": "噪点覆盖所有表面，降低文字清晰度。",
+  "states": [
+    "clean",
+    "textured",
+    "reduced"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

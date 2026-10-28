@@ -1,0 +1,17 @@
+{
+  "id": "editorial-flow",
+  "category": "layout",
+  "title": "长阅读与行动",
+  "lesson": "阅读节奏、证据和相关动作沿内容自然出现。",
+  "anti_pattern": "首屏堆满悬浮按钮，正文宽度和行长失控。",
+  "states": [
+    "opening",
+    "reading",
+    "annotating"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

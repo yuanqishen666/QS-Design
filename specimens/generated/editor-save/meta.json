@@ -1,0 +1,17 @@
+{
+  "id": "editor-save",
+  "category": "translation",
+  "title": "编辑与保存翻译",
+  "lesson": "共享草稿语义，各端使用可信的保存、取消和返回行为。",
+  "anti_pattern": "离开编辑时静默丢弃或自动提交。",
+  "states": [
+    "editing",
+    "validation",
+    "saved"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

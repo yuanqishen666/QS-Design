@@ -1,0 +1,16 @@
+{
+  "name": "qs-design",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.20"
+  },
+  "scripts": {
+    "test": "node --test skills/qs-ios-design/scripts/prototype.test.mjs core/runtime/runtime.test.mjs scripts/scripts.test.mjs",
+    "specimens": "node scripts/build-specimens.mjs && node scripts/validate-specimens.mjs",
+    "lint": "node scripts/validate-repo.mjs && node scripts/source-check.mjs && node scripts/design-lint.mjs ios-design/showcase && node scripts/design-lint.mjs specimens/behavior-lab && node scripts/validate-specimens.mjs && node scripts/provenance-check.mjs specimens --strict",
+    "eval": "node scripts/eval-routing.mjs",
+    "check": "npm run test && npm run lint && npm run eval"
+  }
+}

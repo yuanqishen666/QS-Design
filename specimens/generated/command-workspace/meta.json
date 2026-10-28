@@ -1,0 +1,18 @@
+{
+  "id": "command-workspace",
+  "category": "layout",
+  "title": "命令工作区",
+  "lesson": "将高频命令、上下文和结果组织成可键盘操作的工作面。",
+  "anti_pattern": "把命令面板当搜索框，没有范围、历史和反馈。",
+  "states": [
+    "idle",
+    "commanding",
+    "result"
+  ],
+  "platforms": [
+    "web",
+    "desktop"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

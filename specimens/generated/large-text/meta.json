@@ -1,0 +1,17 @@
+{
+  "id": "large-text",
+  "category": "stress",
+  "title": "200% 文本缩放",
+  "lesson": "放大后重排而非裁切，主要动作仍可达。",
+  "anti_pattern": "缩小字体或禁用系统缩放。",
+  "states": [
+    "100%",
+    "150%",
+    "200%"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

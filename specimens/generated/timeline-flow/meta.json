@@ -1,0 +1,17 @@
+{
+  "id": "timeline-flow",
+  "category": "layout",
+  "title": "时间线流程",
+  "lesson": "用时间关系组织事件、计划与可恢复状态。",
+  "anti_pattern": "只按视觉交替左右排列，阅读顺序不稳定。",
+  "states": [
+    "past",
+    "present",
+    "future"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

@@ -1,0 +1,17 @@
+{
+  "id": "modal-sheet",
+  "category": "translation",
+  "title": "临时表面的翻译",
+  "lesson": "按任务长度和平台选择 sheet、dialog、popover 或独立页面。",
+  "anti_pattern": "所有平台都使用 iOS 半屏卡片。",
+  "states": [
+    "compact",
+    "pointer",
+    "long-task"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

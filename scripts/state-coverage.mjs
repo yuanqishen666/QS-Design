@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+export function analyzeStateCoverage(model){const errors=[];if(!model.states?.[model.initial])errors.push(`Unknown initial state: ${model.initial}`);const reachable=new Set(),queue=model.states?.[model.initial]?[model.initial]:[];while(queue.length){const state=queue.shift();if(reachable.has(state))continue;reachable.add(state);for(const target of Object.values(model.states[state]?.on??{})){const next=typeof target==='string'?target:target?.target;if(!model.states[next])errors.push(`${state} transitions to unknown state ${next}`);else if(!reachable.has(next))queue.push(next)}}for(const state of Object.keys(model.states??{}))if(!reachable.has(state))errors.push(`Unreachable state: ${state}`);for(const required of model.required_states??[])if(!reachable.has(required))errors.push(`Required state is not reachable: ${required}`);const eventNames=new Set(Object.values(model.states??{}).flatMap(state=>Object.keys(state.on??{})));for(const event of model.required_events??[])if(!eventNames.has(event))errors.push(`Required event is absent: ${event}`);return{errors,reachable:[...reachable],coverage:Object.keys(model.states??{}).length?reachable.size/Object.keys(model.states).length:0}}
+async function main(){const path=process.argv[2];if(!path)throw new Error('Usage: state-coverage.mjs model.json');const result=analyzeStateCoverage(JSON.parse(await readFile(path,'utf8')));console.log(JSON.stringify(result,null,2));if(result.errors.length)process.exitCode=1}
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))main().catch(error=>{console.error(error.message);process.exitCode=1});

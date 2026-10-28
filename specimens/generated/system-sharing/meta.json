@@ -1,0 +1,17 @@
+{
+  "id": "system-sharing",
+  "category": "translation",
+  "title": "系统分享翻译",
+  "lesson": "共享业务对象与结果，各端调用真实分享能力和失败路径。",
+  "anti_pattern": "用自制社交图标替代系统能力。",
+  "states": [
+    "ready",
+    "sharing",
+    "result"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

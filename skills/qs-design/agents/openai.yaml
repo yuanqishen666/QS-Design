@@ -1,0 +1,6 @@
+interface:
+  display_name: "QS Design"
+  short_description: "设计跨平台页面、流程与可操作原型"
+  default_prompt: "Use $qs-design to turn this product into a distinctive, platform-appropriate, clickable experience."
+policy:
+  allow_implicit_invocation: true

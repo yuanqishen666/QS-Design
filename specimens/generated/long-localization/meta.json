@@ -1,0 +1,17 @@
+{
+  "id": "long-localization",
+  "category": "stress",
+  "title": "超长本地化文案",
+  "lesson": "结构在长德文、中文说明和多行按钮下仍保持顺序与目标。",
+  "anti_pattern": "固定高度截断关键动作。",
+  "states": [
+    "short",
+    "long",
+    "multiline"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

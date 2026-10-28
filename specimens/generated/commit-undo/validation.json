@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "generated_at": "2026-10-28T15:19:34.063Z",
+  "checks": {
+    "source": true,
+    "three_states": true,
+    "preview": true,
+    "rationale": true,
+    "anti_pattern": true,
+    "provenance": true,
+    "reduced_motion": true,
+    "semantic_controls": true
+  },
+  "status": "validated",
+  "validated_at": "2026-10-28T15:22:35.191Z",
+  "lint": {
+    "errors": 0,
+    "warnings": 0
+  }
+}

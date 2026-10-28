@@ -1,0 +1,18 @@
+{
+  "id": "permission-denied",
+  "category": "stress",
+  "title": "权限拒绝后继续",
+  "lesson": "在需要时请求权限，拒绝后保留替代路径。",
+  "anti_pattern": "启动即请求并在拒绝后锁死产品。",
+  "states": [
+    "context",
+    "denied",
+    "fallback"
+  ],
+  "platforms": [
+    "mobile",
+    "mini-program"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

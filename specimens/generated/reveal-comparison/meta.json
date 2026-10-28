@@ -1,0 +1,17 @@
+{
+  "id": "reveal-comparison",
+  "category": "behavior",
+  "title": "显露与比较",
+  "lesson": "对齐的前后状态由同一连续输入控制。",
+  "anti_pattern": "擦除成为发现关键信息的唯一入口。",
+  "states": [
+    "before",
+    "mixed",
+    "after"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

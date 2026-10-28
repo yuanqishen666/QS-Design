@@ -1,0 +1,17 @@
+{
+  "id": "inertia-bounds",
+  "category": "behavior",
+  "title": "惯性与边界",
+  "lesson": "释放后延续速度，同时尊重范围与新输入。",
+  "anti_pattern": "固定缓动假装惯性，无法打断。",
+  "states": [
+    "dragging",
+    "decaying",
+    "settled"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

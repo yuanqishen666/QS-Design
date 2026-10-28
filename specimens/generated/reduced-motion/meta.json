@@ -1,0 +1,17 @@
+{
+  "id": "reduced-motion",
+  "category": "fallback",
+  "title": "减弱动态等价路径",
+  "lesson": "移除位移与视差后仍保留状态、焦点和结果。",
+  "anti_pattern": "只把所有时长设为零导致上下文突变。",
+  "states": [
+    "full-motion",
+    "reduced",
+    "static"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

@@ -1,0 +1,17 @@
+{
+  "id": "glass-depth",
+  "category": "material",
+  "title": "透明与景深",
+  "lesson": "透明度表达上下文保留，文字对比和层级始终明确。",
+  "anti_pattern": "在复杂图片上堆半透明卡片导致不可读。",
+  "states": [
+    "base",
+    "overlay",
+    "focused"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

@@ -1,6 +1,0 @@
-interface:
-  display_name: "QS iOS Design"
-  short_description: "从独立主题与功能模块制作漂亮、精致、可操作的 iOS 原型"
-  default_prompt: "Use $qs-ios-design to turn this product into a visually distinctive, polished, clickable iOS prototype."
-policy:
-  allow_implicit_invocation: true

@@ -1,0 +1,17 @@
+{
+  "id": "data-ink",
+  "category": "material",
+  "title": "数据墨水",
+  "lesson": "视觉重量与数据重要性一致，装饰不竞争。",
+  "anti_pattern": "渐变、阴影和 3D 体积扭曲比较。",
+  "states": [
+    "overview",
+    "highlight",
+    "annotation"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

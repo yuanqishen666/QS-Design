@@ -1,0 +1,17 @@
+{
+  "id": "separation-residue",
+  "category": "behavior",
+  "title": "分离与残留",
+  "lesson": "拆分、核销或领取后留下可理解凭证。",
+  "anti_pattern": "撕裂动画与业务没有不可逆或残留关系。",
+  "states": [
+    "joined",
+    "separating",
+    "separated"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

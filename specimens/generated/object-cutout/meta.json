@@ -1,0 +1,17 @@
+{
+  "id": "object-cutout",
+  "category": "material",
+  "title": "实物抠图与空间",
+  "lesson": "用尺度、遮挡和影子建立对象关系，不把抠图当贴纸。",
+  "anti_pattern": "无方向的漂浮 PNG 与随机阴影。",
+  "states": [
+    "resting",
+    "selected",
+    "manipulated"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

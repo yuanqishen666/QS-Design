@@ -1,0 +1,17 @@
+{
+  "id": "low-gpu",
+  "category": "fallback",
+  "title": "低性能材质降级",
+  "lesson": "Shader、模糊和粒子退化为稳定图层而不改变任务。",
+  "anti_pattern": "低端设备直接隐藏关键反馈。",
+  "states": [
+    "enhanced",
+    "balanced",
+    "minimal"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

@@ -1,0 +1,6 @@
+interface:
+  display_name: "QS 微信小程序 Design"
+  short_description: "设计微信小程序与 Skyline 可操作体验"
+  default_prompt: "Use $qs-wechat-miniapp-design to design this WeChat Mini Program with verified components, motion, and fallbacks."
+policy:
+  allow_implicit_invocation: true

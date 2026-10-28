@@ -1,0 +1,17 @@
+{
+  "id": "comparison-grid",
+  "category": "layout",
+  "title": "可追踪比较",
+  "lesson": "固定比较维度，让差异比装饰更醒目。",
+  "anti_pattern": "每列使用不同结构，用户需要反复重新定位。",
+  "states": [
+    "overview",
+    "difference",
+    "decision"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

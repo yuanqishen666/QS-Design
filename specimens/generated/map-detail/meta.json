@@ -1,0 +1,17 @@
+{
+  "id": "map-detail",
+  "category": "layout",
+  "title": "地图与详情协同",
+  "lesson": "空间选择与对象详情相互定位，并保留列表替代。",
+  "anti_pattern": "地图成为背景图，选择与信息没有因果联系。",
+  "states": [
+    "overview",
+    "selected",
+    "route"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

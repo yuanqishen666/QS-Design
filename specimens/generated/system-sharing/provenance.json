@@ -1,0 +1,9 @@
+{
+  "original": true,
+  "sources": [],
+  "assets": [],
+  "novel_decisions": [
+    "共享业务对象与结果，各端调用真实分享能力和失败路径。"
+  ],
+  "redistribution": "allowed"
+}

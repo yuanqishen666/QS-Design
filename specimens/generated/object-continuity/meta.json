@@ -1,0 +1,17 @@
+{
+  "id": "object-continuity",
+  "category": "behavior",
+  "title": "对象连续性",
+  "lesson": "对象换上下文时保持身份、焦点与返回路径。",
+  "anti_pattern": "用截图交叉淡入冒充可打断共享元素。",
+  "states": [
+    "collection",
+    "transition",
+    "detail"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

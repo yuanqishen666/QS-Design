@@ -1,0 +1,17 @@
+{
+  "id": "data-overflow",
+  "category": "stress",
+  "title": "极值与数据溢出",
+  "lesson": "大数字、负数、缺失和异常峰值不破坏图表与表格。",
+  "anti_pattern": "用省略号隐藏影响决策的数据。",
+  "states": [
+    "normal",
+    "extreme",
+    "missing"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

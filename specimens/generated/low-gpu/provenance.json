@@ -1,0 +1,9 @@
+{
+  "original": true,
+  "sources": [],
+  "assets": [],
+  "novel_decisions": [
+    "Shader、模糊和粒子退化为稳定图层而不改变任务。"
+  ],
+  "redistribution": "allowed"
+}

@@ -1,0 +1,9 @@
+{
+  "original": true,
+  "sources": [],
+  "assets": [],
+  "novel_decisions": [
+    "支付由平台能力完成，产品负责处理中、取消、失败与结果恢复。"
+  ],
+  "redistribution": "allowed"
+}

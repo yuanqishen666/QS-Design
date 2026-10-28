@@ -1,0 +1,17 @@
+{
+  "id": "photography-crop",
+  "category": "material",
+  "title": "摄影裁切策略",
+  "lesson": "裁切围绕主体、动作和文本安全区，而不是填满卡片。",
+  "anti_pattern": "所有照片统一居中裁切并加深色渐变。",
+  "states": [
+    "portrait",
+    "landscape",
+    "detail"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

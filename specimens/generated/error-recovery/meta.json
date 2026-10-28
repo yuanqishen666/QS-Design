@@ -1,0 +1,17 @@
+{
+  "id": "error-recovery",
+  "category": "stress",
+  "title": "错误与恢复",
+  "lesson": "错误说明发生了什么、保留了什么以及如何继续。",
+  "anti_pattern": "只显示红色 toast 或错误码。",
+  "states": [
+    "normal",
+    "failed",
+    "recovered"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

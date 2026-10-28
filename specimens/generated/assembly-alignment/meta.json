@@ -1,0 +1,17 @@
+{
+  "id": "assembly-alignment",
+  "category": "behavior",
+  "title": "组装与对齐",
+  "lesson": "通过关系归位表达配置或完成。",
+  "anti_pattern": "普通成功操作也播放拼图庆祝。",
+  "states": [
+    "loose",
+    "partial",
+    "assembled"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}

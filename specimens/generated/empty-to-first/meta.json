@@ -1,0 +1,17 @@
+{
+  "id": "empty-to-first",
+  "category": "stress",
+  "title": "空状态到第一条内容",
+  "lesson": "空状态解释价值并提供真实第一步，完成后平滑进入常态。",
+  "anti_pattern": "只放插画和“暂无数据”。",
+  "states": [
+    "empty",
+    "creating",
+    "populated"
+  ],
+  "platforms": [
+    "cross-platform"
+  ],
+  "schema": 1,
+  "variant_count": 3
+}
