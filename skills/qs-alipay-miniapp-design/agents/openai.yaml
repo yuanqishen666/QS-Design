@@ -1,6 +1,0 @@
-interface:
-  display_name: "QS 支付宝小程序 Design"
-  short_description: "设计支付宝小程序与可降级交互"
-  default_prompt: "Use $qs-alipay-miniapp-design to design this Alipay Mini Program with verified component capabilities and fallbacks."
-policy:
-  allow_implicit_invocation: true

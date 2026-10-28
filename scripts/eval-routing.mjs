@@ -3,24 +3,27 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const routes = [
-  ['qs-design-audit', /审计|评审|检查|review|audit|lint|上线前验证/i],
-  ['qs-interaction-lab', /生活化|物理动画|手势动画|交互探针|撕|倒水|惯性|shader|rive|material motion/i],
-  ['qs-wechat-miniapp-design', /微信小程序|wechat mini|skyline|wxml|wxss|worklet/i],
-  ['qs-alipay-miniapp-design', /支付宝小程序|alipay mini|axml|acss|my\.createanimation/i],
-  ['qs-ios-design', /\bios\b|iphone|ipad|swiftui|uikit|ipados/i],
-  ['qs-android-design', /android|安卓|jetpack compose|material 3|折叠屏/i],
-  ['qs-web-design', /\bweb\b|网页|网站|浏览器|react|vue|svelte|响应式/i]
+const platforms = [
+  ['wechat-miniapp', /微信|wechat|skyline|wxml|wxss|worklet/i],
+  ['alipay-miniapp', /支付宝|alipay|axml|acss|my\.createanimation/i],
+  ['ios', /\bios\b|iphone|ipad|swiftui|uikit|ipados/i],
+  ['android', /android|安卓|jetpack compose|material 3|折叠屏/i],
+  ['web', /\bweb\b|网页|网站|浏览器|react|vue|svelte|响应式/i]
 ];
 
 export function routeRequest(prompt) {
-  const mentionedPlatforms = [/\bios\b|iphone|ipad|swiftui|uikit|ipados/i,/android|安卓|jetpack compose|material 3|折叠屏/i,/\bweb\b|网页|网站|浏览器|react|vue|svelte|响应式/i,/微信|wechat|skyline|wxml|wxss/i,/支付宝|alipay|axml|acss/i].filter(pattern => pattern.test(prompt)).length;
-  if (mentionedPlatforms > 1) return 'qs-design';
-  const hits = routes.filter(([, pattern]) => pattern.test(prompt)).map(([name]) => name);
-  const platformHits = hits.filter(name => name.endsWith('-design') && !['qs-design-audit'].includes(name));
-  if (platformHits.length > 1 || /多端|跨平台|所有平台|全平台/i.test(prompt)) return 'qs-design';
-  if (hits[0]) return hits[0];
-  return /设计|页面|界面|原型|design|prototype/i.test(prompt) ? 'qs-design' : null;
+  const platformHits = platforms.filter(([, pattern]) => pattern.test(prompt)).map(([name]) => name);
+  const target = platformHits.length > 1 || /多端|跨平台|所有平台|全平台/i.test(prompt)
+    ? 'multi'
+    : platformHits[0] ?? 'unspecified';
+  const mode = /审计|评审|检查|review|audit|lint|上线前验证/i.test(prompt)
+    ? 'audit'
+    : /生活化|物理动画|手势动画|交互探针|撕|倒水|惯性|shader|rive|material motion/i.test(prompt)
+      ? 'interaction'
+      : platformHits.length || /设计|页面|界面|原型|design|prototype|小程序|app|网站|网页/i.test(prompt)
+        ? 'design'
+        : null;
+  return mode ? `${mode}:${target}` : null;
 }
 
 async function main() {

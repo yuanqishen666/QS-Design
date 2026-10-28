@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "qs-design",
-  "version": "1.0.0",
-  "description": "Evidence-led, platform-aware product interface design skills for iOS, Android, web, WeChat Mini Programs, and Alipay Mini Programs.",
+  "version": "1.1.0",
+  "description": "A single routed product-design skill for iOS, Android, web, WeChat Mini Programs, and Alipay Mini Programs.",
   "author": {
     "name": "QS"
   },

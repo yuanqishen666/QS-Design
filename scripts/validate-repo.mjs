@@ -2,7 +2,7 @@
 import { access, readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { markdownLinks, parseFrontmatter, readJSON, walk } from './lib.mjs';
+import { markdownLinks, parseFrontmatter, readJSON, walk } from '../skills/qs-design/scripts/lib.mjs';
 
 export async function validateRepository(root = '.') {
   const base = resolve(root);
@@ -15,6 +15,7 @@ export async function validateRepository(root = '.') {
   }
   const skills = await walk(join(base, 'skills'), path => path.endsWith('/SKILL.md'));
   if (!skills.length) errors.push('No skills found under skills/.');
+  if (skills.length !== 1) errors.push(`Expected one installable controller skill, found ${skills.length}.`);
   const names = new Set();
   for (const path of skills) {
     const text = await readFile(path, 'utf8');
@@ -26,6 +27,7 @@ export async function validateRepository(root = '.') {
     if (names.has(frontmatter.name)) errors.push(`${path}: duplicate skill name ${frontmatter.name}.`);
     names.add(frontmatter.name);
   }
+  if (!names.has('qs-design')) errors.push('The only installable skill must be qs-design.');
   const markdown = await walk(base, path => path.endsWith('.md'));
   for (const path of markdown) {
     const text = await readFile(path, 'utf8');

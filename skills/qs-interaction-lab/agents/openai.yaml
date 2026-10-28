@@ -1,6 +1,0 @@
-interface:
-  display_name: "QS Interaction Lab"
-  short_description: "发现并验证业务相关的物理与生活化交互"
-  default_prompt: "Use $qs-interaction-lab to discover and prototype one meaningful, interruptible signature interaction for this task."
-policy:
-  allow_implicit_invocation: true

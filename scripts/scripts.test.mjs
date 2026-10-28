@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { lintHTML } from './design-lint.mjs';
-import { validateSources } from './source-check.mjs';
-import { renderReferenceBoard } from './ref-board.mjs';
+import { lintHTML } from '../skills/qs-design/scripts/design-lint.mjs';
+import { validateSources } from '../skills/qs-design/scripts/source-check.mjs';
+import { renderReferenceBoard } from '../skills/qs-design/scripts/ref-board.mjs';
 import { routeRequest } from './eval-routing.mjs';
-import { addLedgerEntry, readLedger } from './ledger.mjs';
-import { queryCapability } from './platform-check.mjs';
-import { analyzeStateCoverage } from './state-coverage.mjs';
+import { addLedgerEntry, readLedger } from '../skills/qs-design/scripts/ledger.mjs';
+import { queryCapability } from '../skills/qs-design/scripts/platform-check.mjs';
+import { analyzeStateCoverage } from '../skills/qs-design/scripts/state-coverage.mjs';
 
 test('HTML lint catches structural failures and accepts a minimal document', () => {
   const bad = lintHTML('<img src="x.png"><div onclick="go()">Go</div>');
@@ -29,10 +29,10 @@ test('reference board escapes untrusted text', () => {
 });
 
 test('router separates platforms, audits, and interaction lab', () => {
-  assert.equal(routeRequest('设计 iPhone 首页'), 'qs-ios-design');
-  assert.equal(routeRequest('微信和支付宝两个小程序都要做'), 'qs-design');
-  assert.equal(routeRequest('审计现有 Android 页面'), 'qs-design-audit');
-  assert.equal(routeRequest('做生活化物理动画探针'), 'qs-interaction-lab');
+  assert.equal(routeRequest('设计 iPhone 首页'), 'design:ios');
+  assert.equal(routeRequest('微信和支付宝两个小程序都要做'), 'design:multi');
+  assert.equal(routeRequest('审计现有 Android 页面'), 'audit:android');
+  assert.equal(routeRequest('做生活化物理动画探针'), 'interaction:unspecified');
 });
 
 test('ledger writes scope-aware decisions as jsonl', async () => {
