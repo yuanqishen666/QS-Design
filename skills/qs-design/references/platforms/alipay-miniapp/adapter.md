@@ -4,10 +4,12 @@
 
 ## 制作
 
-1. 明确基础库、Native/非 Native 渲染路径、目标客户端版本、端内服务、支付与授权范围。
+1. 明确基础库、Native/非 Native 渲染路径、目标客户端版本、端内服务、支付与授权范围；读取共享的 [内容设计](../../core/content-design.md)。
 2. 按支付宝导航、标题栏、页面容器、返回、生活服务和支付结果组织任务。
 3. 普通过渡用组件/CSS/`my.createAnimation`；拖动缩放优先验证 `movable-view`；共享元素、Lottie、Canvas 分别记录版本与限制。
 4. 对不支持动画属性的组件使用受支持容器承载，不能假设所有组件都能被同样驱动。
 5. 所有高级动效提供静态、普通过渡或按钮式替代，并在 iOS/Android 真机验证。
 
 读 [支付宝小程序平台](alipay-platform.md)。具身交互只有通过 [机会扫描](../../core/embodied-opportunity-scan.md) 后才进入 [交互实验模式](../../modes/interaction-lab.md)。
+
+设计阶段只制作隔离原型，不修改真实 AXML/ACSS 产品工程。用户批准并验证版本后再实现；浏览器演示不能冒充端内 Native、Lottie 或真机能力。

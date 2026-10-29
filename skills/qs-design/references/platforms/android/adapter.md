@@ -4,7 +4,7 @@
 
 ## 制作
 
-1. 确定手机、平板、折叠屏或多窗口范围，以及系统版本、Compose/View 交付方式和已有设计系统。
+1. 确定手机、平板、折叠屏或多窗口范围，以及系统版本、Compose/View 交付方式和已有设计系统；读取共享的 [内容设计](../../core/content-design.md)。
 2. 从任务形成主题与模块；需要探索时按 [方向策略](../../core/direction-strategy.md) 产生差异真实的方向。
 3. 把导航、系统返回和预测返回、窗口尺寸类、系统栏、键盘、权限与分享纳入流程。
 4. 连续手势优先使用可打断且速度连续的 spring/decay；高级 Shader 必须有普通 Canvas 或静态降级。
@@ -12,4 +12,4 @@
 
 平台细节见 [Android 适配](android-platform.md)。生活化交互读 [具身交互机会扫描](../../core/embodied-opportunity-scan.md)，仅在评分通过后进入 [交互实验模式](../../modes/interaction-lab.md)。
 
-交付可运行 Compose、现有 Android 工程内实现，或能操作的 HTML 行为原型；明确区分原型近似与 Android 原生实现。
+设计阶段交付隔离的可运行 Compose sample 或可操作 HTML 原型，不修改现有 Android 产品工程，并明确原型近似与原生实现的差别。用户批准后验证版本，再进入现有工程实现和真机复验。

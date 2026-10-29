@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { packagePrototype } from './package-prototype.mjs';
-import { createRun, finishRun, getSelectedRun, listRuns, normalizeFeature } from './design-run.mjs';
+import { approveRun, createRun, finishImplementation, finishRun, getSelectedRun, listRuns, normalizeFeature, rejectRun, requireApprovedRun, selectRun, startImplementation } from './design-run.mjs';
 import '../../assets/prototype-core.js';
 
 test('stores isolate inputs, snapshots, listeners and separate models', () => {
@@ -95,17 +95,51 @@ test('new design runs stay isolated and never inherit the selected run implicitl
     assert.equal(normalizeFeature(' Vocabulary Home '),'vocabulary-home');
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
-test('cross-session iteration names one parent and finishing selects only the child', async () => {
+test('finishing requests review; explicit approval selects only the child', async () => {
   const dir=await mkdtemp(join(tmpdir(),'qs-design-lineage-'));
   try {
     const parent=await createRun({projectRoot:dir,feature:'vocabulary',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
     const child=await createRun({projectRoot:dir,feature:'vocabulary',parentRunId:parent.manifest.run_id,now:new Date('2026-10-27T02:03:04.000Z'),token:'c3d4'});
     await writeFile(join(child.directory,'prototype.html'),'<!doctype html><title>Prototype</title>');
     await finishRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,entry:'prototype.html',now:new Date('2026-10-27T02:04:00.000Z')});
+    assert.equal(await getSelectedRun({projectRoot:dir,feature:'vocabulary'}),null);
+    await assert.rejects(()=>selectRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id}),/explicitly approved/);
+    await approveRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,evidence:'User approved direction A',now:new Date('2026-10-27T02:05:00.000Z')});
     const selected=await getSelectedRun({projectRoot:dir,feature:'vocabulary'});
     assert.equal(child.manifest.mode,'iterate');assert.equal(child.manifest.parent_run_id,parent.manifest.run_id);
-    assert.equal(selected.manifest.run_id,child.manifest.run_id);assert.equal(selected.manifest.status,'ready');
+    assert.equal(selected.manifest.run_id,child.manifest.run_id);assert.equal(selected.manifest.status,'approved');
     assert.equal(parent.manifest.status,'draft');assert.equal((await listRuns({projectRoot:dir,feature:'vocabulary'})).length,2);
+  } finally { await rm(dir,{recursive:true,force:true}); }
+});
+test('approval is bound to artifact content and rejection clears selection', async () => {
+  const dir=await mkdtemp(join(tmpdir(),'qs-design-approval-'));
+  try {
+    const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
+    await writeFile(join(run.directory,'prototype.html'),'<!doctype html><title>One</title>');
+    await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'prototype.html'});
+    await assert.rejects(()=>approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:''}),/user evidence/);
+    await approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Approved'});
+    assert.match((await requireApprovedRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id})).verified_hash,/^[a-f0-9]{64}$/);
+    await writeFile(join(run.directory,'prototype.html'),'<!doctype html><title>Changed</title>');
+    await assert.rejects(()=>requireApprovedRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id}),/changed after approval/);
+    await rejectRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Needs revision'});
+    assert.equal(await getSelectedRun({projectRoot:dir,feature:'home'}),null);
+  } finally { await rm(dir,{recursive:true,force:true}); }
+});
+test('approved runs progress through implementation without losing their prototype proof', async () => {
+  const dir=await mkdtemp(join(tmpdir(),'qs-design-implementation-'));
+  try {
+    const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
+    await writeFile(join(run.directory,'prototype.html'),'<!doctype html><title>Approved</title>');
+    await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'prototype.html'});
+    await approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'User approved'});
+    const implementing=await startImplementation({projectRoot:dir,feature:'home',runId:run.manifest.run_id,now:new Date('2026-10-27T02:00:00.000Z')});
+    assert.equal(implementing.manifest.status,'implementing');
+    assert.match((await requireApprovedRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id})).verified_hash,/^[a-f0-9]{64}$/);
+    await assert.rejects(()=>finishImplementation({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:''}),/verification evidence/);
+    const implemented=await finishImplementation({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Tests passed',now:new Date('2026-10-27T03:00:00.000Z')});
+    assert.equal(implemented.manifest.status,'implemented');assert.equal(implemented.manifest.implementation.evidence,'Tests passed');
+    assert.equal((await getSelectedRun({projectRoot:dir,feature:'home'})).manifest.status,'implemented');
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
 test('run paths reject traversal and unknown parents', async () => {

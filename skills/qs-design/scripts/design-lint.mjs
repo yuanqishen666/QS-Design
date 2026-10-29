@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { walk } from './lib.mjs';
+import { lintContentHTML } from './content-lint.mjs';
 
 export function lintHTML(text, path = '<html>') {
   const errors = [];
@@ -14,11 +15,15 @@ export function lintHTML(text, path = '<html>') {
   for (const match of text.matchAll(/<img\b([^>]*)>/gi)) if (!/\balt\s*=/.test(match[1])) add(errors, 'image-alt', 'Image is missing alt; use alt="" only when decorative.');
   for (const match of text.matchAll(/<(div|span)\b([^>]*)\bonclick\s*=/gi)) if (!/\b(role|tabindex)\s*=/.test(match[2])) add(errors, 'clickable-semantics', `Clickable <${match[1]}> lacks role/tabindex; prefer a button or link.`);
   if (/<style[\s>]/i.test(text) && /@keyframes|\btransition\s*:|\banimation\s*:/i.test(text) && !/prefers-reduced-motion/i.test(text)) add(warnings, 'reduced-motion', 'Motion exists without a prefers-reduced-motion path.');
+  if (/animation(?:-[^:]+)?\s*:[^;{}]*\binfinite\b|animation-iteration-count\s*:\s*infinite/i.test(text)) add(warnings, 'infinite-motion', 'Infinite motion needs an explicit attention, frequency and reduced-motion justification.');
+  if (/transition(?:-property)?\s*:\s*all\b/i.test(text)) add(warnings, 'transition-all', 'Avoid transition: all; name the properties that carry the intended feedback.');
+  if (/<(?:video|audio)\b(?=[^>]*\bautoplay\b)(?=[^>]*\bloop\b)[^>]*>/i.test(text)) add(warnings, 'looping-autoplay', 'Autoplaying looped media can compete with the primary task; provide control and a reduced-motion path.');
   if (/https?:\/\/[^"'\s)]+\.(?:js|css)(?:[?"'\s)]|$)/i.test(text)) add(warnings, 'external-runtime', 'External CSS/JS dependency reduces offline prototype reliability.');
   if (/<canvas\b/i.test(text) && !/(aria-label|role=|<button|<input)/i.test(text)) add(warnings, 'canvas-alternative', 'Canvas appears without an obvious semantic control layer.');
   const ids = [...text.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(match => match[1]);
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   if (duplicates.length) add(errors, 'duplicate-id', `Duplicate IDs: ${[...new Set(duplicates)].join(', ')}.`);
+  warnings.push(...lintContentHTML(text, path).warnings);
   return { errors, warnings };
 }
 

@@ -16,7 +16,7 @@
 
 同一会话内对当前成品的小调整直接留在当前版本。跨会话继续打磨时，新建子版本并保留父版本，不覆盖来路。若用户明确要继续，但现有信息无法确定是哪一版，只问这一个必要问题。完整规则与目录用法见 [版本与会话隔离](run-isolation.md)。
 
-## 五步制作
+## 六步制作
 
 ### 1. 理解任务与范围
 
@@ -36,16 +36,20 @@
 
 按缺口选择 [功能单元](function-unit-design.md)、[视觉工艺](visual-craft.md)、[审美系统](aesthetic-system.md) 或共享的 [视觉基因](../../core/visual-genome.md)。找材料读 [来源入口](source-registry.md)，研究奖项读 [奖项与认可](../../sources/awards-and-recognition.md)，找具体解法读 [案例索引](examples/index.md)，需要研究方法读 [参考研究](reference-research.md)。只加载相关条目，奖项只用于发现候选，不直接证明产品质量。
 
-### 4. 直接制作可操作原型
+### 4. 制作待评审原型
 
-默认制作可点击 HTML；独立原型先用 `scripts/ios/design-run.mjs` 分配本次目录，再只在这个目录里写成品。用户要求 SwiftUI 或接入原生工程时沿用项目结构，不把真实业务代码塞进原型版本目录。把主场景的视觉与真实状态一起实现：明显可点的入口有对应结果，编辑能保存与取消，进入后能返回。只实现本次任务需要的状态；复用合法且适合的行为代码。动作即时响应，动画可被新输入接管。
+默认制作可点击 HTML；独立原型先用 `scripts/ios/design-run.mjs` 分配本次目录，再只在这个目录里写成品。设计阶段不得修改现有 SwiftUI/UIKit 产品源码；需要验证原生能力时使用隔离 sample，并清楚标明与真实工程的差别。把主场景的视觉与真实状态一起实现：明显可点的入口有对应结果，编辑能保存与取消，进入后能返回。只实现本次任务需要的状态；复用合法且适合的行为代码。动作即时响应，动画可被新输入接管。
 
-读所选交付方式：[原型交付](prototype-output.md) 或 [SwiftUI](swiftui-delivery.md)。复杂动作读 [交互语法](interaction-grammar.md) 与共享的 [交互基因](../../core/interaction-genome.md)；临时编辑读 [浮层](patterns/transient-surfaces.md)；相关任务再读 [标准模式](patterns/standard-patterns.md)、[叠卡](patterns/stacked-cards.md)、[文案](ux-writing.md)。HTML 可以表达结构、状态与运动；原生触觉和系统行为需对应原生实现。
+读 [原型交付](prototype-output.md) 和共享的 [内容设计](../../core/content-design.md)。复杂动作读 [交互语法](interaction-grammar.md) 与共享的 [交互基因](../../core/interaction-genome.md)；临时编辑读 [浮层](patterns/transient-surfaces.md)；相关任务再读 [标准模式](patterns/standard-patterns.md)、[叠卡](patterns/stacked-cards.md)。HTML 可以表达结构、状态与运动；原生触觉和系统行为需对应原生实现。
 
 页面缺少动态或任务存在连续操控、容量、阻力、分离、旋转等因果关系时，先读 [具身交互机会扫描](../../core/embodied-opportunity-scan.md)。通过评分后进入 [交互实验模式](../../modes/interaction-lab.md) 做 3–8 秒探针；不强制任一方向套生活物品动画，也不把用户举例写成默认模块。
 
-### 5. 在成品上精修并交付
+### 5. 精修并提交评审
 
-看实际渲染，修正排印、素材裁切、间距、对比和操作节奏；实际走通当前核心路径，遇到问题直接修。独立原型完成后记录真正的入口与封面，并把本次版本设为当前选择。封面从成品捕获，并链接到可体验原型；打开本地预览或提供实际可用的托管入口，多方向各用一句话说明区别。GitHub 文件页、截图和 Xcode Preview 说明本身不等于普通用户已经能点开体验。
+看实际渲染，修正排印、素材裁切、间距、对比、内容重复和操作节奏；实际走通当前核心路径。独立原型完成后记录真实入口与封面，将版本标记为 `review_ready`，但不设为已批准选择。封面从成品捕获并链接到可体验原型；多方向各用一句话说明区别。向用户展示后停止，等待其明确批准或提出修改。
 
-五步是创作顺序，不添加阶段审批、打分、审计报告或固定返工轮次。默认展示成品与必要说明；用户询问依据时再展开研究。素材所需署名保留在合适位置。来源与复用边界见 [原创性与来源](originality-and-sources.md)，有具体使用摩擦时再读 [社区反馈](community-pain-patterns.md)。
+### 6. 按批准版本实现
+
+用户明确批准后运行版本批准命令并验证原型哈希，再读 [SwiftUI 交付](swiftui-delivery.md) 修改现有工程。实现只补足批准设计所需的技术细节；任何改变信息架构、用户可见文案、视觉方向或标志性动效的偏移都先更新原型并重新确认。完成后在真实工程复验核心路径与平台行为。
+
+六步是创作与批准顺序，不要求固定方向数量、审计报告或返工轮次。默认展示原型与必要说明；用户询问依据时再展开研究。素材所需署名保留在合适位置。来源与复用边界见 [原创性与来源](originality-and-sources.md)，有具体使用摩擦时再读 [社区反馈](community-pain-patterns.md)。

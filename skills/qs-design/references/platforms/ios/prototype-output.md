@@ -1,6 +1,6 @@
 # 可操作原型与交付
 
-设计探索默认 HTML，已有工程沿用工程；原生要求见 [SwiftUI](swiftui-delivery.md)。总览、截图与产品界面分开：总览解释方向并链接原型，手机视口展示产品。桌面可居中预览，移动端自然铺满与滚动，不整体缩小展板。
+设计探索默认使用隔离 HTML；批准前不修改已有产品工程，原生能力探针也放在隔离 sample 中。批准后的原生实现见 [SwiftUI](swiftui-delivery.md)。总览、截图与产品界面分开：总览解释方向并链接原型，手机视口展示产品。桌面可居中预览，移动端自然铺满与滚动，不整体缩小展板。
 
 ## 产物目录
 
@@ -11,7 +11,19 @@ node /path/to/qs-design/scripts/ios/design-run.mjs create --project . --feature 
 node /path/to/qs-design/scripts/ios/design-run.mjs finish --project . --feature feature-name --run RUN_ID --entry prototype.html --preview preview.jpg
 ~~~
 
-脚本返回实际目录与版本号。完成命令会记录真实入口并更新该功能的已选版本；这份内部信息默认不需要展示给用户。
+脚本返回实际目录与版本号。完成命令会记录真实入口并把版本标记为 `review_ready`，不会自动设为已批准版本。
+
+## 评审与批准
+
+展示实际原型入口和封面后停止，不修改产品源码。用户明确批准一个版本后运行：
+
+~~~bash
+node /path/to/qs-design/scripts/ios/design-run.mjs approve --project . --feature feature-name --run RUN_ID --evidence "用户明确批准的简短原话"
+node /path/to/qs-design/scripts/ios/design-run.mjs require-approved --project . --feature feature-name --run RUN_ID
+node /path/to/qs-design/scripts/ios/design-run.mjs start-implementation --project . --feature feature-name --run RUN_ID
+~~~
+
+批准记录包含原型内容哈希。批准后原型文件发生变化时，`require-approved` 必须失败；更新后的原型需重新展示和批准。`selected.json` 只指向已批准版本，不能把 `review_ready` 当作批准。实现验证完成后用 `finish-implementation --evidence "相关测试与设计核对通过"` 标记为 `implemented`。
 
 ## 行为随制作完成
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "qs-design",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A single routed product-design skill for iOS, Android, web, WeChat Mini Programs, and Alipay Mini Programs.",
   "author": {
     "name": "QS"
@@ -14,14 +14,14 @@
       "interface": {
         "displayName": "QS Design",
         "shortDescription": "跨平台页面设计、可操作原型与交互验证",
-        "longDescription": "从任务与内容形成原创视觉方向，按 iOS、Android、Web、微信小程序和支付宝小程序的真实能力制作可操作原型，并验证交互、可访问性、性能与来源。",
+        "longDescription": "从任务与内容形成原创视觉方向，先制作隔离的可操作原型并等待明确确认，再按 iOS、Android、Web、微信小程序和支付宝小程序的真实能力实现，同时验证内容、交互、可访问性、性能与来源。",
         "developerName": "QS",
         "category": "Developer Tools",
         "capabilities": ["Read", "Write"],
         "websiteURL": "https://github.com/yuanqishen666/QS-Design",
         "defaultPrompt": [
-          "Use QS Design to design a polished, platform-appropriate product interface.",
-          "Use QS Design to turn this product flow into a clickable prototype with meaningful interaction."
+          "Use QS Design to produce an isolated, platform-appropriate prototype for review before modifying product code.",
+          "Use QS Design to turn this product flow into a concise clickable prototype, wait for explicit approval, then implement the approved version."
         ],
         "brandColor": "#165DFF"
       }
