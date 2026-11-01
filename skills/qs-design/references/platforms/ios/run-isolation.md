@@ -6,7 +6,7 @@
 
 | 用户意图 | 处理方式 |
 |---|---|
-| 普通新需求、重新设计、再做一个 | 新建版本，不读取任何旧版本 |
+| 普通新需求、重新设计、再做一个 | 新建版本，不读取任何旧版本，并制作三个完整方向 |
 | 继续、修改上次、基于某版、点名路径 | 只读取一份明确的父版本 |
 | 比较 A/B、融合两版 | 只读取用户点名的版本 |
 
@@ -24,7 +24,7 @@ design/qs-design/**
 
 ## 每个功能拥有独立版本
 
-独立 HTML 原型放在：
+独立 HTML 原型放在；新设计的一个 run 内包含三个方向和总览：
 
 ~~~text
 design/qs-design/<feature>/
@@ -32,8 +32,11 @@ design/qs-design/<feature>/
 └── runs/
     └── <run-id>/
         ├── run.json
-        ├── prototype.html
-        └── preview.jpg
+        ├── directions.json
+        ├── index.html
+        ├── a/prototype.html + preview.png
+        ├── b/prototype.html + preview.png
+        └── c/prototype.html + preview.png
 ~~~
 
 `feature` 是稳定、简短的功能名。`run-id` 由 UTC 时间与随机尾码组成。`run.json` 记录版本关系、状态、入口和明确批准证据，不存设计提示词。`selected.json` 只指向用户已经批准的版本；只有在用户表达延续意图后才能读取，不能用它替代意图判断。
@@ -53,18 +56,18 @@ node /path/to/qs-design/scripts/ios/design-run.mjs create --project . --feature 
 成品写入返回的目录后再完成版本：
 
 ~~~bash
-node /path/to/qs-design/scripts/ios/design-run.mjs finish --project . --feature vocabulary --run 20261027T010203Z-a1b2 --entry prototype.html --preview preview.jpg
+node /path/to/qs-design/scripts/ios/design-run.mjs finish --project . --feature vocabulary --run 20261027T010203Z-a1b2 --entry index.html --preview overview.jpg --directions directions.json
 ~~~
 
 `finish` 只把版本标记为 `review_ready`。展示原型并得到明确批准后再执行：
 
 ~~~bash
-node /path/to/qs-design/scripts/ios/design-run.mjs approve --project . --feature vocabulary --run 20261027T010203Z-a1b2 --evidence "用户确认 A 版进入实现"
+node /path/to/qs-design/scripts/ios/design-run.mjs approve --project . --feature vocabulary --run 20261027T010203Z-a1b2 --direction a --evidence "用户确认 A 版进入实现"
 node /path/to/qs-design/scripts/ios/design-run.mjs require-approved --project . --feature vocabulary --run 20261027T010203Z-a1b2
 node /path/to/qs-design/scripts/ios/design-run.mjs start-implementation --project . --feature vocabulary --run 20261027T010203Z-a1b2
 ~~~
 
-批准会记录原型哈希并更新 `selected.json`。开始改产品代码时使用 `start-implementation`；验证完成后使用 `finish-implementation --evidence "验证证据"`，状态依次进入 `implementing` 和 `implemented`，但始终保留同一份确认哈希。批准后修改任何原型文件都会使批准失效，必须重新评审。旧版 `ready` 清单按未批准处理，不自动迁移为批准。
+批准会记录用户选择的方向、入口、预览和原型哈希，并更新 `selected.json`。开始改产品代码时使用 `start-implementation`；验证完成后使用 `finish-implementation --evidence "验证证据"`，状态依次进入 `implementing` 和 `implemented`，但始终保留同一份确认哈希。批准后修改任何原型文件都会使批准失效，必须重新评审。旧版 `ready` 清单按未批准处理，不自动迁移为批准。
 
 同一会话内正在进行的小调整直接修改当前目录，不为每次移动间距都创建新版本。跨会话继续、用户要求保留当前方案再试，或设计主张发生明显变化时创建子版本。父版本保持不变。
 

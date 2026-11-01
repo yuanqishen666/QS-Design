@@ -1,11 +1,41 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile, writeFile, mkdtemp, rm } from 'node:fs/promises';
+import { readFile, writeFile, mkdtemp, mkdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { packagePrototype } from './package-prototype.mjs';
 import { approveRun, createRun, finishImplementation, finishRun, getSelectedRun, listRuns, normalizeFeature, rejectRun, requireApprovedRun, selectRun, startImplementation } from './design-run.mjs';
 import '../../assets/prototype-core.js';
+
+async function writeThreeDirections(run) {
+  await writeFile(join(run.directory, 'overview.html'), '<!doctype html><title>Three directions</title>');
+  const directions = [];
+  for (const [index, id] of ['a', 'b', 'c'].entries()) {
+    const root = join(run.directory, id);
+    await mkdir(root);
+    await writeFile(join(root, 'prototype.html'), `<!doctype html><title>Direction ${id}</title><main>${index}</main>`);
+    await writeFile(join(root, 'preview.png'), `preview-${id}`);
+    directions.push({
+      id,
+      title: `Direction ${id.toUpperCase()}`,
+      concept: `concept-${id}`,
+      structure: `structure-${id}`,
+      interaction: `interaction-${id}`,
+      visual_material: `material-${id}`,
+      entry: `${id}/prototype.html`,
+      preview: `${id}/preview.png`
+    });
+  }
+  await writeFile(join(run.directory, 'directions.json'), `${JSON.stringify({
+    schema: 1,
+    source_boundary: {
+      mode: 'function-contract-only',
+      fact_sources: ['api/openapi.yaml'],
+      excluded_ui_sources: ['src/pages/existing.vue']
+    },
+    directions
+  }, null, 2)}\n`);
+}
 
 test('stores isolate inputs, snapshots, listeners and separate models', () => {
   const initial = { rows: [] }, a = PrototypeCore.createStore(initial), b = PrototypeCore.createStore(initial);
@@ -100,11 +130,11 @@ test('finishing requests review; explicit approval selects only the child', asyn
   try {
     const parent=await createRun({projectRoot:dir,feature:'vocabulary',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
     const child=await createRun({projectRoot:dir,feature:'vocabulary',parentRunId:parent.manifest.run_id,now:new Date('2026-10-27T02:03:04.000Z'),token:'c3d4'});
-    await writeFile(join(child.directory,'prototype.html'),'<!doctype html><title>Prototype</title>');
-    await finishRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,entry:'prototype.html',now:new Date('2026-10-27T02:04:00.000Z')});
+    await writeThreeDirections(child);
+    await finishRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,entry:'overview.html',directionsManifest:'directions.json',now:new Date('2026-10-27T02:04:00.000Z')});
     assert.equal(await getSelectedRun({projectRoot:dir,feature:'vocabulary'}),null);
     await assert.rejects(()=>selectRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id}),/explicitly approved/);
-    await approveRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,evidence:'User approved direction A',now:new Date('2026-10-27T02:05:00.000Z')});
+    await approveRun({projectRoot:dir,feature:'vocabulary',runId:child.manifest.run_id,evidence:'User approved direction A',directionId:'a',now:new Date('2026-10-27T02:05:00.000Z')});
     const selected=await getSelectedRun({projectRoot:dir,feature:'vocabulary'});
     assert.equal(child.manifest.mode,'iterate');assert.equal(child.manifest.parent_run_id,parent.manifest.run_id);
     assert.equal(selected.manifest.run_id,child.manifest.run_id);assert.equal(selected.manifest.status,'approved');
@@ -115,12 +145,13 @@ test('approval is bound to artifact content and rejection clears selection', asy
   const dir=await mkdtemp(join(tmpdir(),'qs-design-approval-'));
   try {
     const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
-    await writeFile(join(run.directory,'prototype.html'),'<!doctype html><title>One</title>');
-    await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'prototype.html'});
+    await writeThreeDirections(run);
+    await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'overview.html',directionsManifest:'directions.json'});
     await assert.rejects(()=>approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:''}),/user evidence/);
-    await approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Approved'});
+    await assert.rejects(()=>approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Approved'}),/selected --direction/);
+    await approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Approved',directionId:'b'});
     assert.match((await requireApprovedRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id})).verified_hash,/^[a-f0-9]{64}$/);
-    await writeFile(join(run.directory,'prototype.html'),'<!doctype html><title>Changed</title>');
+    await writeFile(join(run.directory,'b/prototype.html'),'<!doctype html><title>Changed</title>');
     await assert.rejects(()=>requireApprovedRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id}),/changed after approval/);
     await rejectRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Needs revision'});
     assert.equal(await getSelectedRun({projectRoot:dir,feature:'home'}),null);
@@ -130,9 +161,9 @@ test('approved runs progress through implementation without losing their prototy
   const dir=await mkdtemp(join(tmpdir(),'qs-design-implementation-'));
   try {
     const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
-    await writeFile(join(run.directory,'prototype.html'),'<!doctype html><title>Approved</title>');
-    await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'prototype.html'});
-    await approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'User approved'});
+    await writeThreeDirections(run);
+    await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'overview.html',directionsManifest:'directions.json'});
+    await approveRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'User approved',directionId:'c'});
     const implementing=await startImplementation({projectRoot:dir,feature:'home',runId:run.manifest.run_id,now:new Date('2026-10-27T02:00:00.000Z')});
     assert.equal(implementing.manifest.status,'implementing');
     assert.match((await requireApprovedRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id})).verified_hash,/^[a-f0-9]{64}$/);
@@ -140,6 +171,18 @@ test('approved runs progress through implementation without losing their prototy
     const implemented=await finishImplementation({projectRoot:dir,feature:'home',runId:run.manifest.run_id,evidence:'Tests passed',now:new Date('2026-10-27T03:00:00.000Z')});
     assert.equal(implemented.manifest.status,'implemented');assert.equal(implemented.manifest.implementation.evidence,'Tests passed');
     assert.equal((await getSelectedRun({projectRoot:dir,feature:'home'})).manifest.status,'implemented');
+  } finally { await rm(dir,{recursive:true,force:true}); }
+});
+test('new designs cannot become review-ready without three distinct directions and a source boundary', async () => {
+  const dir=await mkdtemp(join(tmpdir(),'qs-design-direction-gate-'));
+  try {
+    const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});
+    await writeFile(join(run.directory,'overview.html'),'<!doctype html><title>Overview</title>');
+    await assert.rejects(()=>finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'overview.html'}),/exactly three complete directions/);
+    await writeThreeDirections(run);
+    const ready=await finishRun({projectRoot:dir,feature:'home',runId:run.manifest.run_id,entry:'overview.html',directionsManifest:'directions.json'});
+    assert.equal(ready.manifest.directions.length,3);
+    assert.equal(ready.manifest.source_boundary.mode,'function-contract-only');
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
 test('run paths reject traversal and unknown parents', async () => {
