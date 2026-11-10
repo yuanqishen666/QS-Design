@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d8d0c1">
+  <title>Folio — Conservation record</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #d8d0c1;
+      --sheet: #f0e8d8;
+      --ink: #2c2924;
+      --muted: #766f64;
+      --line: rgba(44, 41, 36, .25);
+      --oxide: #9a3f2d;
+      --moss: #4a6454;
+      --blue: #3f5f73;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--canvas); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.18), transparent 24%, rgba(44,41,36,.05) 75%, transparent),
+        var(--canvas);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button { font: inherit; }
+    button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .shell { width: min(1540px, 100%); margin: 0 auto; padding: 22px 28px 30px; }
+
+    header { display: grid; grid-template-columns: 1fr auto auto; gap: 28px; align-items: center; min-height: 58px; border-bottom: 1px solid var(--ink); }
+    .brand { font: 600 18px/1 Georgia, serif; letter-spacing: .05em; }
+    .record { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .16em; }
+    .record strong { color: var(--ink); }
+    .condition { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 750; }
+    .condition::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--oxide); }
+
+    .title-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; align-items: end; padding: 29px 0 24px; }
+    h1 { margin: 0; font: 500 clamp(38px, 5vw, 69px)/.9 Georgia, serif; letter-spacing: -.055em; }
+    .environment { display: flex; gap: 22px; }
+    .environment div { padding-left: 13px; border-left: 1px solid var(--line); }
+    .environment strong { display: block; font: 500 21px/1 Georgia, serif; }
+    .environment span { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .13em; }
+
+    main { display: grid; grid-template-columns: 210px minmax(460px, 1fr) 330px; min-height: 660px; border: 1px solid var(--ink); }
+    .index { display: flex; flex-direction: column; border-right: 1px solid var(--ink); background: rgba(240,232,216,.34); }
+    .section-head { padding: 16px 17px; border-bottom: 1px solid var(--ink); font-size: 10px; font-weight: 850; text-transform: uppercase; letter-spacing: .14em; }
+    .finding {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 10px;
+      padding: 17px;
+      color: inherit;
+      text-align: left;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+    }
+    .finding:hover { background: rgba(255,255,255,.24); }
+    .finding[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
+    .finding b { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid currentColor; border-radius: 50%; font: 600 11px/1 Georgia, serif; }
+    .finding strong { display: block; font: 500 15px/1.15 Georgia, serif; }
+    .finding small { display: block; margin-top: 6px; color: var(--muted); font-size: 9px; line-height: 1.35; }
+    .finding[aria-pressed="true"] small { color: #bdb5a8; }
+    .material { margin-top: auto; padding: 17px; border-top: 1px solid var(--ink); }
+    .material dl { margin: 0; }
+    .material div { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 9px; }
+    .material dt { color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+    .material dd { margin: 0; }
+
+    .viewer { position: relative; overflow: hidden; background: #bcb4a6; }
+    .viewer::before { content: ""; position: absolute; inset: 0; opacity: .32; background-image: radial-gradient(rgba(44,41,36,.25) .7px, transparent .7px); background-size: 5px 5px; }
+    .viewer-bar { position: absolute; z-index: 5; top: 15px; left: 17px; right: 17px; display: flex; justify-content: space-between; align-items: center; color: #4c4943; font-size: 9px; text-transform: uppercase; letter-spacing: .13em; }
+    .zoom { display: flex; gap: 4px; }
+    .zoom button { width: 30px; height: 28px; border: 1px solid rgba(44,41,36,.38); color: var(--ink); background: rgba(240,232,216,.7); cursor: pointer; }
+    .manuscript {
+      position: absolute;
+      top: 70px;
+      bottom: 44px;
+      left: 50%;
+      width: min(70%, 510px);
+      padding: 50px 52px 38px;
+      transform: translateX(-50%) rotate(-.65deg) scale(var(--zoom, 1));
+      transform-origin: 50% 45%;
+      background:
+        radial-gradient(ellipse at 5% 11%, rgba(119,77,38,.25), transparent 14%),
+        radial-gradient(ellipse at 96% 86%, rgba(119,77,38,.18), transparent 19%),
+        linear-gradient(92deg, rgba(100,70,40,.08), transparent 8%, transparent 92%, rgba(100,70,40,.1)),
+        var(--sheet);
+      box-shadow: 0 22px 60px rgba(44,41,36,.25), 0 0 0 1px rgba(76,55,33,.16);
+      transition: transform .24s ease;
+    }
+    .manuscript::before { content: ""; position: absolute; inset: 18px 20px; border: 1px solid rgba(154,63,45,.45); pointer-events: none; }
+    .folio-number { position: absolute; top: 25px; right: 31px; color: var(--oxide); font: italic 14px/1 Georgia, serif; }
+    .illuminated { float: left; margin: 3px 11px 0 0; color: var(--oxide); font: 500 69px/.73 Georgia, serif; text-shadow: 1px 1px 0 #c89946; }
+    .manuscript p { margin: 0 0 13px; font: 17px/1.5 Georgia, serif; text-align: justify; color: #4b3a2b; }
+    .manuscript p:nth-of-type(2) { margin-left: 18px; }
+    .rubric { margin: 18px 0 13px; color: var(--oxide); font: italic 17px/1.2 Georgia, serif; text-align: center; }
+    .loss { position: absolute; width: 54px; height: 24px; right: 9px; top: 41%; background: #bcb4a6; clip-path: polygon(0 20%, 16% 0, 33% 25%, 52% 8%, 70% 31%, 100% 9%, 84% 74%, 59% 63%, 35% 95%, 16% 68%); }
+    .stain { position: absolute; left: 17%; bottom: 13%; width: 105px; height: 76px; border: 11px solid rgba(112,71,38,.13); border-radius: 50%; transform: rotate(13deg); }
+    .tear { position: absolute; left: 47%; bottom: 0; width: 2px; height: 54px; background: rgba(87,65,43,.35); transform: rotate(7deg); }
+
+    .pin { position: absolute; z-index: 3; display: grid; place-items: center; width: 31px; height: 31px; border: 1px solid var(--sheet); border-radius: 50%; color: var(--sheet); background: var(--oxide); font: 600 12px/1 Georgia, serif; box-shadow: 0 0 0 5px rgba(154,63,45,.2); cursor: pointer; }
+    .pin[aria-pressed="true"] { color: var(--ink); background: #f0c36b; box-shadow: 0 0 0 6px rgba(240,195,107,.24); }
+    .pin-1 { top: 15%; left: 9%; }
+    .pin-2 { top: 41%; right: 7%; }
+    .pin-3 { bottom: 11%; left: 24%; }
+    .pin-4 { bottom: 2%; left: 48%; }
+
+    .treatment { display: flex; flex-direction: column; min-width: 0; background: rgba(240,232,216,.5); }
+    .selected { padding: 22px 21px; border-bottom: 1px solid var(--ink); }
+    .selected .eyebrow { color: var(--oxide); font-size: 9px; font-weight: 850; text-transform: uppercase; letter-spacing: .14em; }
+    .selected h2 { margin: 9px 0 0; font: 500 27px/1.05 Georgia, serif; letter-spacing: -.03em; }
+    .selected p { min-height: 54px; margin: 11px 0 0; color: var(--muted); font-size: 11px; line-height: 1.52; }
+    .severity { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 10px; }
+    .severity strong { color: var(--oxide); }
+    .plan { padding: 18px 21px; }
+    .plan h3 { margin: 0 0 13px; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; }
+    .plan-step { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 13px 0; border-top: 1px solid var(--line); }
+    .plan-step b { color: var(--muted); font: 500 11px/1 Georgia, serif; }
+    .plan-step strong { display: block; font-size: 11px; }
+    .plan-step small { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; line-height: 1.4; }
+    .restriction { margin: auto 21px 21px; padding: 15px; color: #5a261c; background: rgba(154,63,45,.12); border-left: 3px solid var(--oxide); }
+    .restriction strong { display: block; font: 600 15px/1.1 Georgia, serif; }
+    .restriction span { display: block; margin-top: 7px; font-size: 9px; line-height: 1.45; }
+
+    footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 14px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; }
+
+    @media (max-width: 1050px) {
+      main { grid-template-columns: 180px minmax(420px, 1fr); }
+      .treatment { grid-column: 1 / -1; border-top: 1px solid var(--ink); display: grid; grid-template-columns: 1fr 1.2fr .8fr; }
+      .selected { border-bottom: 0; border-right: 1px solid var(--ink); }
+      .restriction { margin: 20px; align-self: stretch; }
+    }
+    @media (max-width: 720px) {
+      .shell { padding: 14px; }
+      header { grid-template-columns: 1fr; }
+      .record { display: none; }
+      .condition { display: none; }
+      .title-row { grid-template-columns: 1fr; }
+      .environment { justify-content: flex-start; }
+      main { grid-template-columns: 1fr; }
+      .index { border-right: 0; }
+      .index .material { display: none; }
+      .viewer { min-height: 600px; border-top: 1px solid var(--ink); }
+      .manuscript { width: 78%; padding: 45px 35px 30px; }
+      .manuscript p { font-size: 14px; }
+      .treatment { grid-column: auto; grid-template-columns: 1fr; }
+      .selected { border-right: 0; border-bottom: 1px solid var(--ink); }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { .manuscript { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">FOLIO / Conservation record</div>
+      <div class="record">Collection 08 · <strong>MS-1842</strong> · Reading room copy</div>
+      <div class="condition">Condition C · Active treatment</div>
+    </header>
+
+    <div class="title-row">
+      <h1>Folio 32 recto</h1>
+      <div class="environment"><div><strong>20.1°C</strong><span>Surface</span></div><div><strong>48%</strong><span>RH stable</span></div><div><strong>74 lux</strong><span>Examination light</span></div></div>
+    </div>
+
+    <main>
+      <nav class="index" aria-label="Condition findings">
+        <div class="section-head">4 findings</div>
+        <button class="finding" type="button" aria-pressed="true" data-pin="1" data-content-repeat-ok="grouped-finding"><b>1</b><span><strong>Iron gall halo</strong><small>Upper left · progressing</small></span></button>
+        <button class="finding" type="button" aria-pressed="false" data-pin="2" data-content-repeat-ok="grouped-finding"><b>2</b><span><strong>Edge loss</strong><small>Fore edge · 18 × 42 mm</small></span></button>
+        <button class="finding" type="button" aria-pressed="false" data-pin="3" data-content-repeat-ok="grouped-finding"><b>3</b><span><strong>Water tide</strong><small>Lower field · stable</small></span></button>
+        <button class="finding" type="button" aria-pressed="false" data-pin="4" data-content-repeat-ok="grouped-finding"><b>4</b><span><strong>Fold tear</strong><small>Tail · 51 mm</small></span></button>
+        <div class="material"><dl><div><dt>Support</dt><dd>Rag paper</dd></div><div><dt>Ink</dt><dd>Iron gall</dd></div><div><dt>Media</dt><dd>Vermilion</dd></div><div><dt>Leaf</dt><dd>218 × 146 mm</dd></div></dl></div>
+      </nav>
+
+      <section class="viewer" aria-label="Folio examination image">
+        <div class="viewer-bar"><span>Raking light · visible spectrum</span><div class="zoom"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="zoomIn" aria-label="Zoom in">+</button></div></div>
+        <article class="manuscript" id="manuscript" aria-label="Rendered manuscript folio">
+          <span class="folio-number">xxxii</span>
+          <p><span class="illuminated">A</span>nno domini, when the orchard stood in silver rain, the steward counted every vessel and entered its measure beside the western wall.</p>
+          <p>The lower field was sown after Michaelmas, yet no tenant took the north acre where the spring had broken the old stone course.</p>
+          <div class="rubric">De lumine et mensura</div>
+          <p>Let the lamp be kept from the vellum and the leaf turned only with clean hands, for heat and haste diminish what years have spared.</p>
+          <div class="loss" aria-hidden="true"></div><div class="stain" aria-hidden="true"></div><div class="tear" aria-hidden="true"></div>
+          <button class="pin pin-1" type="button" aria-label="Finding 1, iron gall halo" aria-pressed="true" data-pin="1">1</button>
+          <button class="pin pin-2" type="button" aria-label="Finding 2, edge loss" aria-pressed="false" data-pin="2">2</button>
+          <button class="pin pin-3" type="button" aria-label="Finding 3, water tide" aria-pressed="false" data-pin="3">3</button>
+          <button class="pin pin-4" type="button" aria-label="Finding 4, fold tear" aria-pressed="false" data-pin="4">4</button>
+        </article>
+      </section>
+
+      <aside class="treatment" aria-live="polite">
+        <div class="selected"><span class="eyebrow" id="findingNumber">Finding 01 · progressing</span><h2 id="findingTitle">Iron gall halo</h2><p id="findingCopy">Brown migration extends 3 mm beyond the initial letter. No perforation under transmitted light.</p><div class="severity"><span>Priority</span><strong id="findingPriority">Treat this session</strong></div></div>
+        <div class="plan"><h3>Treatment sequence</h3><div class="plan-step"><b>01</b><div><strong>Dry surface clean</strong><small>Soft brush, outward from media</small></div></div><div class="plan-step"><b>02</b><div><strong>Test calcium phytate</strong><small>Margin spot · document color shift</small></div></div><div class="plan-step"><b>03</b><div><strong>Local stabilization</strong><small>Proceed only after test approval</small></div></div></div>
+        <div class="restriction"><strong>Do not humidify or flatten.</strong><span>Moisture may accelerate iron migration across the written field.</span></div>
+      </aside>
+    </main>
+    <footer><span>Examined by A. Raman · 10 Nov 2026</span><span>Capture set V-04 · Color target verified</span></footer>
+  </div>
+
+  <script>
+    const data = {
+      1: ['Finding 01 · progressing', 'Iron gall halo', 'Brown migration extends 3 mm beyond the initial letter. No perforation under transmitted light.', 'Treat this session'],
+      2: ['Finding 02 · stable', 'Edge loss', 'Irregular loss reaches the outer ruling but does not interrupt the text block.', 'Guard before rebinding'],
+      3: ['Finding 03 · stable', 'Water tide', 'Historic tide line remains inactive. Surface fibers are raised along the lower field.', 'Monitor after cleaning'],
+      4: ['Finding 04 · vulnerable', 'Fold tear', 'A 51 mm tear follows the lower fold and opens under normal page turning.', 'Mend before handling']
+    };
+    const controls = Array.from(document.querySelectorAll('[data-pin]'));
+    function selectFinding(id) {
+      controls.forEach(function (control) { control.setAttribute('aria-pressed', String(control.dataset.pin === id)); });
+      document.getElementById('findingNumber').textContent = data[id][0];
+      document.getElementById('findingTitle').textContent = data[id][1];
+      document.getElementById('findingCopy').textContent = data[id][2];
+      document.getElementById('findingPriority').textContent = data[id][3];
+    }
+    controls.forEach(function (control) { control.addEventListener('click', function () { selectFinding(control.dataset.pin); }); });
+    let zoom = 1;
+    document.getElementById('zoomIn').addEventListener('click', function () { zoom = Math.min(1.18, zoom + .06); document.getElementById('manuscript').style.setProperty('--zoom', zoom); });
+    document.getElementById('zoomOut').addEventListener('click', function () { zoom = Math.max(.82, zoom - .06); document.getElementById('manuscript').style.setProperty('--zoom', zoom); });
+  </script>
+</body>
+</html>

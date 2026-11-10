@@ -1,26 +1,54 @@
 <h1 align="center">QS Design</h1>
 
-<p align="center">从模糊业务语言形成业务特异、视觉优秀、跨平台原生且可验证的产品体验。</p>
+<p align="center">Business-conditioned, context-isolated product design for coding agents.</p>
 
-## 它能做什么
+<p align="center"><strong>English</strong> · <a href="./README.zh-CN.md">简体中文</a></p>
 
-- 把设计任务而不是项目文件夹作为上下文根；纯聊天出图与已有产品增量设计都能工作。
-- 只使用一个 `$qs-design` 入口，内部按 iOS、Android、Web、微信和支付宝的真实能力自动分流。
-- 用 Task Capsule 隔离拒绝稿和未授权历史，只继承用户明确点名的候选方面。
-- 根据真实不确定性探索一至三个方向，不靠固定三案或换色制造选择。
-- 从业务对象、关系、状态、风险和价值时刻形成页面拓扑、视觉主角和标志性交互。
-- 用连续性契约决定现有产品的哪些部分保留、适配、开放或禁止。
-- 让布局、视觉层级、间距、真实数据和清晰操作先完成解释，不为每个区块机械添加说明。
-- 关键金额、权限、风险、格式、后果和恢复保持可见；tooltip 只承载简短、可选、非交互信息。
-- 检查键盘、触控、读屏、文字缩放、减弱动态、异常、性能、素材来源和平台降级。
+QS Design turns fuzzy business language into distinctive, platform-native and verifiable product experiences. It treats the design task—not a project folder—as the context root, so it works for both chat-only concept work and changes inside an existing product.
 
-## 3.2 内容显隐改造
+## Showcase
 
-辅助文案现在必须说明它承担的业务目的、不可替代事实、受众、出现时机和显隐方式，同时记录为什么布局、状态或控件不能独立表达。静态检查会发现重复说明模板、缺失可见标签、危险 tooltip、无焦点触发器和内容契约漂移；运行验证则分别报告解释依赖、关键事实可见性、披露输入等价性与误删风险，不以字数或“极简感”打分。
+The examples below do not share a visual template. Each interface is shaped by its own core object, state changes, operating rhythm and risk. Open [`showcase/index.html`](./showcase/index.html) after cloning the repository to browse the interactive pages.
 
-## 安装和使用
+### Batchline · bake-day production
 
-需要 Node.js 22.20 或更高版本。整个项目只安装一个 `qs-design` skill，共享内核、平台适配、交互实验和审计工具都会一起安装。选择自己使用的工具，执行一条命令即可。
+Fermentation stages, dough state and oven recovery determine the page topology. Selecting a batch reveals the next physical action and the measurements needed at that moment.
+
+[Interactive HTML source](./showcase/batchline.html)
+
+![Batchline bake-day production interface](./showcase/previews/batchline.png)
+
+### Relay · grid restoration
+
+The feeder network is the primary interface. Energization, isolation and field clearance remain spatially connected to the switching sequence and affected homes.
+
+[Interactive HTML source](./showcase/relay.html)
+
+![Relay grid restoration interface](./showcase/previews/relay.png)
+
+### Folio · manuscript conservation
+
+The artifact stays central. Condition findings remain attached to exact locations on the leaf while treatment order and handling restrictions stay visible.
+
+[Interactive HTML source](./showcase/folio.html)
+
+![Folio manuscript conservation interface](./showcase/previews/folio.png)
+
+## What it does
+
+- Uses one `$qs-design` entry point and routes internally to iOS, Android, Web, WeChat Mini Program and Alipay Mini Program capabilities.
+- Works without a project folder and supports incremental design or refactoring inside an existing product.
+- Uses a Task Capsule to isolate rejected concepts and unauthorized history; only explicitly named candidate aspects can be inherited.
+- Explores one to three directions according to real uncertainty instead of producing fixed variants or color swaps.
+- Derives page topology, visual priority, core modules and signature interactions from business objects, relationships, states, risks and value moments.
+- Uses a continuity contract to decide what an existing product must preserve, adapt, leave open or prohibit.
+- Makes layout, hierarchy, spacing, real data and clear actions explain the interface before adding supporting copy.
+- Keeps amounts, permissions, risks, constraints, consequences and recovery visible; tooltips are reserved for short, optional and non-interactive information.
+- Verifies keyboard, touch, screen reader, text scaling, reduced motion, failure states, performance, asset provenance and platform degradation.
+
+## Install and use
+
+Node.js 22.20 or newer is required. The repository installs a single `qs-design` skill containing the shared engine, platform adapters, interaction tools and verification contracts.
 
 ### Codex
 
@@ -40,22 +68,22 @@ npx skills add yuanqishen666/QS-Design --skill qs-design -g -a cursor -y
 npx skills add yuanqishen666/QS-Design --skill qs-design -g -a claude-code -y
 ```
 
-已经安装旧版 `qs-ios-design` 的用户，可以先移除旧入口，再安装上面的新版：
+If you previously installed `qs-ios-design`, remove the old entry before installing the current version:
 
 ```bash
 npx skills remove qs-ios-design -g -a codex -y
 ```
 
-以后更新只需要运行：
+Update an existing installation with:
 
 ```bash
 npx skills update qs-design -g -y
 ```
 
-安装完成后，重新打开工具或开始一个新会话。所有平台都使用 `$qs-design`，在需求中写清平台即可：
+Restart the tool or begin a new chat after installation. Use `$qs-design` for every platform and state the target platform in the request:
 
 ```text
-用 $qs-design 给我的记账产品设计 iOS、Android 和 Web 三端首页。
+Use $qs-design to design the iOS, Android and Web home screens for my expense-tracking product.
 ```
 
-单个平台也使用同一个入口，例如“用 `$qs-design` 设计微信小程序会员首页”。总控会自动选择平台适配器；也可以附上现有截图、产品说明或工程。信息够用时会直接开始设计，只有关键内容不明确时才会提问。
+You can also attach screenshots, product notes or an existing codebase. QS Design starts directly when the available information is sufficient and asks only when a missing decision would change the primary task or visual direction.

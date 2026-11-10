@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07110f">
+  <title>Relay — Grid restoration</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #07110f;
+      --panel: #0d1916;
+      --ink: #ecf3e7;
+      --muted: #8b9b91;
+      --grid: rgba(197, 235, 85, .13);
+      --live: #c5eb55;
+      --cyan: #64d9d2;
+      --danger: #ff7d5b;
+      --off: #38443f;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--night); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+        radial-gradient(circle at 62% 40%, rgba(49, 137, 116, .18), transparent 32rem),
+        var(--night);
+      background-size: 42px 42px, 42px 42px, auto, auto;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button { font: inherit; }
+    button:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+    .shell { width: min(1540px, 100%); margin: 0 auto; padding: 22px 26px 28px; }
+
+    header { display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: center; min-height: 58px; border-bottom: 1px solid rgba(236,243,231,.24); }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -.02em; }
+    .brand svg { width: 26px; height: 26px; }
+    .crumb { color: var(--muted); font-size: 12px; }
+    .crumb strong { color: var(--ink); font-weight: 600; }
+    .clock { font: 500 18px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .03em; }
+
+    .incident-bar { display: grid; grid-template-columns: 1fr repeat(3, auto); gap: 22px; align-items: end; padding: 25px 0 21px; }
+    h1 { margin: 0; font-size: clamp(29px, 3.1vw, 48px); line-height: .95; letter-spacing: -.055em; }
+    .incident-bar h1 span { color: var(--live); }
+    .metric { min-width: 106px; padding-left: 18px; border-left: 1px solid rgba(236,243,231,.22); }
+    .metric strong { display: block; font: 500 25px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .metric span { display: block; margin-top: 6px; color: var(--muted); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .16em; }
+
+    main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; min-height: 670px; border: 1px solid rgba(236,243,231,.32); background: rgba(7,17,15,.82); backdrop-filter: blur(10px); }
+    .network { min-width: 0; display: grid; grid-template-rows: 1fr auto; border-right: 1px solid rgba(236,243,231,.25); }
+    .map { position: relative; min-height: 490px; overflow: hidden; }
+    .map-label { position: absolute; z-index: 3; top: 20px; left: 22px; }
+    .eyebrow { color: var(--muted); font-size: 9px; font-weight: 850; letter-spacing: .17em; text-transform: uppercase; }
+    .map-label strong { display: block; margin-top: 6px; font-size: 15px; }
+    .legend { position: absolute; z-index: 3; top: 20px; right: 22px; display: flex; gap: 17px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .11em; }
+    .legend span { display: flex; align-items: center; gap: 6px; }
+    .legend i { width: 15px; height: 2px; display: inline-block; background: var(--off); }
+    .legend .energized i { background: var(--live); box-shadow: 0 0 8px rgba(197,235,85,.7); }
+    .legend .isolated i { background: var(--danger); border-top: 1px dashed var(--danger); }
+
+    .network-svg { width: 100%; height: 100%; min-height: 500px; position: absolute; inset: 0; }
+    .street { fill: none; stroke: rgba(236,243,231,.07); stroke-width: 1; }
+    .circuit { fill: none; stroke: var(--off); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+    .circuit.live { stroke: var(--live); filter: drop-shadow(0 0 6px rgba(197,235,85,.45)); }
+    .circuit.pending { stroke: var(--cyan); stroke-dasharray: 8 10; }
+    .circuit.isolated { stroke: var(--danger); stroke-dasharray: 3 10; }
+    .substation { fill: var(--night); stroke: var(--live); stroke-width: 3; }
+    .transformer { fill: var(--night); stroke: var(--off); stroke-width: 3; }
+    .transformer.live { stroke: var(--live); fill: rgba(197,235,85,.14); }
+    .transformer.pending { stroke: var(--cyan); }
+    .transformer.danger { stroke: var(--danger); }
+
+    .node-button {
+      position: absolute;
+      z-index: 4;
+      width: 30px;
+      height: 30px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      color: var(--muted);
+      background: var(--night);
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+    }
+    .node-button:hover, .node-button[aria-pressed="true"] { color: var(--night); background: var(--live); box-shadow: 0 0 0 6px rgba(197,235,85,.13), 0 0 24px rgba(197,235,85,.28); }
+    .node-a { left: 27%; top: 45%; }
+    .node-b { left: 54%; top: 33%; }
+    .node-c { left: 69%; top: 61%; }
+    .node-d { left: 84%; top: 43%; }
+
+    .crew { position: absolute; z-index: 3; display: flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid rgba(100,217,210,.6); border-radius: 999px; color: var(--cyan); background: var(--night); font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .crew::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+    .crew-1 { left: 47%; top: 53%; }
+    .crew-2 { left: 73%; top: 76%; }
+
+    .switch-plan { border-top: 1px solid rgba(236,243,231,.25); }
+    .plan-head { display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; border-bottom: 1px solid rgba(236,243,231,.14); }
+    .plan-head strong { font-size: 11px; text-transform: uppercase; letter-spacing: .13em; }
+    .plan-head span { color: var(--muted); font-size: 10px; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .step { min-width: 0; padding: 15px 16px 17px; border-right: 1px solid rgba(236,243,231,.12); }
+    .step:last-child { border-right: 0; }
+    .step b { color: var(--muted); font: 700 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .step strong { display: block; margin-top: 9px; font-size: 12px; }
+    .step small { display: block; margin-top: 6px; color: var(--muted); font-size: 9px; line-height: 1.35; }
+    .step.complete b { color: var(--live); }
+    .step.current { background: rgba(100,217,210,.08); box-shadow: inset 0 3px 0 var(--cyan); }
+    .step.current b { color: var(--cyan); }
+
+    aside { display: flex; flex-direction: column; min-width: 0; }
+    .detail-head { padding: 21px 20px 19px; border-bottom: 1px solid rgba(236,243,231,.2); }
+    .detail-head h2 { margin: 9px 0 0; font-size: 26px; line-height: 1; letter-spacing: -.04em; }
+    .state { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; color: var(--danger); font-size: 11px; font-weight: 750; }
+    .state::before { content: ""; width: 7px; height: 7px; background: var(--danger); border-radius: 50%; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid rgba(236,243,231,.2); }
+    .fact { padding: 17px 20px; border-right: 1px solid rgba(236,243,231,.12); border-bottom: 1px solid rgba(236,243,231,.12); }
+    .fact:nth-child(even) { border-right: 0; }
+    .fact strong { display: block; font: 500 19px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .fact span { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .12em; }
+    .safety { padding: 19px 20px; border-bottom: 1px solid rgba(236,243,231,.2); background: rgba(255,125,91,.08); }
+    .safety strong { display: block; color: var(--danger); font-size: 11px; text-transform: uppercase; letter-spacing: .13em; }
+    .safety p { margin: 9px 0 0; font-size: 12px; line-height: 1.5; }
+    .crew-list { padding: 18px 20px; }
+    .crew-list h3 { margin: 0 0 13px; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; }
+    .crew-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 11px 0; border-top: 1px solid rgba(236,243,231,.12); }
+    .crew-row strong { font-size: 12px; }
+    .crew-row small { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; }
+    .crew-row time { color: var(--cyan); font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .action { margin: auto 20px 20px; padding: 14px 16px; border: 0; color: var(--night); background: var(--live); font-weight: 850; cursor: pointer; }
+    .action:hover { background: #ddff78; }
+
+    footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 13px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .13em; }
+
+    @media (max-width: 980px) {
+      .incident-bar { grid-template-columns: 1fr 1fr; }
+      .incident-bar h1 { grid-column: 1 / -1; }
+      main { grid-template-columns: 1fr; }
+      .network { border-right: 0; }
+      aside { border-top: 1px solid rgba(236,243,231,.25); }
+      .action { margin-top: 10px; }
+    }
+    @media (max-width: 640px) {
+      .shell { padding: 14px; }
+      header { grid-template-columns: 1fr; }
+      .crumb { display: none; }
+      .clock { display: none; }
+      .incident-bar { gap: 14px; }
+      .metric { min-width: 0; padding-left: 10px; }
+      .metric:last-child { display: none; }
+      .map { min-height: 430px; }
+      .network-svg { min-width: 760px; transform: translateX(-180px); }
+      .node-a { left: 16%; } .node-b { left: 47%; } .node-c { left: 67%; } .node-d { left: 88%; }
+      .crew-1 { left: 38%; } .crew-2 { left: 65%; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .step:nth-child(2) { border-right: 0; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 5 8l4 3-5 5 8 7 8-7-5-5 4-3-7-7Z" fill="none" stroke="#c5eb55" stroke-width="1.7"/><path d="m8 15 4-4 4 4" fill="none" stroke="#64d9d2" stroke-width="1.7"/></svg>
+        RELAY
+      </div>
+      <div class="crumb">Operations / <strong>North district restoration</strong></div>
+      <div class="clock">14:32:18</div>
+    </header>
+
+    <div class="incident-bar">
+      <h1>Feeder N-14 <span>restoration</span></h1>
+      <div class="metric"><strong>1,284</strong><span>Homes offline</span></div>
+      <div class="metric"><strong>16:10</strong><span>Current ETA</span></div>
+      <div class="metric"><strong>3</strong><span>Crews active</span></div>
+    </div>
+
+    <main>
+      <section class="network" aria-label="Feeder network and switching plan">
+        <div class="map">
+          <div class="map-label"><span class="eyebrow">Circuit topology</span><strong>North substation · Feeder N-14</strong></div>
+          <div class="legend" aria-hidden="true"><span class="energized"><i></i>live</span><span><i></i>offline</span><span class="isolated"><i></i>isolated</span></div>
+
+          <svg class="network-svg" viewBox="0 0 1040 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Electrical feeder map with energized, pending and isolated segments">
+            <g opacity=".8">
+              <path class="street" d="M60 100c180 40 260-50 430 0s330 30 490-35M20 215c240-60 350 30 520-15s270-20 470 35M40 365c190-15 310 80 500 15s290-20 470 30M170 0c-20 130 50 230 5 500M390 0c40 120-40 230 15 500M650 0c-50 120 40 220-15 500M865 0c40 130-30 250 15 500"/>
+            </g>
+            <path class="circuit live" d="M88 250H280l70-82h220"/>
+            <path class="circuit pending" d="M570 168h128l70 112h115"/>
+            <path class="circuit" d="M350 168v170l118 75h175"/>
+            <path class="circuit isolated" d="M698 168l86-78h154"/>
+            <path class="circuit" d="M768 280v112h174"/>
+            <rect class="substation" x="67" y="229" width="42" height="42" rx="4"/>
+            <circle class="transformer live" cx="280" cy="250" r="13"/>
+            <circle class="transformer live" cx="570" cy="168" r="13"/>
+            <circle class="transformer pending" cx="698" cy="168" r="13"/>
+            <circle class="transformer danger" cx="768" cy="280" r="13"/>
+            <circle class="transformer" cx="643" cy="413" r="13"/>
+            <circle class="transformer" cx="942" cy="392" r="13"/>
+            <g fill="#8b9b91" font-size="12" font-family="ui-monospace, monospace">
+              <text x="60" y="292">NORTH SS</text><text x="248" y="282">SW-12</text><text x="540" y="202">TX-07</text><text x="669" y="140">SW-18</text><text x="739" y="316">F-223</text><text x="613" y="448">TX-11</text>
+            </g>
+          </svg>
+
+          <button class="node-button node-a" type="button" aria-label="Select switch SW-12" aria-pressed="false" data-node="SW-12" data-state="Energized" data-load="318 A" data-voltage="12.4 kV" data-homes="482" data-note="Backfeed is stable. Hold closed through step 3.">12</button>
+          <button class="node-button node-b" type="button" aria-label="Select transformer TX-07" aria-pressed="false" data-node="TX-07" data-state="Energized" data-load="201 A" data-voltage="12.3 kV" data-homes="319" data-note="Voltage is within the restoration band.">07</button>
+          <button class="node-button node-c" type="button" aria-label="Select fault F-223" aria-pressed="true" data-node="Fault F-223" data-state="Isolated" data-load="0 A" data-voltage="0 kV" data-homes="803" data-note="Visible conductor damage. Grounds verified at both ends.">!</button>
+          <button class="node-button node-d" type="button" aria-label="Select switch SW-18" aria-pressed="false" data-node="SW-18" data-state="Open · ready" data-load="0 A" data-voltage="12.2 kV" data-homes="803" data-note="Remote close is blocked until field confirmation.">18</button>
+          <span class="crew crew-1">CREW 6 · 4 MIN</span><span class="crew crew-2">CREW 2 · ON SITE</span>
+        </div>
+
+        <div class="switch-plan">
+          <div class="plan-head"><strong>Restoration sequence</strong><span>Permit R-829 · Dispatcher M. Chen</span></div>
+          <div class="steps">
+            <div class="step complete"><b>01 · DONE 14:06</b><strong>Open SW-18</strong><small>SCADA confirmed open</small></div>
+            <div class="step complete"><b>02 · DONE 14:19</b><strong>Ground F-223</strong><small>Crew 2 verified both ends</small></div>
+            <div class="step current"><b>03 · FIELD CHECK</b><strong>Inspect span 44–45</strong><small>Crew 6 arriving in 4 min</small></div>
+            <div class="step"><b>04 · BLOCKED</b><strong>Close tie T-04</strong><small>Requires step 3 clearance</small></div>
+          </div>
+        </div>
+      </section>
+
+      <aside aria-live="polite">
+        <div class="detail-head"><span class="eyebrow">Selected asset</span><h2 id="nodeName">Fault F-223</h2><span class="state" id="nodeState">Isolated</span></div>
+        <div class="facts"><div class="fact"><strong id="loadValue">0 A</strong><span>Load</span></div><div class="fact"><strong id="voltageValue">0 kV</strong><span>Voltage</span></div><div class="fact"><strong id="homeValue">803</strong><span>Homes downstream</span></div><div class="fact"><strong>2/2</strong><span>Grounds verified</span></div></div>
+        <div class="safety"><strong>De-energized work zone</strong><p id="nodeNote">Visible conductor damage. Grounds verified at both ends.</p></div>
+        <div class="crew-list"><h3>Field response</h3><div class="crew-row"><div><strong>Crew 2 · Alvarez</strong><small>Fault location · on site</small></div><time>14:21</time></div><div class="crew-row"><div><strong>Crew 6 · Okafor</strong><small>Span inspection · en route</small></div><time>14:36</time></div><div class="crew-row"><div><strong>Tree team 3</strong><small>Staged at North yard</small></div><time>14:48</time></div></div>
+        <button class="action" type="button">Record field clearance</button>
+      </aside>
+    </main>
+    <footer><span>Topology revision 18 · SCADA latency 320 ms</span><span>Weather: 17°C · NW gusts 31 km/h</span></footer>
+  </div>
+
+  <script>
+    const nodes = Array.from(document.querySelectorAll('.node-button'));
+    nodes.forEach(function (node) {
+      node.addEventListener('click', function () {
+        nodes.forEach(function (item) { item.setAttribute('aria-pressed', String(item === node)); });
+        document.getElementById('nodeName').textContent = node.dataset.node;
+        document.getElementById('nodeState').textContent = node.dataset.state;
+        document.getElementById('loadValue').textContent = node.dataset.load;
+        document.getElementById('voltageValue').textContent = node.dataset.voltage;
+        document.getElementById('homeValue').textContent = node.dataset.homes;
+        document.getElementById('nodeNote').textContent = node.dataset.note;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#efe9dc">
+  <title>Batchline — Bake-day production</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #efe9dc;
+      --paper-deep: #e4dbc9;
+      --ink: #24231e;
+      --muted: #6d695e;
+      --line: rgba(36, 35, 30, .18);
+      --berry: #852e43;
+      --berry-soft: #c88f95;
+      --sage: #536756;
+      --gold: #d79236;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(255,255,255,.72), transparent 28rem),
+        linear-gradient(90deg, transparent 0 31px, rgba(133,46,67,.09) 32px, transparent 33px),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button { font: inherit; }
+    button:focus-visible { outline: 3px solid #2d6f7a; outline-offset: 3px; }
+
+    .shell { width: min(1500px, 100%); margin: 0 auto; padding: 26px 34px 34px 58px; }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 34px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 820; letter-spacing: -.04em; }
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--berry);
+      border-radius: 50% 50% 45% 55%;
+      position: relative;
+      transform: rotate(-8deg);
+    }
+    .brand-mark::after { content: ""; position: absolute; inset: 6px; border: 1px solid var(--berry); border-radius: inherit; }
+    .date { font-family: Georgia, serif; font-size: 15px; }
+    .status { display: flex; align-items: center; gap: 8px; color: var(--sage); font-size: 13px; font-weight: 750; }
+    .status::before { content: ""; width: 8px; height: 8px; background: var(--sage); border-radius: 50%; box-shadow: 0 0 0 4px rgba(83,103,86,.12); }
+
+    .title-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 24px;
+      padding: 34px 0 28px;
+    }
+    h1 { margin: 0; font: 500 clamp(40px, 5vw, 72px)/.92 Georgia, serif; letter-spacing: -.06em; }
+    .dispatch { text-align: right; }
+    .dispatch strong { display: block; font: 500 28px/1 Georgia, serif; }
+    .dispatch span { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .14em; }
+
+    main { display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(280px, .7fr); border: 1px solid var(--ink); }
+    .board { min-width: 0; border-right: 1px solid var(--ink); }
+    .board-head {
+      display: grid;
+      grid-template-columns: 158px repeat(5, 1fr);
+      min-height: 52px;
+      align-items: center;
+      border-bottom: 1px solid var(--ink);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+    }
+    .board-head > * { padding: 0 14px; }
+    .board-head span:not(:first-child) { border-left: 1px solid var(--line); }
+
+    .batch {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 158px repeat(5, 1fr);
+      min-height: 100px;
+      padding: 0;
+      color: inherit;
+      text-align: left;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+    .batch:hover { background: rgba(255,255,255,.35); }
+    .batch[aria-pressed="true"] { background: #f9f4ea; }
+    .batch-name { padding: 20px 14px; }
+    .batch-name strong { display: block; font: 600 21px/1 Georgia, serif; letter-spacing: -.02em; }
+    .batch-name small { display: block; margin-top: 9px; color: var(--muted); font-size: 11px; }
+    .phase {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      padding: 12px 14px;
+      border-left: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .phase.done { color: var(--ink); }
+    .phase.done::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 23px; height: 3px; background: var(--sage); }
+    .phase.active { color: white; background: var(--berry); }
+    .phase.active::before {
+      content: "";
+      width: 31px;
+      height: 31px;
+      margin-right: 10px;
+      border: 1px solid rgba(255,255,255,.66);
+      border-radius: 49% 51% 45% 55%;
+      box-shadow: inset 0 0 0 7px rgba(255,255,255,.08);
+    }
+    .phase.next { color: var(--ink); background: rgba(215,146,54,.12); }
+
+    .detail {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      min-height: 244px;
+      background: var(--paper-deep);
+    }
+    .rise {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      border-right: 1px solid var(--ink);
+    }
+    .rise-ring {
+      width: 160px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--berry) var(--rise, 68%), rgba(36,35,30,.12) 0);
+      position: relative;
+    }
+    .rise-ring::before { content: ""; position: absolute; inset: 11px; border-radius: 50%; background: var(--paper-deep); }
+    .rise-ring div { position: relative; z-index: 1; text-align: center; }
+    .rise-ring strong { display: block; font: 500 38px/1 Georgia, serif; }
+    .rise-ring span { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .13em; }
+    .detail-copy { display: flex; flex-direction: column; justify-content: space-between; padding: 25px 28px 24px; }
+    .detail-copy > span { color: var(--berry); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; }
+    .detail-copy h2 { margin: 8px 0 0; font: 500 31px/1.05 Georgia, serif; letter-spacing: -.035em; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-top: 22px; border-top: 1px solid var(--line); }
+    .metrics strong { display: block; font: 500 22px/1 Georgia, serif; }
+    .metrics small { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; }
+
+    aside { min-width: 0; display: flex; flex-direction: column; }
+    .aside-head { display: flex; align-items: center; justify-content: space-between; padding: 17px 18px; border-bottom: 1px solid var(--ink); }
+    .aside-head strong { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+    .aside-head span { color: var(--muted); font-size: 11px; }
+    .oven-slot { display: grid; grid-template-columns: 62px 1fr; gap: 14px; padding: 18px; border-bottom: 1px solid var(--line); }
+    .oven-slot time { font: 500 17px/1 Georgia, serif; }
+    .oven-slot strong { display: block; font-size: 13px; }
+    .oven-slot small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .oven-slot.now { color: white; background: var(--sage); }
+    .oven-slot.now small { color: rgba(255,255,255,.7); }
+    .exception { margin-top: auto; padding: 22px 18px; background: #f6dcae; border-top: 1px solid var(--ink); }
+    .exception strong { display: block; font: 500 19px/1.1 Georgia, serif; }
+    .exception span { display: block; margin-top: 8px; color: #685021; font-size: 11px; line-height: 1.45; }
+
+    footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 16px; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .12em; }
+
+    @media (max-width: 920px) {
+      .shell { padding: 20px; }
+      header { grid-template-columns: 1fr auto; }
+      .date { display: none; }
+      main { grid-template-columns: 1fr; }
+      .board { border-right: 0; }
+      aside { border-top: 1px solid var(--ink); }
+      .board-head, .batch { grid-template-columns: 120px repeat(5, minmax(92px, 1fr)); }
+      .board { overflow-x: auto; }
+      .board-head, .batch { min-width: 760px; }
+    }
+    @media (max-width: 620px) {
+      header { grid-template-columns: 1fr; }
+      .status { display: none; }
+      .title-row { grid-template-columns: 1fr; }
+      .dispatch { text-align: left; }
+      .detail { grid-template-columns: 1fr; }
+      .rise { border-right: 0; border-bottom: 1px solid var(--ink); }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>BATCHLINE</div>
+      <div class="date">Tuesday, 14 November</div>
+      <div class="status">Fermentation room stable</div>
+    </header>
+
+    <div class="title-row">
+      <h1>Tuesday bake plan</h1>
+      <div class="dispatch"><strong>42 loaves</strong><span>Dispatch at 15:30</span></div>
+    </div>
+
+    <main>
+      <section class="board" aria-label="Batch progress">
+        <div class="board-head" aria-hidden="true"><span>Batch</span><span>Mix</span><span>Fold</span><span>Shape</span><span>Proof</span><span>Bake</span></div>
+
+        <button class="batch" type="button" aria-pressed="true" data-name="Rye 70" data-stage="Final proof" data-rise="74" data-temp="25.4°C" data-time="38 min" data-acidity="4.1 pH">
+          <span class="batch-name"><strong>Rye 70</strong><small>12 loaves · 06:10</small></span>
+          <span class="phase done">Complete</span><span class="phase done">3 of 3</span><span class="phase done">08:42</span><span class="phase active">38 min left</span><span class="phase">Deck 2</span>
+        </button>
+        <button class="batch" type="button" aria-pressed="false" data-name="Country" data-stage="Bench rest" data-rise="46" data-temp="24.8°C" data-time="12 min" data-acidity="4.4 pH">
+          <span class="batch-name"><strong>Country</strong><small>18 loaves · 07:00</small></span>
+          <span class="phase done">Complete</span><span class="phase done">3 of 3</span><span class="phase active">12 min left</span><span class="phase next">Next</span><span class="phase">Deck 1</span>
+        </button>
+        <button class="batch" type="button" aria-pressed="false" data-name="Seeded" data-stage="Second fold" data-rise="29" data-temp="23.9°C" data-time="26 min" data-acidity="4.7 pH">
+          <span class="batch-name"><strong>Seeded</strong><small>12 loaves · 07:45</small></span>
+          <span class="phase done">Complete</span><span class="phase active">Fold 2 of 3</span><span class="phase">10:28</span><span class="phase">11:04</span><span class="phase">Deck 2</span>
+        </button>
+
+        <div class="detail" aria-live="polite">
+          <div class="rise"><div class="rise-ring" id="riseRing"><div><strong id="riseValue">74%</strong><span>Target rise</span></div></div></div>
+          <div class="detail-copy">
+            <div><span id="activeBatch">Rye 70 · Final proof</span><h2 id="activeAction">Score at 10:32.<br>Load Deck 2 at 10:40.</h2></div>
+            <div class="metrics"><div><strong id="tempValue">25.4°C</strong><small>Dough</small></div><div><strong id="timeValue">38 min</strong><small>Remaining</small></div><div><strong id="phValue">4.1 pH</strong><small>Acidity</small></div></div>
+          </div>
+        </div>
+      </section>
+
+      <aside aria-label="Oven schedule">
+        <div class="aside-head"><strong>Oven</strong><span>Deck 1 · 248°C</span></div>
+        <div class="oven-slot now"><time>09:55</time><div><strong>Baguette · 16</strong><small data-content-repeat-ok="schedule-row">Steam released · 14 min left</small></div></div>
+        <div class="oven-slot"><time>10:40</time><div><strong>Rye 70 · 12</strong><small data-content-repeat-ok="schedule-row">Deck 2 · 42 min</small></div></div>
+        <div class="oven-slot"><time>11:28</time><div><strong>Country · 18</strong><small data-content-repeat-ok="schedule-row">Deck 1 · 36 min</small></div></div>
+        <div class="oven-slot"><time>12:18</time><div><strong>Seeded · 12</strong><small data-content-repeat-ok="schedule-row">Deck 2 · 34 min</small></div></div>
+        <div class="exception"><strong>Deck 1 loses 8°C after steam.</strong><span>Country load includes a six-minute recovery window.</span></div>
+      </aside>
+    </main>
+    <footer><span>Last probe reading 09:51</span><span>Flour lots R24 / W18 · Levain L-114</span></footer>
+  </div>
+
+  <script>
+    const rows = Array.from(document.querySelectorAll('.batch'));
+    const ring = document.getElementById('riseRing');
+    rows.forEach(function (row) {
+      row.addEventListener('click', function () {
+        rows.forEach(function (item) { item.setAttribute('aria-pressed', String(item === row)); });
+        document.getElementById('riseValue').textContent = row.dataset.rise + '%';
+        document.getElementById('activeBatch').textContent = row.dataset.name + ' · ' + row.dataset.stage;
+        document.getElementById('activeAction').innerHTML = row.dataset.name === 'Rye 70' ? 'Score at 10:32.<br>Load Deck 2 at 10:40.' : row.dataset.name === 'Country' ? 'Pre-shape at 10:08.<br>Rest seam-side down.' : 'Fold north to south.<br>Return to warm bench.';
+        document.getElementById('tempValue').textContent = row.dataset.temp;
+        document.getElementById('timeValue').textContent = row.dataset.time;
+        document.getElementById('phValue').textContent = row.dataset.acidity;
+        ring.style.setProperty('--rise', row.dataset.rise + '%');
+      });
+    });
+  </script>
+</body>
+</html>
