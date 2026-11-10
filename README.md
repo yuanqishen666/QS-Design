@@ -1,16 +1,6 @@
-<p align="center">
-  <a href="https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/index.html"><img src="./ios-design/showcase/tidefold-showcase.jpg" alt="Tidefold iOS 设计展示" width="100%" /></a>
-</p>
-
 <h1 align="center">QS Design</h1>
 
 <p align="center">从模糊业务语言形成业务特异、视觉优秀、跨平台原生且可验证的产品体验。</p>
-
-## 看看效果
-
-点击上面的设计稿，或者直接[打开 Tidefold 原型](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/ios-design/showcase/index.html)。里面有三套完整方向，每一套都可以实际操作。
-
-还可以查看[设计样张库](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/specimens/index.html)和[行为实验室](https://htmlpreview.github.io/?https://github.com/yuanqishen666/QS-Design/blob/main/specimens/behavior-lab/index.html)。样张按布局、内容压力、视觉材料、交互行为、跨平台翻译和降级方式组织，不是固定风格菜单。
 
 ## 它能做什么
 

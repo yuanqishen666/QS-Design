@@ -55,7 +55,7 @@
 | 5 | Tooltip | 与单个触发对象强相关的简短、非关键、按需信息 |
 | 6 | 情境教学 | 新颖且无法自解释的功能；只在首次或刚变得相关时出现 |
 
-辅助性内容必须在[内容显隐契约](../../docs/content-contract.md)中记录 `purpose / criticality / audience / timing / delivery / irreducible_fact / structure_attempt`。它属于业务模型的 `content_graph`，不是独立的视觉风格层。标题、普通标签、按钮和原始业务数据无需为了形式完整重复填写这些字段。
+辅助性内容必须在内容显隐契约中记录 `purpose / criticality / audience / timing / delivery / irreducible_fact / structure_attempt`。它属于业务模型的 `content_graph`，不是独立的视觉风格层。标题、普通标签、按钮和原始业务数据无需为了形式完整重复填写这些字段。合同结构由 `schemas/content-contract.schema.json` 定义，运行时关系约束由 `engine/content/contract.mjs` 执行。
 
 ## Tooltip 不是默认答案
 

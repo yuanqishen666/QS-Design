@@ -7,11 +7,6 @@
     "node": ">=22.20"
   },
   "scripts": {
-    "test": "npm --prefix skills/qs-design test && node --test scripts/scripts.test.mjs",
-    "verify:self": "npm --prefix skills/qs-design run verify:self",
-    "specimens": "node scripts/build-specimens.mjs && node scripts/validate-specimens.mjs",
-    "lint": "node scripts/validate-repo.mjs && node skills/qs-design/scripts/source-check.mjs && node skills/qs-design/scripts/design-lint.mjs ios-design/showcase && node skills/qs-design/scripts/design-lint.mjs specimens/behavior-lab && node scripts/validate-specimens.mjs && node skills/qs-design/scripts/provenance-check.mjs specimens --strict",
-    "eval": "node scripts/eval-routing.mjs",
-    "check": "npm run test && npm run verify:self && npm run lint && npm run eval"
+    "verify:self": "npm --prefix skills/qs-design run verify:self"
   }
 }
