@@ -23,3 +23,11 @@ test('includes content duplication warnings', () => {
   const result = lintHTML(base('<h1>选择词书</h1><p>选择一本词书</p>'));
   assert.ok(result.warnings.some(item => item.rule === 'content-semantic-overlap'));
 });
+
+test('structured parsers preserve quoted tag characters, raw scripts and CSS declarations', () => {
+  const valid = lintHTML('<!doctype html><html lang="en"><head><title data-note="1 > 0">Parser</title><style>.a{transition:opacity .2s}@media(prefers-reduced-motion:reduce){.a{transition:none}}</style></head><body><p>One</p><script>if (1 < 2) { globalThis.ok = true; }</script></body></html>');
+  assert.ok(!valid.errors.some(item => item.rule === 'script-syntax'));
+  assert.ok(!valid.warnings.some(item => item.rule === 'reduced-motion'));
+  const invalid = lintHTML(base('<script>if (</script>'));
+  assert.ok(invalid.errors.some(item => item.rule === 'script-syntax'));
+});

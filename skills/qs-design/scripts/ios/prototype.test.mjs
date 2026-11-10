@@ -173,7 +173,7 @@ test('approved runs progress through implementation without losing their prototy
     assert.equal((await getSelectedRun({projectRoot:dir,feature:'home'})).manifest.status,'implemented');
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
-test('new designs cannot become review-ready without three distinct directions and a source boundary', async () => {
+test('legacy v2 runs cannot become review-ready without three distinct directions and a source boundary', async () => {
   const dir=await mkdtemp(join(tmpdir(),'qs-design-direction-gate-'));
   try {
     const run=await createRun({projectRoot:dir,feature:'home',now:new Date('2026-10-27T01:02:03.000Z'),token:'a1b2'});

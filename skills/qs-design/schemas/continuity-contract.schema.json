@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/continuity-contract.schema.json",
+  "title": "QS Design Continuity Contract",
+  "type": "object",
+  "required": ["schema", "invariants", "preserve", "adapt", "open", "prohibited", "sources"],
+  "properties": {
+    "schema": {"const": 1},
+    "invariants": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "preserve": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "adapt": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "open": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "prohibited": {"type": "array", "items": {"$ref": "#/$defs/item"}},
+    "sources": {"type": "array", "items": {"type": "object", "required": ["id", "kind", "role"], "properties": {
+      "id": {"type": "string"},
+      "kind": {"enum": ["internal-product", "official-brand", "user-approved-parent", "external-reference", "generated-artifact", "research-evidence"]},
+      "role": {"enum": ["business-evidence", "continuity-evidence", "problem-evidence", "brand-authority", "mechanism-reference", "generated-output"]}
+    }}}
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["id", "claim", "source", "confidence"],
+      "properties": {
+        "id": {"type": "string"},
+        "claim": {"type": "string", "minLength": 1},
+        "source": {"type": "string"},
+        "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+        "reason": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

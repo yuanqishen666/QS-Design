@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/semantic-intent.schema.json",
+  "title": "QS Design Semantic Intent",
+  "type": "object",
+  "required": ["schema", "raw_language", "tensions", "business_interpretation", "observable_experience", "visual_implications", "interaction_implications", "rejected_shortcuts", "uncertainties"],
+  "properties": {
+    "schema": {"const": 1},
+    "raw_language": {"type": "array", "items": {"type": "string"}},
+    "tensions": {"type": "array", "items": {"type": "string"}},
+    "business_interpretation": {"type": "array", "items": {"type": "string"}},
+    "observable_experience": {"type": "array", "items": {"type": "string"}},
+    "visual_implications": {"type": "array", "items": {"type": "string"}},
+    "interaction_implications": {"type": "array", "items": {"type": "string"}},
+    "rejected_shortcuts": {"type": "array", "items": {"type": "string"}},
+    "form_rationales": {"type": "array", "items": {"type": "object", "required": ["form", "business_reason", "evidence"]}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

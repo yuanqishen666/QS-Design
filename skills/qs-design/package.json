@@ -1,0 +1,29 @@
+{
+  "name": "qs-design",
+  "version": "3.2.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./engine/index.mjs"
+    },
+    "./platforms": "./platforms/index.mjs",
+    "./stores": "./stores/index.mjs"
+  },
+  "description": "Business-conditioned, context-isolated, cross-platform design system for coding agents.",
+  "bin": {
+    "qs-design": "engine/cli/qs-design.mjs"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs scripts/*.test.mjs scripts/ios/*.test.mjs assets/runtime/*.test.mjs",
+    "test:core": "node --test tests/*.test.mjs",
+    "verify:self": "node engine/cli/qs-design.mjs self-check",
+    "eval": "node evals/run.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

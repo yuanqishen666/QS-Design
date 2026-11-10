@@ -1,16 +1,17 @@
 {
   "name": "qs-design",
-  "version": "2.1.1",
+  "version": "3.2.0",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=22.20"
   },
   "scripts": {
-    "test": "node --test skills/qs-design/scripts/content-lint.test.mjs skills/qs-design/scripts/design-lint.test.mjs skills/qs-design/scripts/ios/prototype.test.mjs skills/qs-design/assets/runtime/runtime.test.mjs scripts/scripts.test.mjs",
+    "test": "npm --prefix skills/qs-design test && node --test scripts/scripts.test.mjs",
+    "verify:self": "npm --prefix skills/qs-design run verify:self",
     "specimens": "node scripts/build-specimens.mjs && node scripts/validate-specimens.mjs",
     "lint": "node scripts/validate-repo.mjs && node skills/qs-design/scripts/source-check.mjs && node skills/qs-design/scripts/design-lint.mjs ios-design/showcase && node skills/qs-design/scripts/design-lint.mjs specimens/behavior-lab && node scripts/validate-specimens.mjs && node skills/qs-design/scripts/provenance-check.mjs specimens --strict",
     "eval": "node scripts/eval-routing.mjs",
-    "check": "npm run test && npm run lint && npm run eval"
+    "check": "npm run test && npm run verify:self && npm run lint && npm run eval"
   }
 }

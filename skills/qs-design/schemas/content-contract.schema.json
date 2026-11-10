@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/content-contract.schema.json",
+  "title": "QS Design Content Visibility Contract",
+  "type": "object",
+  "required": ["schema", "entries", "required_states"],
+  "properties": {
+    "schema": {"const": 1},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "kind", "source", "owner"],
+        "properties": {
+          "key": {"type": "string", "minLength": 1},
+          "kind": {"type": "string", "minLength": 1},
+          "source": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "required": {"type": "boolean"},
+          "evidence": {"type": "array"},
+          "purpose": {"enum": ["recognition", "decision", "action", "constraint", "risk", "recovery"]},
+          "criticality": {"enum": ["critical", "supporting", "optional"]},
+          "audience": {"enum": ["all", "most", "some"]},
+          "timing": {"enum": ["persistent", "before-action", "on-error", "first-run", "on-demand"]},
+          "delivery": {"enum": ["visible", "inline-hint", "details", "popover", "tooltip", "contextual-tip"]},
+          "irreducible_fact": {"type": "string", "minLength": 1},
+          "structure_attempt": {"type": "string", "minLength": 1},
+          "interactive": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "required_states": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+  },
+  "additionalProperties": false
+}

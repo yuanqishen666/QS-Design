@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/exception.schema.json",
+  "title": "QS Design Verification Exception",
+  "type": "object",
+  "required": ["schema", "exception_id", "finding_id", "scope", "reason", "owner", "evidence", "expires_at", "review_trigger", "created_at"],
+  "properties": {
+    "schema": {"const": 1},
+    "exception_id": {"type": "string", "pattern": "^exception-[a-z0-9-]+$"},
+    "finding_id": {"type": "string", "minLength": 1},
+    "scope": {"enum": ["module", "page", "flow", "platform", "candidate", "task"]},
+    "reason": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array"},
+    "expires_at": {"type": ["string", "null"]},
+    "review_trigger": {"type": "string"},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

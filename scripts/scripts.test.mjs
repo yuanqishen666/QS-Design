@@ -50,7 +50,7 @@ test('platform checks expose unknown entries without pretending support', () => 
 
 test('state coverage finds unreachable and unknown states', () => {
   const good = analyzeStateCoverage({ initial:'idle', required_states:['done'], required_events:['CANCEL'], states:{ idle:{on:{START:'active'}},active:{on:{CANCEL:'idle',COMMIT:'done'}},done:{on:{RESET:'idle'}} } });
-  assert.equal(good.errors.length,0); assert.equal(good.coverage,1);
+  assert.equal(good.errors.length,0); assert.deepEqual(good.state_reachability,{ reachable:3, total:3 }); assert.equal('coverage' in good,false);
   const bad = analyzeStateCoverage({ initial:'idle', states:{ idle:{on:{GO:'missing'}},orphan:{} } });
   assert.ok(bad.errors.length>=2);
 });

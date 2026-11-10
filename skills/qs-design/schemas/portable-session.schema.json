@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/portable-session.schema.json",
+  "title": "QS Design Portable Session",
+  "type": "object",
+  "required": ["schema", "mode", "task", "candidates", "artifacts", "governance", "bundle_hash"],
+  "properties": {
+    "schema": {"const": 1},
+    "mode": {"enum": ["ephemeral", "chat", "portable", "project"]},
+    "task": {"type": "object"},
+    "candidates": {"type": "array"},
+    "artifacts": {"type": "array", "items": {"type": "object", "required": ["ref", "value"]}},
+    "governance": {
+      "type": "object",
+      "required": ["decisions", "exceptions", "approvals", "verification_reports"],
+      "properties": {
+        "decisions": {"type": "array"},
+        "exceptions": {"type": "array"},
+        "approvals": {"type": "array"},
+        "verification_reports": {"type": "array"}
+      },
+      "additionalProperties": false
+    },
+    "bundle_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

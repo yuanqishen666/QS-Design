@@ -1,6 +1,8 @@
 {
-  "schema": 1,
+  "schema": 2,
   "updated_at": "2026-10-28",
+  "stale_after_days": 90,
+  "policy": "A capability entry is discovery evidence, not runtime proof. When stale or untested on the active target, report unknown and verify with the platform adapter.",
   "capabilities": [
     {"id":"continuous-gesture","ios":{"support":"native","notes":"SwiftUI/UIKit gestures"},"android":{"support":"native","notes":"Compose/View pointer input"},"web":{"support":"native","notes":"Pointer Events; preserve scroll negotiation"},"wechat":{"support":"conditional","notes":"Prefer Skyline/Worklet for high-frequency updates"},"alipay":{"support":"conditional","notes":"Use supported touch/movable-view paths and verify client"}},
     {"id":"spring-velocity-handoff","ios":{"support":"native","notes":"Spring/keyframe APIs; verify interruption"},"android":{"support":"native","notes":"Animatable spring preserves velocity semantics"},"web":{"support":"library","notes":"Motion/GSAP or custom runtime"},"wechat":{"support":"conditional","notes":"Skyline Worklet or approximated transition"},"alipay":{"support":"approximate","notes":"Transition APIs are not a full physics runtime"}},

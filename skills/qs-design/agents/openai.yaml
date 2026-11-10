@@ -1,6 +1,6 @@
 interface:
   display_name: "QS Design"
-  short_description: "一个入口设计并分流所有目标平台"
-  default_prompt: "Use $qs-design as the single entry point. Treat every user-provided reference and every existing implementation as a source of functions, business logic, and contracts only; never carry over its page structure or visual styling. Produce three structurally and visually distinct isolated prototypes with real previews, wait for the user to select one, then implement only the approved direction."
+  short_description: "从业务语义生成视觉优秀、跨端原生且可验证的产品体验"
+  default_prompt: "Use $qs-design as the single design entry point. Treat the design task, not the project, as the context root. Compile an explicit context manifest; never expose rejected or unselected candidate artifacts to a fresh design worker. A soft reset carries only business facts, platform targets and explicit exclusions unless the user reauthorizes more. Preserve intentional continuity through a scoped contract, interpret fuzzy language through business meaning and observable outcomes, choose one to three directions by default according to real uncertainty, and trace dominant decisions to business/art-direction/brand/platform evidence. Make structure, hierarchy, spacing, data relations and clear actions explain the interface before adding helper copy. Admit supplemental text only for irreducible business meaning, keep critical facts visible at the decision point, and reserve tooltips for short optional non-interactive information with keyboard, pointer, touch and assistive-technology parity. Require attested runtime evidence before implementation."
 policy:
   allow_implicit_invocation: true

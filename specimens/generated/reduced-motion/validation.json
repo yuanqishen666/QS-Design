@@ -12,9 +12,9 @@
     "semantic_controls": true
   },
   "status": "validated",
-  "validated_at": "2026-10-28T15:22:35.195Z",
+  "validated_at": "2026-11-10T13:57:39.201Z",
   "lint": {
     "errors": 0,
-    "warnings": 0
+    "warnings": 1
   }
 }

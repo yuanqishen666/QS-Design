@@ -1,14 +1,28 @@
 #!/usr/bin/env node
+// v3 decision and feedback ledger. Project identity is optional; scope defaults to candidate.
 import { appendFile, mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const defaultPath = '.qs-design/ledger.jsonl';
+const defaultPath = '.qs-design/decision-ledger.jsonl';
+const scopes = ['candidate', 'task', 'session', 'project', 'profile'];
 
 export async function addLedgerEntry(path, entry) {
-  const required = ['project', 'platform', 'scope', 'decision', 'user_evidence'];
-  for (const field of required) if (!entry[field]) throw new Error(`Missing ledger field: ${field}`);
-  const record = { schema: 1, recorded_at: new Date().toISOString(), ...entry };
+  const scope = entry.scope ?? 'candidate';
+  if (!scopes.includes(scope)) throw new Error(`Invalid ledger scope: ${scope}`);
+  if (!entry.decision && !entry.verbatim) throw new Error('Ledger entry requires decision or verbatim feedback.');
+  if (scope === 'profile' && entry.explicit_consent !== true) throw new Error('Profile entries require explicit_consent: true.');
+  if (entry.model_inference === true && ['project', 'profile'].includes(scope)) throw new Error('Model inference cannot be stored as a persistent preference.');
+  const record = {
+    ...entry,
+    schema: 2,
+    recorded_at: new Date().toISOString(),
+    task_id: entry.task_id ?? null,
+    candidate_id: entry.candidate_id ?? null,
+    scope,
+    carry_forward: scope === 'candidate' ? false : Boolean(entry.carry_forward),
+    explicit_consent: Boolean(entry.explicit_consent)
+  };
   await mkdir(dirname(resolve(path)), { recursive: true });
   await appendFile(path, `${JSON.stringify(record)}\n`, { encoding: 'utf8', mode: 0o600 });
   return record;

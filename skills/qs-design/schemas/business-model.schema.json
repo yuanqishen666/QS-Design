@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/business-model.schema.json",
+  "title": "QS Design Business Model",
+  "type": "object",
+  "required": ["schema", "business_dna", "task_graph", "content_graph", "state_graph", "action_contracts", "platform_requirements"],
+  "properties": {
+    "schema": {"const": 1},
+    "business_dna": {
+      "type": "object",
+      "required": ["entities", "relations", "flows", "state_transitions", "value_moments", "risk_and_trust", "temporal_rhythm", "frequency", "content_morphology", "cultural_context"],
+      "properties": {
+        "entities": {"type": "array"},
+        "relations": {"type": "array"},
+        "flows": {"type": "array"},
+        "state_transitions": {"type": "array"},
+        "value_moments": {"type": "array"},
+        "risk_and_trust": {"type": "array"},
+        "temporal_rhythm": {"type": "array"},
+        "frequency": {"type": "object"},
+        "content_morphology": {"type": "array"},
+        "cultural_context": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "task_graph": {"type": "object"},
+    "content_graph": {"type": "object"},
+    "state_graph": {"type": "object"},
+    "action_contracts": {"type": "array"},
+    "platform_requirements": {"type": "array"}
+  },
+  "additionalProperties": false
+}

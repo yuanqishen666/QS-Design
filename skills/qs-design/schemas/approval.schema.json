@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/approval.schema.json",
+  "title": "QS Design Approval",
+  "type": "object",
+  "required": ["schema", "approval_id", "task_id", "candidate_id", "user_evidence", "semantic_hash", "semantic_component_hashes", "artifact_manifest", "artifact_hash", "scope", "approved_at"],
+  "properties": {
+    "schema": {"const": 1},
+    "approval_id": {"type": "string"},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "candidate_id": {"type": "string", "pattern": "^candidate-[a-z0-9-]+$"},
+    "user_evidence": {"type": "string", "minLength": 1},
+    "semantic_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "semantic_component_hashes": {"type": "object", "additionalProperties": {"type": "string"}},
+    "artifact_manifest": {"type": "array", "items": {"type": "object", "required": ["ref", "sha256", "size", "kind"]}},
+    "artifact_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "approved_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

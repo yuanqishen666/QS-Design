@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/decision.schema.json",
+  "title": "QS Design Decision",
+  "type": "object",
+  "required": ["schema", "decision_id", "decision", "scope", "owner", "user_evidence", "supporting_evidence", "counterarguments", "success_measure", "expires_at", "review_trigger", "status", "explicit_consent", "created_at"],
+  "properties": {
+    "schema": {"const": 1},
+    "decision_id": {"type": "string", "pattern": "^decision-[a-z0-9-]+$"},
+    "decision": {"type": "string", "minLength": 1},
+    "scope": {"enum": ["candidate", "task", "session", "project", "profile"]},
+    "owner": {"type": "string", "minLength": 1},
+    "user_evidence": {"type": "string"},
+    "supporting_evidence": {"type": "array"},
+    "counterarguments": {"type": "array"},
+    "success_measure": {"type": "string"},
+    "expires_at": {"type": ["string", "null"]},
+    "review_trigger": {"type": "string"},
+    "status": {"enum": ["active", "superseded", "expired", "revoked"]},
+    "explicit_consent": {"type": "boolean"},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

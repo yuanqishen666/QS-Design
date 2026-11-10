@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Legacy v2 project-bound run manager. New v3 tasks use engine/cli/qs-design.mjs.
+// This file remains read-compatible so existing approvals and prototypes are not destroyed.
 import { createHash, randomBytes } from 'node:crypto';
 import { mkdir, readFile, readdir, stat, unlink, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve } from 'node:path';
@@ -384,6 +386,7 @@ function parseArgs(args) {
 }
 
 async function main() {
+  console.warn('QS Design: scripts/ios/design-run.mjs is a v2 compatibility tool. Use engine/cli/qs-design.mjs for new tasks.');
   const [command, ...rest] = process.argv.slice(2);
   const options = parseArgs(rest);
   const common = { projectRoot: options.project ?? '.', feature: options.feature };

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/verification-report.schema.json",
+  "title": "QS Design Verification Report",
+  "type": "object",
+  "required": ["schema", "target", "findings", "summary", "created_at"],
+  "properties": {
+    "schema": {"const": 1},
+    "target": {"type": "string"},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "dimension", "severity", "target", "evidence", "confidence", "impact", "correction_direction"],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"enum": ["finding", "clean", "unknown", "not-applicable"]},
+          "dimension": {"type": "string"},
+          "severity": {"enum": ["blocker", "major", "advisory"]},
+          "target": {"type": "string"},
+          "evidence": {"type": "array"},
+          "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+          "impact": {"type": "string"},
+          "correction_direction": {"type": "string"},
+          "exception": {"type": ["object", "null"]}
+        },
+        "additionalProperties": true
+      }
+    },
+    "summary": {"type": "object"},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

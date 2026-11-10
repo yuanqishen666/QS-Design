@@ -150,3 +150,37 @@ export function bindPressable(element, activate) {
   element.addEventListener('keydown', keydown);
   return () => { element.removeEventListener('click', click); element.removeEventListener('keydown', keydown); };
 }
+
+export function createTaskTrace({ now = () => defaultEnvironment.performance?.now?.() ?? Date.now(), redact = value => structuredClone(value) } = {}) {
+  const startedAt = now();
+  const events = [];
+  return Object.freeze({
+    record(type, detail = {}) {
+      const event = { sequence: events.length, at_ms: Math.max(0, now() - startedAt), type: String(type), detail: redact(structuredClone(detail)) };
+      events.push(structuredClone(event)); return structuredClone(event);
+    },
+    snapshot: () => structuredClone(events),
+    clear() { events.length = 0; },
+    summarize() {
+      const counts = {}; for (const event of events) counts[event.type] = (counts[event.type] ?? 0) + 1;
+      return { event_count: events.length, duration_ms: events.at(-1)?.at_ms ?? 0, counts, cancellations: counts.cancel ?? 0, interruptions: counts.interrupt ?? 0 };
+    }
+  });
+}
+
+export async function replayTaskTrace(events, dispatch, { includeTiming = false, wait = ms => new Promise(resolve => setTimeout(resolve, ms)) } = {}) {
+  let previous = 0;
+  for (const event of events ?? []) {
+    if (includeTiming && event.at_ms > previous) await wait(event.at_ms - previous);
+    await dispatch(structuredClone(event));
+    previous = event.at_ms;
+  }
+  return { replayed: (events ?? []).length };
+}
+
+export function emitAssistiveEvent(target, type, detail = {}, env = defaultEnvironment) {
+  const EventConstructor = env.CustomEvent;
+  const event = EventConstructor ? new EventConstructor(`qs-assistive:${type}`, { detail: structuredClone(detail), bubbles: true }) : { type: `qs-assistive:${type}`, detail: structuredClone(detail) };
+  target?.dispatchEvent?.(event);
+  return event;
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/context-manifest.schema.json",
+  "title": "QS Design Context Manifest",
+  "type": "object",
+  "required": ["schema", "run_id", "task_id", "relation", "included", "included_as_constraints", "excluded", "parents", "inheritance_map", "context_hash"],
+  "properties": {
+    "schema": {"const": 1},
+    "run_id": {"type": "string", "pattern": "^run-[a-z0-9-]+$"},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "relation": {"enum": ["fresh-root", "continue-parent", "aspect-inheritance", "explicit-merge", "soft-reset", "hard-reset"]},
+    "included": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "included_as_constraints": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "excluded": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "parents": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "inherited_aspects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "inheritance_map": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}},
+    "context_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

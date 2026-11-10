@@ -1,15 +1,23 @@
-# Android 平台适配器
+# Android 适配器 v3
 
-以真实 Android 行为支撑原创视觉，而不是把 iOS 页面换成 Material 控件。保留业务语义，重新决定窗口布局、导航、返回、输入、状态与动态。
+先读取 Task Capsule、共享业务模型、连续性契约、语义意图和所选方向，再读 [Android 平台约束](android-platform.md)。
 
-## 制作
+## 原生表达
 
-1. 确定手机、平板、折叠屏或多窗口范围，以及系统版本、Compose/View 交付方式和已有设计系统；读取共享的 [内容设计](../../core/content-design.md)。使用任何参考或已实现内容时按 [参考事实边界](../../core/functional-source-boundary.md) 只提取功能、业务逻辑与契约。
-2. 从同一功能清单独立形成三个完整主题；按 [方向策略](../../core/direction-strategy.md) 分别制作原型和真实预览图，不能继承参考页面骨架或把一套换皮成三套。
-3. 把导航、系统返回和预测返回、窗口尺寸类、系统栏、键盘、权限与分享纳入流程。
-4. 连续手势优先使用可打断且速度连续的 spring/decay；高级 Shader 必须有普通 Canvas 或静态降级。
-5. 实际验证字体缩放、TalkBack、深色主题、48dp 触控目标、横竖屏/窗口变化和低端设备。
+- 依据窗口尺寸、折叠状态和输入方式设计，不把手机画布等比放大；
+- 保留 predictive back、系统键盘、TalkBack、字体缩放和触控语义；
+- Compose/View 状态与业务状态分离，取消和中断不能误提交；
+- Material 能力是平台资源，不是强制整页风格；
+- 方向数由共享产品分歧决定，平台版本不另算方向。
 
-平台细节见 [Android 适配](android-platform.md)。生活化交互读 [具身交互机会扫描](../../core/embodied-opportunity-scan.md)，仅在评分通过后进入 [交互实验模式](../../modes/interaction-lab.md)。
+## 内容显隐
 
-设计阶段交付隔离的可运行 Compose sample 或可操作 HTML 原型，不修改现有 Android 产品工程，并明确原型近似与原生实现的差别。用户批准后验证版本，再进入现有工程实现和真机复验。
+- 触屏和 TalkBack 场景不能依赖 hover 或长按发现关键说明；必要规则、风险和恢复在决策点可见；
+- Tooltip 仅用于短、可选、非交互信息，并提供可发现的点击或聚焦路径；需要交互或较长内容时使用明确 disclosure、popover 或 dialog；
+- 保留可见表单标签、内容描述和字体缩放后的关系，不用 placeholder、图标或颜色单独承担语义。
+
+## 运行证据
+
+使用 Emulator、Compose UI Test 或项目现有测试路径。缺少 Android 工具链时报告 `unknown`，不得把 HTML 近似称为 Android 已验证。关键内容可见性和披露输入等价性没有运行证据时同样报告 `unknown`。
+
+运行器接受明确的 Gradle wrapper、任务与工作目录，并可用点名序列号的 ADB 捕获截图。构建成功不自动证明 TalkBack、字体缩放、predictive back 或 reduced motion；这些断言必须各自附带运行证据。

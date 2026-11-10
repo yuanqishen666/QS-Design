@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/evals/results.schema.json",
+  "title": "QS Design Evaluation Rows",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["system", "system_version", "task_id", "corpus_revision", "executed_at", "metrics", "evidence"],
+    "properties": {
+      "system": {"type": "string"},
+      "system_version": {"type": "string"},
+      "task_id": {"type": "string"},
+      "corpus_revision": {"type": "string"},
+      "executed_at": {"type": "string", "format": "date-time"},
+      "metrics": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": {
+          "oneOf": [
+            {"type": "number"},
+            {"type": "object", "required": ["status", "reason"], "properties": {"status": {"const": "unknown"}, "reason": {"type": "string", "minLength": 1}}, "additionalProperties": true}
+          ]
+        }
+      },
+      "evidence": {"type": "array", "minItems": 1},
+      "reviewer_records": {"type": "array"}
+    },
+    "additionalProperties": true
+  }
+}

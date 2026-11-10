@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/interaction-probe.schema.json",
+  "title": "QS Design Interaction Probe",
+  "type": "object",
+  "required": ["schema", "probe_id", "contract", "trials", "evidence"],
+  "properties": {
+    "schema": {"const": 1},
+    "probe_id": {"type": "string", "minLength": 1},
+    "contract": {"type": "object"},
+    "trials": {"type": "array"},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status", "evidence"],
+        "properties": {
+          "status": {"enum": ["finding", "clean", "unknown", "not-applicable"]},
+          "evidence": {"type": "array"},
+          "source": {"enum": ["automated-test", "runtime-session", "assistive-tech-session", "performance-profile", "manual-session", "task-trace", "device-session", null]},
+          "reason": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

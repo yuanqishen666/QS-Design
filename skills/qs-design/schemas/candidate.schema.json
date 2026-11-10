@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/candidate.schema.json",
+  "title": "QS Design Candidate",
+  "type": "object",
+  "required": ["schema", "candidate_id", "task_id", "status", "parents", "context_digest", "artifact_refs", "aspect_refs", "accepted_aspects", "rejected_aspects", "feedback"],
+  "properties": {
+    "schema": {"const": 1},
+    "candidate_id": {"type": "string", "pattern": "^candidate-[a-z0-9-]+$"},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "status": {"enum": ["draft", "shown", "selected", "rejected", "superseded", "archived", "implemented"]},
+    "parents": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "context_digest": {"type": "string"},
+    "artifact_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "aspect_refs": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}},
+    "accepted_aspects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "rejected_aspects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "feedback": {"type": "array", "items": {"type": "object"}},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

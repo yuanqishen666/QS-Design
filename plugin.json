@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "qs-design",
-  "version": "2.1.1",
-  "description": "A single routed product-design skill for iOS, Android, web, WeChat Mini Programs, and Alipay Mini Programs.",
+  "version": "3.2.0",
+  "description": "Business-conditioned, context-isolated product design with structure-first content and native cross-platform verification.",
   "author": {
     "name": "QS"
   },
@@ -13,15 +13,15 @@
     "com.openai": {
       "interface": {
         "displayName": "QS Design",
-        "shortDescription": "跨平台页面设计、可操作原型与交互验证",
-        "longDescription": "从用户参考和已有实现中只提取功能、业务逻辑与契约，独立形成三套结构和视觉均不同的可操作原型供用户选择，再按 iOS、Android、Web、微信小程序和支付宝小程序的真实能力实现获批方向。",
+        "shortDescription": "业务条件化、结构先解释的跨平台产品设计",
+        "longDescription": "从模糊业务语言、真实内容、连续性契约与平台能力形成一至三个必要方向；让结构和操作先完成解释，只保留不可替代文字，并以可验证的原生表达交付 iOS、Android、Web、微信和支付宝体验。",
         "developerName": "QS",
         "category": "Developer Tools",
         "capabilities": ["Read", "Write"],
         "websiteURL": "https://github.com/yuanqishen666/QS-Design",
         "defaultPrompt": [
-          "Use QS Design to extract only functions, business logic, and contracts from references, then produce three structurally and visually distinct isolated prototypes for selection before modifying product code.",
-          "Use QS Design to present three complete clickable directions, wait for the user to select one, then implement only the approved direction."
+          "Use QS Design to compile an authorized task context, model the business, and explore one to three genuinely different directions according to uncertainty before modifying product code.",
+          "Make structure, hierarchy, spacing, data and clear actions explain the interface before adding helper copy; keep critical facts visible and reserve tooltips for short optional non-interactive information."
         ],
         "brandColor": "#165DFF"
       }

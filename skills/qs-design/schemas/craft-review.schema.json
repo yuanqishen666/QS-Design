@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/craft-review.schema.json",
+  "title": "QS Design Craft Review",
+  "type": "object",
+  "required": ["schema", "target", "checks"],
+  "properties": {
+    "schema": {"const": 1},
+    "target": {"type": "string"},
+    "checks": {"type": "object", "minProperties": 12, "additionalProperties": {"$ref": "#/$defs/outcome"}}
+  },
+  "$defs": {
+    "outcome": {
+      "type": "object",
+      "required": ["status", "evidence", "reason"],
+      "properties": {
+        "status": {"enum": ["finding", "clean", "unknown", "not-applicable"]},
+        "evidence": {"type": "array"},
+        "reason": {"type": "string"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

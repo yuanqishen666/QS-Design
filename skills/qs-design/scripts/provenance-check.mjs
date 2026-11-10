@@ -1,10 +1,23 @@
 #!/usr/bin/env node
 import { access, readFile } from 'node:fs/promises';
-import { dirname, join, parse, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isMedia, walk } from './lib.mjs';
 
-export async function checkProvenance(target, { strict = false } = {}) {
+const hashFile = async path => createHash('sha256').update(await readFile(path)).digest('hex');
+
+async function linkStatus(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5_000);
+  try {
+    const response = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: controller.signal });
+    return { ok: response.ok, status: response.status };
+  } catch (error) { return { ok: false, error: error.message }; }
+  finally { clearTimeout(timer); }
+}
+
+export async function checkProvenance(target, { strict = false, checkLinks = false } = {}) {
   const root = resolve(target);
   const errors = [];
   const warnings = [];
@@ -16,7 +29,29 @@ export async function checkProvenance(target, { strict = false } = {}) {
     if (data.original !== true && !Array.isArray(data.sources)) errors.push(`${path}: declare original or list sources.`);
     for (const asset of data.assets ?? []) {
       if (!asset.path || !asset.license || !asset.source_url) errors.push(`${path}: each external asset needs path, license and source_url.`);
-      if (asset.path) try { await access(resolve(dirname(path), asset.path)); } catch { errors.push(`${path}: missing asset ${asset.path}.`); }
+      if (asset.source_url) {
+        try {
+          const parsed = new URL(asset.source_url);
+          if (!['http:', 'https:'].includes(parsed.protocol)) errors.push(`${path}: source_url for ${asset.path ?? 'asset'} must use HTTP(S).`);
+        } catch { errors.push(`${path}: invalid source_url for ${asset.path ?? 'asset'}.`); }
+        if (checkLinks) {
+          const status = await linkStatus(asset.source_url);
+          if (!status.ok) warnings.push(`${path}: source link for ${asset.path ?? 'asset'} could not be verified (${status.status ?? status.error}).`);
+        }
+      }
+      if (!asset.redistribution_scope) (strict ? errors : warnings).push(`${path}: ${asset.path ?? 'asset'} needs redistribution_scope.`);
+      if (!asset.license_compatibility) (strict ? errors : warnings).push(`${path}: ${asset.path ?? 'asset'} has no declared license_compatibility review.`);
+      if (asset.path) {
+        const assetPath = resolve(dirname(path), asset.path);
+        try {
+          await access(assetPath);
+          if (asset.redistribution_scope === 'reference-only') errors.push(`${path}: reference-only asset ${asset.path} is bundled locally.`);
+          if (asset.sha256) {
+            const actual = await hashFile(assetPath);
+            if (actual !== asset.sha256) errors.push(`${path}: hash mismatch for ${asset.path}.`);
+          } else (strict ? errors : warnings).push(`${path}: ${asset.path} needs sha256 integrity metadata.`);
+        } catch { errors.push(`${path}: missing asset ${asset.path}.`); }
+      }
     }
     if (!Array.isArray(data.novel_decisions) || !data.novel_decisions.length) warnings.push(`${path}: record at least one novel decision.`);
   }
@@ -32,8 +67,9 @@ export async function checkProvenance(target, { strict = false } = {}) {
 
 async function main() {
   const strict = process.argv.includes('--strict');
+  const checkLinks = process.argv.includes('--check-links');
   const target = process.argv.find(arg => !arg.startsWith('--') && arg !== process.argv[0] && arg !== process.argv[1]) ?? 'specimens';
-  const result = await checkProvenance(target, { strict });
+  const result = await checkProvenance(target, { strict, checkLinks });
   result.warnings.forEach(message => console.warn(`WARN ${message}`));
   result.errors.forEach(message => console.error(`ERROR ${message}`));
   console.log(`Checked ${result.packages} provenance packages and ${result.media} media files.`);

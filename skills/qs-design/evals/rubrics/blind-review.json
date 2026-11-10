@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "dimensions": [
+    "task_completion",
+    "error_and_recovery",
+    "accessibility_issues",
+    "design_system_drift",
+    "business_recognizability",
+    "content_transfer_genericity",
+    "fingerprint_repetition",
+    "visual_art_direction",
+    "prototype_implementation_drift",
+    "native_platform_behavior",
+    "maintenance_cost",
+    "repeated_use_fatigue",
+    "choice_stability_24h",
+    "maintainer_explainability",
+    "explanatory_dependency",
+    "critical_information_visibility",
+    "disclosure_input_parity",
+    "false_deletion_risk"
+  ],
+  "rules": [
+    "Hide system identity and randomize presentation order.",
+    "Record each dimension independently; do not calculate a composite score.",
+    "Keep every reviewer value and disagreement.",
+    "Attach task evidence and runtime unknowns to each result.",
+    "Do not claim superiority without repeated results and uncertainty reporting."
+  ]
+}

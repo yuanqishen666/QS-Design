@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/task-capsule.schema.json",
+  "title": "QS Design Task Capsule",
+  "type": "object",
+  "required": ["schema", "task_id", "persistence", "business_facts", "current_requirements", "assumptions", "official_constraints", "read_policy", "platform_targets", "candidate_refs"],
+  "properties": {
+    "schema": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "persistence": {"enum": ["ephemeral", "chat", "portable", "project"]},
+    "business_facts": {"type": "array", "items": {"$ref": "#/$defs/contextItem"}},
+    "current_requirements": {"type": "array", "items": {"$ref": "#/$defs/contextItem"}},
+    "assumptions": {"type": "array", "items": {"$ref": "#/$defs/contextItem"}},
+    "official_constraints": {"type": "array", "items": {"$ref": "#/$defs/contextItem"}},
+    "semantic_intent": {"type": ["object", "null"]},
+    "continuity_contract": {"type": ["object", "null"]},
+    "read_policy": {
+      "type": "object",
+      "properties": {
+        "denied_context": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "denied_candidates": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "allowed_profile_context": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": true
+    },
+    "platform_targets": {"type": "array", "items": {"enum": ["web", "ios", "android", "wechat", "alipay"]}, "uniqueItems": true},
+    "candidate_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "contextItem": {
+      "type": "object",
+      "required": ["id", "value", "kind", "source", "confidence", "scope"],
+      "properties": {
+        "id": {"type": "string"},
+        "value": {},
+        "kind": {"enum": ["fact", "decision", "inference", "hypothesis", "unknown"]},
+        "source": {"type": "string"},
+        "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+        "scope": {"enum": ["candidate", "task", "session", "project", "profile"]},
+        "verified_at": {"type": ["string", "null"]},
+        "review_trigger": {"type": ["string", "null"]},
+        "explicit_consent": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

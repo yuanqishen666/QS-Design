@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { clamp, mapRange, createMotionValue, createSpring, createDecay, createStateMachine, createThresholds } from './interaction-runtime.js';
+import { clamp, mapRange, createMotionValue, createSpring, createDecay, createStateMachine, createThresholds, createTaskTrace, replayTaskTrace, emitAssistiveEvent } from './interaction-runtime.js';
 
 function frameHarness(reduced = false) {
   let id = 0;
@@ -85,4 +85,25 @@ test('thresholds report crossings in both directions', () => {
   const result = thresholds.update(0.4);
   assert.equal(result.active.id, 'preview');
   assert.equal(result.changed, true);
+});
+
+test('task traces measure, redact and replay interaction evidence', async () => {
+  let now = 0;
+  const trace = createTaskTrace({ now: () => now, redact: value => ({ ...value, secret: undefined }) });
+  trace.record('start', { target: 'reconcile', secret: 'private' });
+  now = 120; trace.record('interrupt');
+  now = 180; trace.record('cancel');
+  assert.deepEqual(trace.summarize(), { event_count: 3, duration_ms: 180, counts: { start: 1, interrupt: 1, cancel: 1 }, cancellations: 1, interruptions: 1 });
+  assert.equal(trace.snapshot()[0].detail.secret, undefined);
+  const replayed = [];
+  assert.deepEqual(await replayTaskTrace(trace.snapshot(), event => replayed.push(event.type)), { replayed: 3 });
+  assert.deepEqual(replayed, ['start', 'interrupt', 'cancel']);
+});
+
+test('assistive events expose an explicit semantic channel', () => {
+  const seen = [];
+  const target = { dispatchEvent: event => seen.push(event) };
+  const event = emitAssistiveEvent(target, 'announcement', { text: '已保存' }, {});
+  assert.equal(event.type, 'qs-assistive:announcement');
+  assert.equal(seen[0].detail.text, '已保存');
 });

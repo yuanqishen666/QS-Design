@@ -2,25 +2,46 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Script } from 'node:vm';
 import { walk } from './lib.mjs';
 import { lintContentHTML } from './content-lint.mjs';
+import { nodeText, parseHTMLStructure, walkElements } from '../engine/verification/html-structure.mjs';
+import { cssTokens, parseCSSStructure } from '../engine/verification/css-structure.mjs';
 
 export function lintHTML(text, path = '<html>') {
   const errors = [];
   const warnings = [];
   const add = (list, rule, message) => list.push({ path, rule, message });
-  if (!/<!doctype html>/i.test(text)) add(errors, 'document-doctype', 'Missing HTML doctype.');
-  if (!/<html\b[^>]*\blang=/i.test(text)) add(errors, 'document-language', 'Set the document language.');
-  if (!/<title>[^<]+<\/title>/i.test(text)) add(errors, 'document-title', 'Provide a non-empty title.');
-  for (const match of text.matchAll(/<img\b([^>]*)>/gi)) if (!/\balt\s*=/.test(match[1])) add(errors, 'image-alt', 'Image is missing alt; use alt="" only when decorative.');
-  for (const match of text.matchAll(/<(div|span)\b([^>]*)\bonclick\s*=/gi)) if (!/\b(role|tabindex)\s*=/.test(match[2])) add(errors, 'clickable-semantics', `Clickable <${match[1]}> lacks role/tabindex; prefer a button or link.`);
-  if (/<style[\s>]/i.test(text) && /@keyframes|\btransition\s*:|\banimation\s*:/i.test(text) && !/prefers-reduced-motion/i.test(text)) add(warnings, 'reduced-motion', 'Motion exists without a prefers-reduced-motion path.');
-  if (/animation(?:-[^:]+)?\s*:[^;{}]*\binfinite\b|animation-iteration-count\s*:\s*infinite/i.test(text)) add(warnings, 'infinite-motion', 'Infinite motion needs an explicit attention, frequency and reduced-motion justification.');
-  if (/transition(?:-property)?\s*:\s*all\b/i.test(text)) add(warnings, 'transition-all', 'Avoid transition: all; name the properties that carry the intended feedback.');
-  if (/<(?:video|audio)\b(?=[^>]*\bautoplay\b)(?=[^>]*\bloop\b)[^>]*>/i.test(text)) add(warnings, 'looping-autoplay', 'Autoplaying looped media can compete with the primary task; provide control and a reduced-motion path.');
-  if (/https?:\/\/[^"'\s)]+\.(?:js|css)(?:[?"'\s)]|$)/i.test(text)) add(warnings, 'external-runtime', 'External CSS/JS dependency reduces offline prototype reliability.');
-  if (/<canvas\b/i.test(text) && !/(aria-label|role=|<button|<input)/i.test(text)) add(warnings, 'canvas-alternative', 'Canvas appears without an obvious semantic control layer.');
-  const ids = [...text.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(match => match[1]);
+  const structure = parseHTMLStructure(text);
+  const elements = walkElements(structure.root);
+  if (!structure.doctype) add(errors, 'document-doctype', 'Missing HTML doctype.');
+  const html = elements.find(node => node.tag === 'html');
+  if (!html || !Object.hasOwn(html.attrs, 'lang')) add(errors, 'document-language', 'Set the document language.');
+  const title = elements.find(node => node.tag === 'title');
+  if (!title || !nodeText(title)) add(errors, 'document-title', 'Provide a non-empty title.');
+  for (const node of elements.filter(node => node.tag === 'img')) if (!Object.hasOwn(node.attrs, 'alt')) add(errors, 'image-alt', 'Image is missing alt; use alt="" only when decorative.');
+  for (const node of elements.filter(node => ['div', 'span'].includes(node.tag) && Object.hasOwn(node.attrs, 'onclick'))) {
+    if (!Object.hasOwn(node.attrs, 'role') && !Object.hasOwn(node.attrs, 'tabindex')) add(errors, 'clickable-semantics', `Clickable <${node.tag}> lacks role/tabindex; prefer a button or link.`);
+  }
+  const styles = elements.filter(node => node.tag === 'style').map(node => (node.children ?? []).filter(child => child.type === 'text').map(child => child.value).join(''));
+  const css = styles.map(parseCSSStructure);
+  const declarations = css.flatMap(sheet => sheet.rules.flatMap(rule => rule.declarations));
+  const atRules = css.flatMap(sheet => sheet.at_rules.map(rule => rule.prelude.toLowerCase()));
+  const hasMotion = atRules.some(rule => rule.startsWith('@keyframes')) || declarations.some(item => item.property.startsWith('animation') || item.property.startsWith('transition'));
+  const hasReducedMotion = atRules.some(rule => rule.includes('prefers-reduced-motion'));
+  if (hasMotion && !hasReducedMotion) add(warnings, 'reduced-motion', 'Motion exists without a prefers-reduced-motion path.');
+  if (declarations.some(item => item.property.startsWith('animation') && cssTokens(item.value).includes('infinite'))) add(warnings, 'infinite-motion', 'Infinite motion needs an explicit attention, frequency and reduced-motion justification.');
+  if (declarations.some(item => ['transition', 'transition-property'].includes(item.property) && cssTokens(item.value).includes('all'))) add(warnings, 'transition-all', 'Avoid transition: all; name the properties that carry the intended feedback.');
+  if (elements.some(node => ['video', 'audio'].includes(node.tag) && Object.hasOwn(node.attrs, 'autoplay') && Object.hasOwn(node.attrs, 'loop'))) add(warnings, 'looping-autoplay', 'Autoplaying looped media can compete with the primary task; provide control and a reduced-motion path.');
+  const externalRuntime = elements.some(node => (node.tag === 'script' && /^https?:\/\//i.test(node.attrs.src ?? '')) || (node.tag === 'link' && /^https?:\/\//i.test(node.attrs.href ?? '')));
+  if (externalRuntime) add(warnings, 'external-runtime', 'External CSS/JS dependency reduces offline prototype reliability.');
+  for (const node of elements.filter(node => node.tag === 'script' && !node.attrs.src && (node.attrs.type ?? '').toLowerCase() !== 'module')) {
+    const source = (node.children ?? []).filter(child => child.type === 'text').map(child => child.value).join('');
+    if (!source.trim()) continue;
+    try { new Script(source); } catch (error) { add(errors, 'script-syntax', `Inline script syntax error: ${error.message}`); }
+  }
+  if (elements.some(node => node.tag === 'canvas') && !elements.some(node => ['button', 'input'].includes(node.tag) || Object.hasOwn(node.attrs, 'aria-label') || Object.hasOwn(node.attrs, 'role'))) add(warnings, 'canvas-alternative', 'Canvas appears without an obvious semantic control layer.');
+  const ids = elements.map(node => node.attrs.id).filter(Boolean);
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   if (duplicates.length) add(errors, 'duplicate-id', `Duplicate IDs: ${[...new Set(duplicates)].join(', ')}.`);
   warnings.push(...lintContentHTML(text, path).warnings);
