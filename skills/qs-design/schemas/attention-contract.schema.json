@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/attention-contract.schema.json",
+  "title": "QS Design Attention Contract",
+  "type": "object",
+  "required": ["schema", "task_id", "first_viewport_job", "first_viewport_question", "primary_action_id", "attention_order", "quiet_targets", "checks"],
+  "properties": {
+    "schema": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "first_viewport_job": {"type": "string", "minLength": 1},
+    "first_viewport_question": {"type": "string", "minLength": 1},
+    "primary_action_id": {"type": ["string", "null"]},
+    "attention_order": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["rank", "target_id", "role", "reason", "source"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1},
+          "target_id": {"type": "string", "minLength": 1},
+          "role": {"enum": ["primary", "secondary", "tertiary", "context"]},
+          "reason": {"type": "string", "minLength": 1},
+          "source": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "quiet_targets": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "checks": {"type": "array", "items": {"$ref": "#/$defs/evidence"}}
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "required": ["id", "status", "evidence", "source", "reason"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "status": {"enum": ["finding", "clean", "unknown", "not-applicable"]},
+        "evidence": {"type": "array"},
+        "source": {"enum": ["human-review", "runtime", "rendered-artifact", "accessibility-tree", "computed-layout", "assertion-report", "not-run"]},
+        "reason": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

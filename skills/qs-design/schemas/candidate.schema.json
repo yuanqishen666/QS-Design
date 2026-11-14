@@ -15,7 +15,16 @@
     "aspect_refs": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}},
     "accepted_aspects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
     "rejected_aspects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "feedback": {"type": "array", "items": {"type": "object"}},
+    "feedback": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "delta": {"type": ["object", "null"]}
+        },
+        "additionalProperties": true
+      }
+    },
     "created_at": {"type": "string", "format": "date-time"},
     "updated_at": {"type": "string", "format": "date-time"}
   },

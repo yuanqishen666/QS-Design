@@ -1,6 +1,6 @@
-# 微信小程序适配器 v3
+# 微信小程序适配器 v3.4
 
-先读取 Task Capsule、共享业务模型、连续性契约、语义意图和所选方向，再读 [微信平台约束](wechat-platform.md)。
+先读取 Task Capsule、Product Truth、Attention、Terminology、Prototype、共享业务模型、连续性契约、语义意图和所选方向，再读 [微信平台约束](wechat-platform.md)。
 
 ## 原生表达
 
@@ -9,6 +9,7 @@
 - 高频连续反馈不能依赖逐帧 `setData`；
 - 复杂交互必须提供普通点击、键盘或低性能降级路径；
 - 与其他平台共享业务状态和结果，不复制其控件和页面结构。
+- 局部迭代使用稳定 `data-qs-id` 或项目已有测试 dataset 标识，并确保渲染容器保留该标识；它不替代可访问名称。
 
 ## 内容显隐
 

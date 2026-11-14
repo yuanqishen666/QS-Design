@@ -9,6 +9,83 @@ export type ContentCriticality = 'critical' | 'supporting' | 'optional';
 export type ContentAudience = 'all' | 'most' | 'some';
 export type ContentTiming = 'persistent' | 'before-action' | 'on-error' | 'first-run' | 'on-demand';
 export type ContentDelivery = 'visible' | 'inline-hint' | 'details' | 'popover' | 'tooltip' | 'contextual-tip';
+export type PrototypeFidelity = 'specimen' | 'static' | 'clickable' | 'native';
+export type PresentationWorkMode = 'design' | 'audit' | 'interaction-lab' | 'implementation' | 'context-reset';
+export type PresentationStatus = 'planned' | 'presented' | 'blocked' | 'not-applicable';
+export type ContractEvidenceStatus = VerificationStatus;
+
+export interface ProductTruthContract {
+  schema: 1;
+  task_id: string;
+  source_mode: 'conversation' | 'product' | 'mixed';
+  affordance_policy: 'allowlist';
+  primary_jobs: Array<Record<string, unknown>>;
+  critical_journeys: Array<Record<string, unknown>>;
+  routes: Array<Record<string, unknown>>;
+  visible_affordances: Array<Record<string, unknown>>;
+  states: Array<Record<string, unknown>>;
+  forbidden_inventions: Array<Record<string, unknown>>;
+  unknowns: Array<Record<string, unknown>>;
+  terminology_risks: string[];
+  representative_task: Record<string, unknown> | null;
+  fixture_policy: Record<string, unknown>;
+}
+
+export interface AttentionContract {
+  schema: 1;
+  task_id: string;
+  first_viewport_job: string;
+  first_viewport_question: string;
+  primary_action_id: string | null;
+  attention_order: Array<Record<string, unknown>>;
+  quiet_targets: string[];
+  checks: Array<Record<string, unknown>>;
+}
+
+export interface TerminologyContract {
+  schema: 1;
+  task_id: string;
+  risk_status: 'reviewed-none' | 'terms-present' | 'unknown';
+  entries: Array<Record<string, unknown>>;
+}
+
+export interface PrototypeContract {
+  schema: 1;
+  task_id: string;
+  fidelity: PrototypeFidelity;
+  coverage_scope: 'representative' | 'full-product';
+  purpose: string;
+  required_paths: Array<Record<string, unknown>>;
+  required_states: string[];
+  data_fixture: Record<string, unknown>;
+  fixture_source: string;
+  viewports: Array<Record<string, unknown>>;
+  evidence_requirements: string[];
+  path_evidence: Array<Record<string, unknown>>;
+  critique_policy: Record<string, unknown>;
+  critique_cycles: Array<Record<string, unknown>>;
+  prohibited_claims: string[];
+}
+
+export interface PresentationRecord {
+  schema: 1;
+  work_mode: PresentationWorkMode;
+  status: PresentationStatus;
+  artifact_refs: string[];
+  preview_refs: string[];
+  experience_refs: string[];
+  channel: 'conversation' | 'export' | 'product';
+  blocker: string | null;
+  presented_at: string | null;
+}
+
+export interface DesignContracts {
+  product_truth: ProductTruthContract | null;
+  attention: AttentionContract | null;
+  terminology: TerminologyContract | null;
+  prototype: PrototypeContract | null;
+  reference_synthesis: Record<string, unknown> | null;
+}
 
 export interface ContentContractEntry {
   key: string;
@@ -55,6 +132,7 @@ export interface TaskCapsule {
   official_constraints: ContextItem[];
   semantic_intent: Record<string, unknown> | null;
   continuity_contract: Record<string, unknown> | null;
+  design_contracts?: DesignContracts;
   read_policy: Record<string, unknown>;
   platform_targets: Array<'web' | 'ios' | 'android' | 'wechat' | 'alipay'>;
   candidate_refs: string[];
@@ -89,8 +167,50 @@ export interface ContextManifest {
   parents: string[];
   inherited_aspects: string[];
   inheritance_map: Record<string, string[]>;
+  mutation_scope?: Record<string, unknown> | null;
+  feedback_delta?: Record<string, unknown> | null;
   context_hash: string;
   created_at: string;
+}
+
+export interface WorkerExecutionPolicy {
+  schema: 1;
+  policy_id: string;
+  content: { source_priority: string[]; requirements: string[] };
+  product: { requirements: string[] };
+  platform: { requirements: string[] };
+  visual: { requirements: string[] };
+  terminology: { requirements: string[] };
+  research: { requirements: string[] };
+  change: { requirements: string[] };
+  delivery: { requirements: string[] };
+  validation: { requirements: string[] };
+}
+
+export interface WorkerPayload {
+  schema: 1;
+  task_id: string;
+  execution_policy: WorkerExecutionPolicy;
+  relation: RunRelation;
+  business_facts: ContextItem[];
+  current_requirements: ContextItem[];
+  official_constraints: ContextItem[];
+  semantic_intent: Record<string, unknown> | null;
+  continuity_contract: Record<string, unknown> | null;
+  design_contracts: DesignContracts;
+  platform_targets: string[];
+  mutation_scope: Record<string, unknown> | null;
+  feedback_delta: Record<string, unknown> | null;
+  constraints: string[];
+  parents: Array<Record<string, unknown>>;
+  prohibited_context: string[];
+  payload_hash: string;
+}
+
+export interface RenderedArtifact {
+  id?: string;
+  path?: string;
+  html: string;
 }
 
 export interface ContextStore {
@@ -143,11 +263,16 @@ export interface ValidationResult {
   advisories: string[];
 }
 
+export interface ContractValidationResult extends ValidationResult {
+  outcomes?: Array<Record<string, unknown>>;
+}
+
 export const PERSISTENCE_MODES: PersistenceMode[];
 export const CONTEXT_KINDS: ContextKind[];
 export const CONTEXT_SCOPES: ContextScope[];
 export const CONFIDENCE_LEVELS: string[];
 export const PLATFORMS: string[];
+export const DESIGN_CONTRACT_KEYS: string[];
 export const CANDIDATE_STATUSES: CandidateStatus[];
 export const RUN_RELATIONS: RunRelation[];
 export const SOURCE_KINDS: string[];
@@ -172,6 +297,30 @@ export const CONTENT_DELIVERIES: ContentDelivery[];
 export const SUPPLEMENTAL_CONTENT_KINDS: string[];
 export const DEFAULT_ENV_ALLOWLIST: string[];
 export const EMPTY_GOVERNANCE: Readonly<Record<string, unknown[]>>;
+export const WORKER_EXECUTION_POLICY: WorkerExecutionPolicy;
+export const VISUAL_CARRIERS: readonly string[];
+export const PRODUCT_TRUTH_SOURCE_MODES: string[];
+export const PRODUCT_TRUTH_CONFIDENCE: string[];
+export const PRODUCT_ITEM_STATUSES: string[];
+export const AFFORDANCE_KINDS: string[];
+export const FIXTURE_MODES: string[];
+export const ATTENTION_ROLES: string[];
+export const ATTENTION_CHECKS: string[];
+export const TERMINOLOGY_RISK_STATUSES: string[];
+export const TERMINOLOGY_ITEM_STATUSES: string[];
+export const TERMINOLOGY_RESOLUTIONS: string[];
+export const PROTOTYPE_FIDELITIES: PrototypeFidelity[];
+export const PROTOTYPE_COVERAGE: string[];
+export const PROTOTYPE_EVIDENCE: string[];
+export const REFERENCE_FACETS: string[];
+export const REFERENCE_LICENSE: string[];
+export const FEEDBACK_DIAGNOSIS_CONFIDENCE: string[];
+export const FEEDBACK_CHANGE_SCOPES: string[];
+export const FEEDBACK_RELATIONS: string[];
+export const FEEDBACK_SCOPES: string[];
+export const ELEMENT_FACETS: string[];
+export const MUTATION_CONFLICT_POLICIES: string[];
+export const PROPAGATION_COVERAGE_STATUSES: string[];
 
 export function contextItem(value: unknown, options?: Record<string, unknown>): ContextItem;
 export function addTaskContext(task: TaskCapsule, section: string, item: unknown, now?: Date): TaskCapsule;
@@ -181,7 +330,30 @@ export function validateCandidate(candidate: unknown): string[];
 export function validateCandidateGraph(candidates: Candidate[], taskId?: string | null): string[];
 export function readableCandidate(candidate: Candidate | null, options?: { explicitlyNamed?: boolean }): boolean;
 export function normalizeFeedback(input: Record<string, unknown>): Record<string, unknown>;
+export function createProductTruth(input: Record<string, unknown>): ProductTruthContract;
+export function validateProductTruth(contract: unknown): ValidationResult;
+export function productTruthIds(contract: ProductTruthContract): string[];
+export function createAttentionContract(input: Record<string, unknown>): AttentionContract;
+export function validateAttentionContract(contract: unknown, options?: { productTruth?: ProductTruthContract | null }): ContractValidationResult;
+export function createTerminologyContract(input: Record<string, unknown>): TerminologyContract;
+export function validateTerminologyContract(contract: unknown, options?: { productTruth?: ProductTruthContract | null }): ContractValidationResult;
+export function createPrototypeContract(input: Record<string, unknown>): PrototypeContract;
+export function validatePrototypeContract(contract: unknown, options?: { productTruth?: ProductTruthContract | null }): ContractValidationResult;
+export function createPresentationRecord(input?: Record<string, unknown>): PresentationRecord;
+export function validatePresentationRecord(record: unknown, options?: { prototypeContract?: PrototypeContract | null; requireComplete?: boolean }): ValidationResult;
+export function createReferenceSynthesis(input: Record<string, unknown>): Record<string, unknown>;
+export function validateReferenceSynthesis(contract: unknown): ValidationResult;
+export function createFeedbackDelta(input: Record<string, unknown>): Record<string, unknown>;
+export function validateFeedbackDelta(delta: unknown): ValidationResult & { normalized: Record<string, unknown> };
+export function createElementRegistry(input: Record<string, unknown>): Record<string, unknown>;
+export function validateElementRegistry(registry: unknown): string[];
+export function createMutationScope(input: Record<string, unknown>): Record<string, unknown>;
+export function validateMutationScope(scope: unknown, options?: { registry?: Record<string, unknown> | null }): string[];
+export function auditElementMutation(input: Record<string, unknown>): { errors: string[]; changes: Array<Record<string, unknown>>; conflicts: Array<Record<string, unknown>>; clean: boolean };
+export function createPropagationMap(input: Record<string, unknown>): Record<string, unknown>;
+export function validatePropagationMap(map: unknown, options?: { productTruth?: ProductTruthContract | null }): ValidationResult;
 export function validateContextManifest(manifest: unknown, candidates?: Candidate[], options?: Record<string, unknown>): string[];
+export function buildWorkerPayload(input: { task: TaskCapsule; manifest: ContextManifest; candidates?: Candidate[]; artifacts?: Array<{ ref: string; value: unknown }> }): WorkerPayload;
 export function continuityItem(claim: string, options?: Record<string, unknown>): Record<string, unknown>;
 export function createContinuityContract(input?: Record<string, unknown>): Record<string, unknown>;
 export function validateContinuityContract(contract: unknown): string[];
@@ -228,6 +400,7 @@ export function createException(input: Record<string, unknown>): Record<string, 
 export function validateException(exception: unknown, now?: Date): string[];
 export function activeDecisions(decisions: Array<Record<string, unknown>>, options?: Record<string, unknown>): Array<Record<string, unknown>>;
 export function finding(input?: Record<string, unknown>): VerificationFinding;
+export function verifyBundle(bundle?: Record<string, unknown> & { renderedArtifacts?: RenderedArtifact[] | RenderedArtifact | string[] | string }, now?: Date): Record<string, unknown>;
 export function applyVerificationExceptions(report: Record<string, unknown>, exceptions?: Array<Record<string, unknown>>, now?: Date): Record<string, unknown>;
 export function verifyBundleWithRules(bundle?: Record<string, unknown>, rules?: VerificationRule[], now?: Date): Promise<Record<string, unknown>>;
 export function createVerificationRule(input: Record<string, unknown>): VerificationRule;

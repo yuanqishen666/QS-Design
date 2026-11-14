@@ -11,6 +11,32 @@
     "reason": {"type": "string", "minLength": 1},
     "cost_notice": {"type": ["string", "null"]},
     "comparison_frame": {"type": "array", "items": {"type": "string"}},
+    "comparison_specimen": {
+      "type": ["object", "null"],
+      "required": ["representative_task", "content_fixture", "information_scope", "primary_action", "outcome"],
+      "properties": {
+        "contract_version": {"const": 2},
+        "representative_task_id": {"type": "string", "minLength": 1},
+        "representative_task": {"type": "string", "minLength": 1},
+        "selection_rationale": {"type": "string", "minLength": 1},
+        "selection_basis": {"type": "array", "minItems": 1, "items": {"enum": ["frequency", "risk", "learning-goal", "user-request"]}, "uniqueItems": true},
+        "content_fixture": {"type": "object", "minProperties": 1},
+        "fixture_source": {"type": "string", "minLength": 1},
+        "information_scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "primary_action": {"type": "string", "minLength": 1},
+        "action_order": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "required_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "outcome": {"type": "string", "minLength": 1},
+        "viewport": {"type": "string"}
+      },
+      "allOf": [
+        {
+          "if": {"required": ["contract_version"], "properties": {"contract_version": {"const": 2}}},
+          "then": {"required": ["representative_task_id", "selection_rationale", "selection_basis", "fixture_source", "action_order", "required_paths"]}
+        }
+      ],
+      "additionalProperties": true
+    },
     "directions": {
       "type": "array",
       "minItems": 1,
@@ -23,7 +49,29 @@
           "business_signature": {"type": "string"},
           "information_topology": {"type": "string"},
           "interaction_model": {"type": "string"},
-          "art_direction": {"type": "object"},
+          "art_direction": {
+            "type": "object",
+            "required": ["visual_thesis", "business_anchor", "primary_visual_object", "dominant_visual_carrier", "supporting_visual_carriers", "surface_strategy", "composition_logic", "type_roles", "image_strategy", "material_logic", "color_behavior", "spatial_rhythm", "motion_language", "signature_moment", "restraint_budget", "fallback_strategy"],
+            "properties": {
+              "visual_thesis": {"type": "string", "minLength": 1},
+              "business_anchor": {"type": "string", "minLength": 1},
+              "primary_visual_object": {"type": "string", "minLength": 1},
+              "dominant_visual_carrier": {"enum": ["domain-object", "typography", "imagery", "data-diagram", "shape-field", "material-texture", "color-light", "illustration-symbol", "spatial-composition", "motion-behavior"]},
+              "supporting_visual_carriers": {"type": "array", "items": {"enum": ["domain-object", "typography", "imagery", "data-diagram", "shape-field", "material-texture", "color-light", "illustration-symbol", "spatial-composition", "motion-behavior"]}, "uniqueItems": true},
+              "surface_strategy": {"type": "string", "minLength": 1},
+              "composition_logic": {"type": "string", "minLength": 1},
+              "type_roles": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+              "image_strategy": {"type": "string", "minLength": 1},
+              "material_logic": {"type": "string", "minLength": 1},
+              "color_behavior": {"type": "string", "minLength": 1},
+              "spatial_rhythm": {"type": "string", "minLength": 1},
+              "motion_language": {"type": "string", "minLength": 1},
+              "signature_moment": {"type": "string", "minLength": 1},
+              "restraint_budget": {"type": "string", "minLength": 1},
+              "fallback_strategy": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": true
+          },
           "dominant_decisions": {
             "type": "array",
             "minItems": 1,
@@ -59,5 +107,11 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {"properties": {"count": {"minimum": 2}}, "required": ["count"]},
+      "then": {"required": ["comparison_specimen"], "properties": {"comparison_specimen": {"type": "object"}}}
+    }
+  ],
   "additionalProperties": false
 }

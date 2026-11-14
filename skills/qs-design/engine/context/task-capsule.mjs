@@ -1,10 +1,16 @@
 import { assertEnum, clone, identifier, requiredText, timestamp, unique } from '../shared/utils.mjs';
+import { validateProductTruth } from '../contracts/product-truth.mjs';
+import { validateAttentionContract } from '../contracts/attention.mjs';
+import { validateTerminologyContract } from '../contracts/terminology.mjs';
+import { validatePrototypeContract } from '../contracts/prototype.mjs';
+import { validateReferenceSynthesis } from '../contracts/reference-synthesis.mjs';
 
 export const PERSISTENCE_MODES = ['ephemeral', 'chat', 'portable', 'project'];
 export const CONTEXT_KINDS = ['fact', 'decision', 'inference', 'hypothesis', 'unknown'];
 export const CONTEXT_SCOPES = ['candidate', 'task', 'session', 'project', 'profile'];
 export const CONFIDENCE_LEVELS = ['high', 'medium', 'low', 'unknown'];
 export const PLATFORMS = ['web', 'ios', 'android', 'wechat', 'alipay'];
+export const DESIGN_CONTRACT_KEYS = ['product_truth', 'attention', 'terminology', 'prototype', 'reference_synthesis'];
 
 export function contextItem(value, {
   id,
@@ -56,6 +62,13 @@ export function createTaskCapsule({
   officialConstraints = [],
   semanticIntent = null,
   continuityContract = null,
+  designContracts = {},
+  design_contracts: serializedDesignContracts = null,
+  productTruth = null,
+  attentionContract = null,
+  terminologyContract = null,
+  prototypeContract = null,
+  referenceSynthesis = null,
   readPolicy = {},
   platformTargets = [],
   candidateRefs = [],
@@ -74,6 +87,13 @@ export function createTaskCapsule({
     official_constraints: normalizeItems(officialConstraints, 'fact'),
     semantic_intent: semanticIntent ? clone(semanticIntent) : null,
     continuity_contract: continuityContract ? clone(continuityContract) : null,
+    design_contracts: {
+      product_truth: clone(productTruth ?? serializedDesignContracts?.product_truth ?? designContracts?.product_truth ?? null),
+      attention: clone(attentionContract ?? serializedDesignContracts?.attention ?? designContracts?.attention ?? null),
+      terminology: clone(terminologyContract ?? serializedDesignContracts?.terminology ?? designContracts?.terminology ?? null),
+      prototype: clone(prototypeContract ?? serializedDesignContracts?.prototype ?? designContracts?.prototype ?? null),
+      reference_synthesis: clone(referenceSynthesis ?? serializedDesignContracts?.reference_synthesis ?? designContracts?.reference_synthesis ?? null)
+    },
     read_policy: clone(readPolicy),
     platform_targets: unique(platformTargets),
     candidate_refs: unique(candidateRefs),
@@ -130,5 +150,26 @@ export function validateTaskCapsule(task) {
   if (new Set(task?.candidate_refs ?? []).size !== (task?.candidate_refs ?? []).length) errors.push('Task capsule candidate_refs must be unique.');
   const profileItems = new Map([...contextIds].map(id => [id, [...(task?.business_facts ?? []), ...(task?.current_requirements ?? []), ...(task?.assumptions ?? []), ...(task?.official_constraints ?? [])].find(item => item.id === id)]).filter(([, item]) => item?.scope === 'profile'));
   for (const id of task?.read_policy?.allowed_profile_context ?? []) if (!profileItems.has(id)) errors.push(`Task capsule read_policy authorizes unknown or non-profile context ${id}.`);
+  if (task?.design_contracts != null) {
+    if (typeof task.design_contracts !== 'object' || Array.isArray(task.design_contracts)) errors.push('Task capsule design_contracts must be an object.');
+    else {
+      for (const key of Object.keys(task.design_contracts)) if (!DESIGN_CONTRACT_KEYS.includes(key)) errors.push(`Task capsule has unknown design contract ${key}.`);
+      const productTruth = task.design_contracts.product_truth ?? null;
+      const validators = [
+        ['product_truth', value => validateProductTruth(value)],
+        ['attention', value => validateAttentionContract(value, { productTruth })],
+        ['terminology', value => validateTerminologyContract(value, { productTruth })],
+        ['prototype', value => validatePrototypeContract(value, { productTruth })],
+        ['reference_synthesis', value => validateReferenceSynthesis(value)]
+      ];
+      for (const [key, validate] of validators) {
+        const value = task.design_contracts[key];
+        if (value == null) continue;
+        if (value.task_id !== task.task_id) errors.push(`Task capsule design contract ${key} belongs to a different task.`);
+        for (const error of validate(value).errors) errors.push(`design_contracts.${key}: ${error}`);
+      }
+      if (!productTruth && DESIGN_CONTRACT_KEYS.some(key => key !== 'product_truth' && task.design_contracts[key] != null)) errors.push('Task capsule requires Product Truth before attention, terminology, prototype or reference contracts.');
+    }
+  }
   return errors;
 }

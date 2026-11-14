@@ -2,7 +2,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { identifier, requiredText, sha256, stableValue, timestamp, unique } from '../shared/utils.mjs';
 
-const MATERIAL_FIELDS = [
+const BASE_MATERIAL_FIELDS = [
   'task_capsule',
   'business_model',
   'continuity_contract',
@@ -15,6 +15,23 @@ const MATERIAL_FIELDS = [
   'known_unknowns',
   'captures'
 ];
+
+const EXTENDED_MATERIAL_FIELDS = [
+  'product_truth',
+  'attention_contract',
+  'terminology_contract',
+  'reference_synthesis',
+  'feedback_delta',
+  'mutation_scope',
+  'element_registry',
+  'propagation_map'
+];
+
+const MATERIAL_FIELDS = [...BASE_MATERIAL_FIELDS, ...EXTENDED_MATERIAL_FIELDS];
+
+function activeMaterialFields(bundle) {
+  return [...BASE_MATERIAL_FIELDS, ...EXTENDED_MATERIAL_FIELDS.filter(field => Object.hasOwn(bundle ?? {}, field))];
+}
 
 function materialValue(field, value) {
   const normalized = stableValue(value ?? null);
@@ -31,11 +48,11 @@ function materialValue(field, value) {
 }
 
 export function semanticComponentHashes(bundle) {
-  return Object.fromEntries(MATERIAL_FIELDS.map(field => [field, sha256(materialValue(field, bundle?.[field]))]));
+  return Object.fromEntries(activeMaterialFields(bundle).map(field => [field, sha256(materialValue(field, bundle?.[field]))]));
 }
 
 export function semanticHash(bundle) {
-  return sha256(Object.fromEntries(MATERIAL_FIELDS.map(field => [field, materialValue(field, bundle?.[field])])));
+  return sha256(Object.fromEntries(activeMaterialFields(bundle).map(field => [field, materialValue(field, bundle?.[field])])));
 }
 
 export function artifactManifest(artifacts = []) {
@@ -113,17 +130,20 @@ export function verifyApproval(approval, { taskId = null, candidateId = null, se
 }
 
 export function materialChanges(before, after) {
-  return MATERIAL_FIELDS.filter(field => sha256(materialValue(field, before?.[field])) !== sha256(materialValue(field, after?.[field])));
+  const fields = new Set([...activeMaterialFields(before), ...activeMaterialFields(after)]);
+  return [...fields].filter(field => sha256(materialValue(field, before?.[field])) !== sha256(materialValue(field, after?.[field])));
 }
 
 export function approvalDrift(approval, { taskId = null, candidateId = null, semanticBundle, artifacts = [] } = {}) {
   const current = semanticComponentHashes(semanticBundle);
   const approved = approval?.semantic_component_hashes ?? {};
-  const materialFields = MATERIAL_FIELDS.filter(field => approved[field] ? approved[field] !== current[field] : true);
+  const materialFields = [...new Set([...Object.keys(approved), ...Object.keys(current)])].filter(field => approved[field] !== current[field]);
   const categories = new Set();
   for (const field of materialFields) {
     if (['task_capsule', 'business_model', 'continuity_contract', 'semantic_intent'].includes(field)) categories.add('semantic-or-state');
-    if (['direction', 'prototype_contract', 'user_visible_copy', 'captures'].includes(field)) categories.add('visual-or-content');
+    if (['product_truth', 'attention_contract', 'terminology_contract', 'reference_synthesis', 'feedback_delta'].includes(field)) categories.add('semantic-or-state');
+    if (['direction', 'prototype_contract', 'user_visible_copy', 'captures', 'element_registry', 'propagation_map'].includes(field)) categories.add('visual-or-content');
+    if (field === 'mutation_scope') categories.add('change-boundary');
     if (field === 'signature_interaction') categories.add('interaction');
     if (field === 'platform_expression') categories.add('platform');
     if (field === 'known_unknowns') categories.add('risk-contract');

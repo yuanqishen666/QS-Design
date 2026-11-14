@@ -39,11 +39,17 @@ The artifact stays central. Condition findings remain attached to exact location
 - Uses one `$qs-design` entry point and routes internally to iOS, Android, Web, WeChat Mini Program and Alipay Mini Program capabilities.
 - Works without a project folder and supports incremental design or refactoring inside an existing product.
 - Uses a Task Capsule to isolate rejected concepts and unauthorized history; only explicitly named candidate aspects can be inherited.
+- Freezes a source-backed Product Truth with primary jobs, critical journeys, known routes and states, a visible-affordance allowlist, forbidden inventions and explicit unknowns.
+- Uses an Attention Contract to keep one first-viewport task dominant, and a Terminology Contract to catch labels that predict the wrong destination before helper copy is added.
 - Explores one to three directions according to real uncertainty instead of producing fixed variants or color swaps.
 - Derives page topology, visual priority, core modules and signature interactions from business objects, relationships, states, risks and value moments.
 - Uses a continuity contract to decide what an existing product must preserve, adapt, leave open or prohibit.
 - Makes layout, hierarchy, spacing, real data and clear actions explain the interface before adding supporting copy.
 - Keeps amounts, permissions, risks, constraints, consequences and recovery visible; tooltips are reserved for short, optional and non-interactive information.
+- Matches specimen, static, clickable or native prototype fidelity to fixed paths, states, fixtures and evidence; a screenshot cannot claim an interaction passed.
+- Treats design, optimization, visual-improvement and refactoring requests as design work even when phrased as questions. Design mode renders and embeds a directly viewable preview for every formal direction; prose, tables and ASCII alone are not a design delivery.
+- Converts feedback into bounded preserve/change/do-not-infer experiments and protects untouched approved elements with stable identities and mutation scopes.
+- Expands a selected representative flow through a route-aware propagation map instead of repeating one page template across the product.
 - Verifies keyboard, touch, screen reader, text scaling, reduced motion, failure states, performance, asset provenance and platform degradation.
 
 ## Install and use

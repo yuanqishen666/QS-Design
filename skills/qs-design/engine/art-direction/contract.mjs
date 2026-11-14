@@ -1,10 +1,12 @@
 import { clone, unique } from '../shared/utils.mjs';
 import { meaningfullyEquivalent } from '../shared/text-similarity.mjs';
 
-export const ART_FIELDS = ['visual_thesis', 'business_anchor', 'primary_visual_object', 'composition_logic', 'type_roles', 'image_strategy', 'material_logic', 'color_behavior', 'spatial_rhythm', 'motion_language', 'signature_moment', 'restraint_budget', 'fallback_strategy'];
+export const VISUAL_CARRIERS = Object.freeze(['domain-object', 'typography', 'imagery', 'data-diagram', 'shape-field', 'material-texture', 'color-light', 'illustration-symbol', 'spatial-composition', 'motion-behavior']);
+export const ART_FIELDS = ['visual_thesis', 'business_anchor', 'primary_visual_object', 'dominant_visual_carrier', 'supporting_visual_carriers', 'surface_strategy', 'composition_logic', 'type_roles', 'image_strategy', 'material_logic', 'color_behavior', 'spatial_rhythm', 'motion_language', 'signature_moment', 'restraint_budget', 'fallback_strategy'];
+const ARRAY_ART_FIELDS = new Set(['type_roles', 'supporting_visual_carriers']);
 
 export function createArtDirection(values = {}) {
-  return Object.fromEntries(ART_FIELDS.map(field => [field, field === 'type_roles' ? unique(values[field] ?? []) : clone(values[field] ?? '')]));
+  return Object.fromEntries(ART_FIELDS.map(field => [field, ARRAY_ART_FIELDS.has(field) ? unique(values[field] ?? []) : clone(values[field] ?? '')]));
 }
 
 export function createDesignFingerprint(values = {}) {
@@ -17,8 +19,14 @@ export function validateArtDirection(contract, { dominantDecisions = [] } = {}) 
   const advisories = [];
   for (const field of ART_FIELDS) {
     const value = contract?.[field];
-    if (field === 'type_roles' ? !Array.isArray(value) || !value.length : !String(value ?? '').trim()) errors.push(`Art direction requires ${field}.`);
+    if (ARRAY_ART_FIELDS.has(field) ? !Array.isArray(value) || (field === 'type_roles' && !value.length) : !String(value ?? '').trim()) errors.push(`Art direction requires ${field}.`);
   }
+  if (contract?.dominant_visual_carrier && !VISUAL_CARRIERS.includes(contract.dominant_visual_carrier)) errors.push(`dominant_visual_carrier must be one of: ${VISUAL_CARRIERS.join(', ')}.`);
+  const supporting = contract?.supporting_visual_carriers ?? [];
+  for (const carrier of supporting) if (!VISUAL_CARRIERS.includes(carrier)) errors.push(`Unsupported supporting visual carrier: ${carrier}.`);
+  if (supporting.includes(contract?.dominant_visual_carrier)) errors.push('supporting_visual_carriers must not repeat dominant_visual_carrier.');
+  if (supporting.length > 3) advisories.push('More than three supporting visual carriers can dilute the visual thesis; justify them in the restraint budget or remove some.');
+  if (/\b(card|cards|panel|panels|tile|tiles)\b/i.test(String(contract?.surface_strategy ?? '')) && !/(state|interactive|select|group|link|lifecycle|permission|modal|独立|状态|交互|选择|分组|链接|生命周期|权限|模态)/i.test(String(contract?.surface_strategy ?? ''))) advisories.push('Surface strategy names containers without explaining their semantic role; do not use cards or panels as the default layout unit.');
   if (String(contract?.business_anchor ?? '').trim().length < 10) advisories.push('Business anchor is too vague; the visual direction may be transferable to unrelated products.');
   for (const [index, decision] of dominantDecisions.entries()) {
     const hasGrounding = decision.business_basis || decision.art_direction_basis || decision.brand_basis || decision.platform_basis;

@@ -2,6 +2,12 @@
 
 验证覆盖上下文隔离、业务结果、连续性、业务特异性、视觉工艺、内容、交互、无障碍、平台能力、实现一致性和维护性。
 
+正式候选还必须提供 Product Truth、Attention、Terminology 和 Prototype 合同。合同结构合法只说明声明可解析；五秒、模糊/眯眼、灰度、焦点、文字缩放、label-only comprehension 和原型路径仍需要最终渲染、运行或人工证据。缺失合同是 `finding`，缺失运行证据是 `unknown`。
+
+迭代修改提供 Mutation Scope 时，验证 before/after Element Registry。未授权 facet、删除、新增、身份或父级变化是 blocker。全产品 Prototype Contract 必须同时提供 Propagation Map，并覆盖 Product Truth 中的所有已知 route；覆盖、延期和不适用都需要证据或理由。
+
+正式设计同时验证 Presentation Record。`rendered` 或 `inspected` 不能替代 `presented`：每个方向的 preview 必须出现在最终回复中，可点击或原生产物还必须有可打开入口。Presentation Record 缺失、仍为 `planned`、preview 未出现在最终渲染产物集合中，或把文字/ASCII 当作 preview，均为 `prototype-implementation` blocker。纯审计可以明确记录 `not-applicable`。
+
 ## 内容显隐证据
 
 内容质量不能由字数、可见文本面积或“极简感”判定。分别记录：
@@ -12,6 +18,8 @@
 - **误删风险**：为了减少文字是否删除了无法由布局、图标、颜色或动效可靠表达的业务语义。
 
 静态 lint 可以证明重复、内容契约冲突和部分语义关系；它不能证明用户理解或 tooltip 运行行为。后两者没有任务轨迹、可访问树或人工检查时报告 `unknown`。
+
+内容合同只证明声明结构可解析，不能证明最终界面的可见文案必要、已绑定或有来源。正式候选必须提供最终渲染 DOM/产物给内容 lint；只有合同而没有最终产物时，`content-quality` 报告 `unknown`，不得报告 `clean`。抽象业务模型里的 `content_graph` 不能冒充候选样张的逐字内容合同。
 
 ## 结果
 

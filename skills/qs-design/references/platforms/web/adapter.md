@@ -1,6 +1,6 @@
-# Web 适配器 v3
+# Web 适配器 v3.4
 
-先读取 Task Capsule、业务模型、连续性契约、语义意图和所选方向，再读 [Web 平台约束](web-platform.md)。不要把 Web 页面当成其他平台的母版。
+先读取 Task Capsule、Product Truth、Attention、Terminology、Prototype、业务模型、连续性契约、语义意图和所选方向，再读 [Web 平台约束](web-platform.md)。不要把 Web 页面当成其他平台的母版。
 
 ## 原生表达
 
@@ -9,6 +9,7 @@
 - Canvas 只承担绘制，业务语义和替代操作保留在 DOM；
 - 动效可打断并处理 `prefers-reduced-motion`；
 - 真实检查窄、中、宽视口、长内容、键盘和滚动。
+- 已展示候选进入局部迭代时，为受治理元素保留唯一 `data-qs-id="qs-*"`；`data-qs-role` 不能脱离稳定 ID。Mutation Scope 存在时，最终 DOM 缺少、重复或改变 ID 都不能通过。
 
 ## 内容显隐
 

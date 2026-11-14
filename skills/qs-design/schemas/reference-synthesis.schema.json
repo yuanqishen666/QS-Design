@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/reference-synthesis.schema.json",
+  "title": "QS Design Reference Synthesis",
+  "type": "object",
+  "required": ["schema", "task_id", "research_required", "references", "mechanisms"],
+  "properties": {
+    "schema": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "research_required": {"type": "boolean"},
+    "references": {"type": "array", "items": {"type": "object", "required": ["id", "label", "ref", "source", "license_status", "notes"], "properties": {"id": {"type": "string"}, "label": {"type": "string"}, "ref": {"type": "string"}, "source": {"type": "string"}, "license_status": {"enum": ["not-required-observation", "verified", "restricted", "unknown"]}, "notes": {"type": "string"}}, "additionalProperties": false}},
+    "mechanisms": {"type": "array", "items": {"type": "object", "required": ["id", "source_ids", "facets", "observed_mechanism", "user_effect", "business_need", "local_rule", "do_not_copy", "constraints", "independent_basis"], "properties": {"id": {"type": "string"}, "source_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true}, "facets": {"type": "array", "minItems": 1, "items": {"enum": ["layout", "typography", "imagery", "data-relationship", "shape", "material", "motion", "state", "content-principle", "interaction-mechanism"]}, "uniqueItems": true}, "observed_mechanism": {"type": "string"}, "user_effect": {"type": "string"}, "business_need": {"type": "string"}, "local_rule": {"type": "string"}, "do_not_copy": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "constraints": {"type": "array", "items": {"type": "string"}}, "independent_basis": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

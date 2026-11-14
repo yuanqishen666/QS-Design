@@ -1,6 +1,6 @@
-# Android 适配器 v3
+# Android 适配器 v3.4
 
-先读取 Task Capsule、共享业务模型、连续性契约、语义意图和所选方向，再读 [Android 平台约束](android-platform.md)。
+先读取 Task Capsule、Product Truth、Attention、Terminology、Prototype、共享业务模型、连续性契约、语义意图和所选方向，再读 [Android 平台约束](android-platform.md)。
 
 ## 原生表达
 
@@ -9,6 +9,7 @@
 - Compose/View 状态与业务状态分离，取消和中断不能误提交；
 - Material 能力是平台资源，不是强制整页风格；
 - 方向数由共享产品分歧决定，平台版本不另算方向。
+- 局部迭代时把稳定 `qs-*` 身份映射到 Compose `testTag` 或项目 View 测试标识；测试标识不替代 TalkBack 内容描述，并在 Mutation Scope 未授权时保持不变。
 
 ## 内容显隐
 

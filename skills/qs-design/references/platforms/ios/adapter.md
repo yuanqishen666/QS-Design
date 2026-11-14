@@ -1,4 +1,4 @@
-# iOS / iPadOS 适配器 v3
+# iOS / iPadOS 适配器 v3.4
 
 本适配器将共享业务模型编译为 Apple 平台原生表达，不决定产品方向数量。
 
@@ -11,6 +11,8 @@
 5. [视觉艺术指导](../../core/art-direction.md)
 6. 当前任务需要的 iOS 专项文件
 
+读取共享业务模型前同时读取当前 Product Truth、Attention、Terminology 和 Prototype 合同；它们共享业务结果，不共享 Web 构图。
+
 ## iOS 原生表达
 
 - 使用项目已有 NavigationStack、TabView、sheet、Menu、List 或 UIKit 路由；
@@ -19,6 +21,7 @@
 - 状态驱动交互，允许新输入接管；保存、取消和草稿分离；
 - 触觉只强化有意义阈值，不能成为唯一结果提示；
 - reduced motion 保留业务结果和直接操控。
+- 局部迭代时把稳定 `qs-*` 身份映射到 `accessibilityIdentifier` 或项目测试标识；identifier 只用于治理与验证，不替代 VoiceOver label，也不能因重构任意变化。
 
 ## 内容显隐
 

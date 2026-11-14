@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/terminology-contract.schema.json",
+  "title": "QS Design Terminology Contract",
+  "type": "object",
+  "required": ["schema", "task_id", "risk_status", "review_source", "review_evidence", "entries"],
+  "properties": {
+    "schema": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "risk_status": {"enum": ["reviewed-none", "terms-present", "unknown"]},
+    "review_source": {"type": "string", "minLength": 1},
+    "review_evidence": {"type": "array"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept_id", "intended_meaning", "label", "source", "status", "ambiguity_risk", "alternate_interpretations", "disallowed_synonyms", "resolution", "label_only_check"],
+        "properties": {
+          "concept_id": {"type": "string", "minLength": 1},
+          "intended_meaning": {"type": "string", "minLength": 1},
+          "label": {"type": "string", "minLength": 1},
+          "source": {"type": "string", "minLength": 1},
+          "status": {"enum": ["confirmed", "observed", "proposed"]},
+          "ambiguity_risk": {"enum": ["none", "low", "medium", "high", "unknown"]},
+          "alternate_interpretations": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "disallowed_synonyms": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "resolution": {"enum": ["rename", "structure", "visible-definition", "source-term", "unresolved"]},
+          "label_only_check": {"$ref": "attention-contract.schema.json#/$defs/evidence"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

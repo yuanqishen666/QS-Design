@@ -14,6 +14,15 @@ import { createApproval, approvalDrift, hashArtifactFiles } from '../governance/
 import { adapters } from '../../platforms/index.mjs';
 import { createStore } from '../../stores/index.mjs';
 import { readJSON, writeJSON } from '../shared/utils.mjs';
+import { createProductTruth } from '../contracts/product-truth.mjs';
+import { createAttentionContract } from '../contracts/attention.mjs';
+import { createTerminologyContract } from '../contracts/terminology.mjs';
+import { createPrototypeContract } from '../contracts/prototype.mjs';
+import { createPresentationRecord } from '../contracts/presentation.mjs';
+import { createReferenceSynthesis } from '../contracts/reference-synthesis.mjs';
+import { createFeedbackDelta } from '../contracts/feedback-delta.mjs';
+import { auditElementMutation, createElementRegistry, createMutationScope } from '../contracts/element-identity.mjs';
+import { createPropagationMap } from '../contracts/propagation.mjs';
 
 function parseArgs(args) {
   const positionals = [];
@@ -85,8 +94,36 @@ async function main() {
       hardResetFactIds: csv(options.facts),
       hardResetRequirementIds: csv(options.requirements),
       hardResetConstraintIds: csv(options['official-constraints']),
-      retainSemanticIntent: options['retain-semantic-intent'] === true
+      softResetContractKinds: csv(options['soft-contracts']),
+      hardResetContractKinds: csv(options['hard-contracts']),
+      retainSemanticIntent: options['retain-semantic-intent'] === true,
+      mutationScope: options['mutation-scope'] ? await readJSON(options['mutation-scope']) : null,
+      feedbackDelta: options['feedback-delta'] ? await readJSON(options['feedback-delta']) : null
     });
+  } else if (group === 'contract' && action === 'create') {
+    const input = await readJSON(options.input);
+    const factories = {
+      'product-truth': createProductTruth,
+      attention: createAttentionContract,
+      terminology: createTerminologyContract,
+      prototype: createPrototypeContract,
+      presentation: createPresentationRecord,
+      'reference-synthesis': createReferenceSynthesis,
+      'feedback-delta': createFeedbackDelta,
+      'element-registry': createElementRegistry,
+      'mutation-scope': createMutationScope,
+      'propagation-map': createPropagationMap
+    };
+    const factory = factories[options.kind];
+    if (!factory) throw new Error(`Unknown contract kind: ${options.kind ?? 'missing'}.`);
+    result = factory(input);
+  } else if (group === 'mutation' && action === 'audit') {
+    const input = options.input ? await readJSON(options.input) : {
+      before: await readJSON(options.before),
+      after: await readJSON(options.after),
+      scope: await readJSON(options.scope)
+    };
+    result = auditElementMutation(input);
   } else if (group === 'directions' && action === 'plan') {
     const input = await optionalJSON(options.input);
     result = planDirectionCount({ ...input, relation: options.relation ?? input.relation, changeKind: options.change ?? input.changeKind, ambiguity: options.ambiguity ?? input.ambiguity, userRequested: options.count ?? input.userRequested });
@@ -144,7 +181,7 @@ async function main() {
       artifacts: input.artifacts
     });
   } else if (group === 'migrate-v2') result = await migrateV2Project(options.project ?? '.');
-  else throw new Error('Usage: qs-design self-check | task create | candidate create | manifest compile | payload build | directions plan | verify | report apply-exceptions | platform inspect|run|verify|capture | store export|import|record | decision create | exception create | approval create|check | migrate-v2');
+  else throw new Error('Usage: qs-design self-check | task create | candidate create | contract create --kind ... --input ... | manifest compile | payload build | directions plan | mutation audit | verify | report apply-exceptions | platform inspect|run|verify|capture | store export|import|record | decision create | exception create | approval create|check | migrate-v2');
 
   if (options.output) await writeJSON(options.output, result);
   else process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);

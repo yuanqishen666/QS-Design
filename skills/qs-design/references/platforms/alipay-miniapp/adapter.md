@@ -1,6 +1,6 @@
-# 支付宝小程序适配器 v3
+# 支付宝小程序适配器 v3.4
 
-先读取 Task Capsule、共享业务模型、连续性契约、语义意图和所选方向，再读 [支付宝平台约束](alipay-platform.md)。
+先读取 Task Capsule、Product Truth、Attention、Terminology、Prototype、共享业务模型、连续性契约、语义意图和所选方向，再读 [支付宝平台约束](alipay-platform.md)。
 
 ## 原生表达
 
@@ -9,6 +9,7 @@
 - 保持金额、对象、提交、取消和返回语义；
 - 复杂表现必须有普通组件降级；
 - 平台版本是共享方向的原生表达，不是额外方向。
+- 局部迭代使用稳定 `data-qs-id` 或项目已有测试 dataset 标识；identifier 不承担用户可见文案和无障碍名称。
 
 ## 内容显隐
 

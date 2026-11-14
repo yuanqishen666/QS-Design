@@ -8,7 +8,43 @@ import { lintContentHTML } from './content-lint.mjs';
 import { nodeText, parseHTMLStructure, walkElements } from '../engine/verification/html-structure.mjs';
 import { cssTokens, parseCSSStructure } from '../engine/verification/css-structure.mjs';
 
-export function lintHTML(text, path = '<html>') {
+const SURFACE_NAME = /^(card|panel|tile)$|[-_](card|panel|tile)$|^(card|panel|tile)--/i;
+
+function surfaceSignature(node) {
+  const component = String(node?.attrs?.['data-component'] ?? node?.attrs?.['data-ui'] ?? '').trim().toLowerCase();
+  if (['card', 'panel', 'tile'].includes(component)) return component;
+  return String(node?.attrs?.class ?? '').split(/\s+/).map(value => value.trim()).find(value => SURFACE_NAME.test(value))?.toLowerCase() ?? null;
+}
+
+function surfaceFindings(root) {
+  const findings = [];
+  let nested = false;
+  const visit = (node, insideSurface = false) => {
+    if (!node || !Array.isArray(node.children)) return;
+    const elementChildren = node.children.filter(child => child.type === 'element');
+    const groups = new Map();
+    for (const child of elementChildren) {
+      const signature = surfaceSignature(child);
+      if (signature) groups.set(signature, (groups.get(signature) ?? 0) + 1);
+    }
+    for (const [signature, count] of groups) if (count >= 3) findings.push({
+      rule: 'surface-repeated-container-grid',
+      message: `${count} sibling “${signature}” surfaces repeat the same container treatment. Verify that each needs an independent interaction, state or lifecycle; homogeneous content is usually more scannable as a list, table, timeline, media grid or direct-on-canvas composition.`
+    });
+    for (const child of elementChildren) {
+      const isSurface = Boolean(surfaceSignature(child));
+      if (!nested && insideSurface && isSurface) {
+        nested = true;
+        findings.push({ rule: 'surface-nested-container', message: 'A card, panel or tile is nested inside another named surface. Recheck the information hierarchy and remove wrappers that do not express a real interaction, state or lifecycle boundary.' });
+      }
+      visit(child, insideSurface || isSurface);
+    }
+  };
+  visit(root);
+  return findings;
+}
+
+export function lintHTML(text, path = '<html>', { contentManifest = null, requireStableIds = false } = {}) {
   const errors = [];
   const warnings = [];
   const add = (list, rule, message) => list.push({ path, rule, message });
@@ -44,7 +80,15 @@ export function lintHTML(text, path = '<html>') {
   const ids = elements.map(node => node.attrs.id).filter(Boolean);
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   if (duplicates.length) add(errors, 'duplicate-id', `Duplicate IDs: ${[...new Set(duplicates)].join(', ')}.`);
-  warnings.push(...lintContentHTML(text, path).warnings);
+  const stableIds = elements.map(node => node.attrs['data-qs-id']).filter(Boolean);
+  const invalidStableIds = stableIds.filter(id => !/^qs-[a-z0-9-]+$/.test(id));
+  const duplicateStableIds = stableIds.filter((id, index) => stableIds.indexOf(id) !== index);
+  if (invalidStableIds.length) add(errors, 'stable-element-id-invalid', `Invalid data-qs-id values: ${[...new Set(invalidStableIds)].join(', ')}.`);
+  if (duplicateStableIds.length) add(errors, 'stable-element-id-duplicate', `Duplicate data-qs-id values: ${[...new Set(duplicateStableIds)].join(', ')}.`);
+  if (requireStableIds && !stableIds.length) add(errors, 'stable-element-id-missing', 'This scoped iterative edit requires stable data-qs-id identities in the final rendered DOM.');
+  for (const node of elements.filter(node => Object.hasOwn(node.attrs, 'data-qs-role') && !Object.hasOwn(node.attrs, 'data-qs-id'))) add(errors, 'stable-element-role-unbound', 'An element declares data-qs-role without a stable data-qs-id.');
+  for (const finding of surfaceFindings(structure.root)) add(warnings, finding.rule, finding.message);
+  warnings.push(...lintContentHTML(text, path, { contentManifest }).warnings);
   return { errors, warnings };
 }
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "qs-design",
-  "version": "3.2.0",
-  "description": "Business-conditioned, context-isolated product design with structure-first content and native cross-platform verification.",
+  "version": "3.4.1",
+  "description": "Business-truth-grounded, context-isolated product design with explicit attention, prototype and scoped-change verification.",
   "author": {
     "name": "QS"
   },
@@ -13,15 +13,18 @@
     "com.openai": {
       "interface": {
         "displayName": "QS Design",
-        "shortDescription": "业务条件化、结构先解释的跨平台产品设计",
-        "longDescription": "从模糊业务语言、真实内容、连续性契约与平台能力形成一至三个必要方向；让结构和操作先完成解释，只保留不可替代文字，并以可验证的原生表达交付 iOS、Android、Web、微信和支付宝体验。",
+        "shortDescription": "业务事实驱动、变更有边界的跨平台产品设计",
+        "longDescription": "从对话或现有产品建立 Product Truth、注意力、术语和原型合同，再形成一至三个必要方向；让结构和操作先完成解释，用稳定元素身份保护已批准决定，并以可验证的原生表达交付 iOS、Android、Web、微信和支付宝体验。",
         "developerName": "QS",
         "category": "Developer Tools",
         "capabilities": ["Read", "Write"],
         "websiteURL": "https://github.com/yuanqishen666/QS-Design",
         "defaultPrompt": [
           "Use QS Design to compile an authorized task context, model the business, and explore one to three genuinely different directions according to uncertainty before modifying product code.",
-          "Make structure, hierarchy, spacing, data and clear actions explain the interface before adding helper copy; keep critical facts visible and reserve tooltips for short optional non-interactive information."
+          "Freeze source-backed Product Truth, visible-affordance allowlists, first-viewport attention, terminology and prototype paths before formal direction generation.",
+          "Make structure, hierarchy, spacing, data and clear actions explain the interface before adding helper copy; keep critical facts visible and reserve tooltips for short optional non-interactive information.",
+          "Convert feedback into bounded deltas, protect untouched stable element facets, and use a propagation map before expanding an approved representative flow across the product.",
+          "Treat design, optimization, visual improvement and refactoring requests as design work even when phrased as questions; finish by embedding a rendered preview for every formal direction, plus a runnable entry for clickable or native work."
         ],
         "brandColor": "#165DFF"
       }

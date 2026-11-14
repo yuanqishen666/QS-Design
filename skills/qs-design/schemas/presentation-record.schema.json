@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/presentation-record.schema.json",
+  "title": "QS Design Presentation Record",
+  "type": "object",
+  "required": ["schema", "work_mode", "status", "artifact_refs", "preview_refs", "experience_refs", "channel", "blocker", "presented_at"],
+  "properties": {
+    "schema": {"const": 1},
+    "work_mode": {"enum": ["design", "audit", "interaction-lab", "implementation", "context-reset"]},
+    "status": {"enum": ["planned", "presented", "blocked", "not-applicable"]},
+    "artifact_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "preview_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "experience_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "channel": {"enum": ["conversation", "export", "product"]},
+    "blocker": {"type": ["string", "null"]},
+    "presented_at": {"type": ["string", "null"], "format": "date-time"}
+  },
+  "additionalProperties": false
+}

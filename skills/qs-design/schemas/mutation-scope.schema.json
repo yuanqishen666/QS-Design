@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/mutation-scope.schema.json",
+  "title": "QS Design Mutation Scope",
+  "type": "object",
+  "required": ["schema", "candidate_id", "user_evidence", "operations", "allow_additions_under", "allow_removals", "locked", "conflict_policy"],
+  "properties": {
+    "schema": {"const": 1},
+    "candidate_id": {"type": "string", "pattern": "^candidate-[a-z0-9-]+$"},
+    "user_evidence": {"type": "string", "minLength": 1},
+    "operations": {"type": "array", "items": {"type": "object", "required": ["element_id", "allow_facets", "reason"], "properties": {"element_id": {"type": "string", "pattern": "^qs-[a-z0-9-]+$"}, "allow_facets": {"type": "array", "minItems": 1, "items": {"enum": ["copy", "layout", "visual", "behavior", "visibility", "children", "data-binding", "accessibility"]}, "uniqueItems": true}, "reason": {"type": "string", "minLength": 1}}, "additionalProperties": false}},
+    "allow_additions_under": {"type": "array", "items": {"type": "string", "pattern": "^qs-[a-z0-9-]+$"}, "uniqueItems": true},
+    "allow_removals": {"type": "array", "items": {"type": "string", "pattern": "^qs-[a-z0-9-]+$"}, "uniqueItems": true},
+    "locked": {"type": "array", "items": {"type": "object", "required": ["element_id", "facets"], "properties": {"element_id": {"type": "string", "pattern": "^qs-[a-z0-9-]+$"}, "facets": {"type": "array", "items": {"enum": ["copy", "layout", "visual", "behavior", "visibility", "children", "data-binding", "accessibility"]}, "uniqueItems": true}}, "additionalProperties": false}},
+    "conflict_policy": {"enum": ["report-and-stop", "report-and-request"]}
+  },
+  "additionalProperties": false
+}

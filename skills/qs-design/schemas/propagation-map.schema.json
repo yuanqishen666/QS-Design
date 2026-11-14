@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/propagation-map.schema.json",
+  "title": "QS Design Product Propagation Map",
+  "type": "object",
+  "required": ["schema", "task_id", "candidate_id", "global_decisions", "page_decisions", "preserved_behaviors", "route_coverage", "exceptions"],
+  "properties": {
+    "schema": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "candidate_id": {"type": "string", "pattern": "^candidate-[a-z0-9-]+$"},
+    "global_decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}},
+    "page_decisions": {"type": "array", "items": {"type": "object", "required": ["route_id", "decisions"], "properties": {"route_id": {"type": "string"}, "decisions": {"type": "array", "items": {"$ref": "#/$defs/decision"}}}, "additionalProperties": false}},
+    "preserved_behaviors": {"type": "array", "items": {"type": "object", "required": ["id", "behavior", "source"], "properties": {"id": {"type": "string"}, "behavior": {"type": "string"}, "source": {"type": "string"}}, "additionalProperties": false}},
+    "route_coverage": {"type": "array", "items": {"type": "object", "required": ["route_id", "states", "status", "evidence", "reason"], "properties": {"route_id": {"type": "string"}, "states": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}, "status": {"enum": ["covered", "deferred", "not-applicable"]}, "evidence": {"type": "array"}, "reason": {"type": "string"}}, "additionalProperties": false}},
+    "exceptions": {"type": "array", "items": {"type": "object", "required": ["id", "scope", "reason"], "properties": {"id": {"type": "string"}, "scope": {"type": "string"}, "reason": {"type": "string"}}, "additionalProperties": false}}
+  },
+  "$defs": {
+    "decision": {"type": "object", "required": ["id", "decision", "business_basis", "propagation_rule", "source"], "properties": {"id": {"type": "string"}, "decision": {"type": "string"}, "business_basis": {"type": "string"}, "propagation_rule": {"type": "string"}, "source": {"type": "string"}}, "additionalProperties": false}
+  },
+  "additionalProperties": false
+}

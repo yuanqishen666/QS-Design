@@ -1,5 +1,8 @@
-import { identifier, sha256, timestamp, unique } from '../shared/utils.mjs';
+import { clone, identifier, sha256, timestamp, unique } from '../shared/utils.mjs';
 import { readableCandidate, RUN_RELATIONS } from './candidates.mjs';
+import { DESIGN_CONTRACT_KEYS } from './task-capsule.mjs';
+import { validateMutationScope } from '../contracts/element-identity.mjs';
+import { validateFeedbackDelta } from '../contracts/feedback-delta.mjs';
 
 function itemRefs(prefix, items) {
   return (Array.isArray(items) ? items : []).map(item => `${prefix}:${item.id}`);
@@ -24,7 +27,11 @@ export function compileContextManifest({
   hardResetFactIds = [],
   hardResetRequirementIds = [],
   hardResetConstraintIds = [],
+  softResetContractKinds = [],
+  hardResetContractKinds = [],
   retainSemanticIntent = false,
+  mutationScope = null,
+  feedbackDelta = null,
   runId,
   now = new Date()
 } = {}) {
@@ -36,6 +43,8 @@ export function compileContextManifest({
   const taskDeniedContext = new Set(Array.isArray(task.read_policy?.denied_context) ? task.read_policy.denied_context : []);
   const taskDeniedCandidates = new Set(Array.isArray(task.read_policy?.denied_candidates) ? task.read_policy.denied_candidates : []);
   const normalizedInheritanceMap = Object.fromEntries(Object.entries(inheritanceMap ?? {}).map(([id, aspects]) => [id, unique(aspects)]));
+  for (const key of [...softResetContractKinds, ...hardResetContractKinds]) if (!DESIGN_CONTRACT_KEYS.includes(key)) throw new Error(`Unknown design contract kind: ${key}.`);
+  for (const key of [...softResetContractKinds, ...hardResetContractKinds]) if (!task.design_contracts?.[key]) throw new Error(`Cannot retain missing design contract ${key}.`);
   if (relation === 'aspect-inheritance' && parents.length === 1 && !Object.keys(normalizedInheritanceMap).length && inheritedAspects.length) {
     normalizedInheritanceMap[parents[0]] = unique(inheritedAspects);
   }
@@ -56,6 +65,16 @@ export function compileContextManifest({
       if (!(candidate.accepted_aspects ?? []).includes(aspect) && !(candidate.aspect_refs?.[aspect] ?? []).length) throw new Error(`Candidate ${id} does not expose inherited aspect ${aspect}.`);
     }
   }
+  if (mutationScope) {
+    const mutationErrors = validateMutationScope(mutationScope);
+    if (mutationErrors.length) throw new Error(`Invalid mutation scope: ${mutationErrors.join(' ')}`);
+    if (!parents.includes(mutationScope.candidate_id)) throw new Error('Mutation scope must target an explicitly authorized parent candidate.');
+  }
+  if (feedbackDelta) {
+    const feedbackErrors = validateFeedbackDelta(feedbackDelta).errors;
+    if (feedbackErrors.length) throw new Error(`Invalid feedback delta: ${feedbackErrors.join(' ')}`);
+    if (feedbackDelta.recommended_relation !== relation) throw new Error(`Feedback Delta recommends ${feedbackDelta.recommended_relation}, but the manifest relation is ${relation}.`);
+  }
 
   let included = [];
   const readableFacts = readableTaskItems(task, task.business_facts);
@@ -68,6 +87,7 @@ export function compileContextManifest({
     included.push(...itemRefs('business-fact', readableFacts.filter(item => allowedFacts.has(item.id))));
     included.push(...itemRefs('requirement', readableRequirements.filter(item => allowedRequirements.has(item.id))));
     included.push(...itemRefs('official-constraint', readableOfficialConstraints.filter(item => allowedConstraints.has(item.id))));
+    for (const key of hardResetContractKinds) if (task.design_contracts?.[key]) included.push(`design-contract:${key}`);
   } else if (relation === 'soft-reset') {
     const allowedRequirements = new Set(softResetRequirementIds);
     const allowedConstraints = new Set(softResetConstraintIds);
@@ -76,16 +96,22 @@ export function compileContextManifest({
     included.push(...itemRefs('official-constraint', readableOfficialConstraints.filter(item => allowedConstraints.has(item.id))));
     if (task.semantic_intent && retainSemanticIntent) included.push('semantic-intent');
     if (task.continuity_contract && retainContinuity) included.push('continuity-contract');
+    if (task.design_contracts?.product_truth) included.push('design-contract:product_truth');
+    for (const key of softResetContractKinds) if (key !== 'product_truth' && task.design_contracts?.[key]) included.push(`design-contract:${key}`);
   } else {
     included.push(...itemRefs('business-fact', readableFacts));
     included.push(...itemRefs('requirement', readableRequirements));
     included.push(...itemRefs('official-constraint', readableOfficialConstraints));
     if (task.semantic_intent) included.push('semantic-intent');
     if (task.continuity_contract) included.push('continuity-contract');
+    for (const key of DESIGN_CONTRACT_KEYS) if (task.design_contracts?.[key]) included.push(`design-contract:${key}`);
   }
 
   if ((task.platform_targets ?? []).length) included.push('platform-targets');
   included = included.filter(ref => !taskDeniedContext.has(ref));
+  const includesProductTruth = included.includes('design-contract:product_truth');
+  const dependentContracts = DESIGN_CONTRACT_KEYS.filter(key => key !== 'product_truth' && included.includes(`design-contract:${key}`));
+  if (dependentContracts.length && !includesProductTruth) throw new Error(`Design contracts ${dependentContracts.join(', ')} cannot be included without Product Truth.`);
 
   if (['continue-parent', 'aspect-inheritance', 'explicit-merge'].includes(relation)) included.push(...parents.map(id => `candidate:${id}`));
   const includedAsConstraints = relation === 'soft-reset' ? unique(constraintIds) : [];
@@ -107,6 +133,8 @@ export function compileContextManifest({
     parents,
     inherited_aspects: unique(Object.values(normalizedInheritanceMap).flat()),
     inheritance_map: normalizedInheritanceMap,
+    mutation_scope: clone(mutationScope),
+    feedback_delta: clone(feedbackDelta),
     created_at: timestamp(now)
   };
   return { ...base, context_hash: sha256(base) };
@@ -125,6 +153,14 @@ export function validateContextManifest(manifest, candidates = [], { taskId = nu
     else if (new Set(manifest[field]).size !== manifest[field].length) errors.push(`Manifest ${field} must contain unique entries.`);
   }
   if (!manifest?.inheritance_map || typeof manifest.inheritance_map !== 'object' || Array.isArray(manifest.inheritance_map)) errors.push('Manifest inheritance_map must be an object.');
+  if (manifest?.mutation_scope != null) {
+    errors.push(...validateMutationScope(manifest.mutation_scope).map(error => `Manifest mutation_scope: ${error}`));
+    if (!(manifest?.parents ?? []).includes(manifest.mutation_scope.candidate_id)) errors.push('Manifest mutation_scope must target an authorized parent candidate.');
+  }
+  if (manifest?.feedback_delta != null) {
+    errors.push(...validateFeedbackDelta(manifest.feedback_delta).errors.map(error => `Manifest feedback_delta: ${error}`));
+    if (manifest.feedback_delta.recommended_relation !== manifest?.relation) errors.push('Manifest feedback_delta relation does not match the run relation.');
+  }
   const parentList = manifest?.parents ?? [];
   if (['fresh-root', 'soft-reset', 'hard-reset'].includes(manifest?.relation) && parentList.length) errors.push(`${manifest.relation} cannot have parent candidates.`);
   if (manifest?.relation === 'continue-parent' && parentList.length !== 1) errors.push('continue-parent requires exactly one parent.');
@@ -157,6 +193,8 @@ export function validateContextManifest(manifest, candidates = [], { taskId = nu
     if (item.startsWith('candidate:') && !parents.has(item.slice('candidate:'.length))) errors.push(`Manifest includes unauthorized candidate reference ${item}.`);
   }
   const includedSet = new Set(manifest?.included ?? []);
+  const dependentContracts = DESIGN_CONTRACT_KEYS.filter(key => key !== 'product_truth' && includedSet.has(`design-contract:${key}`));
+  if (dependentContracts.length && !includedSet.has('design-contract:product_truth')) errors.push(`Manifest includes ${dependentContracts.join(', ')} without Product Truth.`);
   for (const item of manifest?.excluded ?? []) if (includedSet.has(item)) errors.push(`Manifest both includes and excludes ${item}.`);
   if (task) {
     const knownTaskRefs = new Set([
@@ -165,6 +203,7 @@ export function validateContextManifest(manifest, candidates = [], { taskId = nu
       ...itemRefs('official-constraint', readableTaskItems(task, task.official_constraints)),
       ...(task.semantic_intent ? ['semantic-intent'] : []),
       ...(task.continuity_contract ? ['continuity-contract'] : []),
+      ...DESIGN_CONTRACT_KEYS.filter(key => task.design_contracts?.[key]).map(key => `design-contract:${key}`),
       ...((task.platform_targets ?? []).length ? ['platform-targets'] : [])
     ]);
     for (const item of manifest?.included ?? []) if (!item.startsWith('candidate:') && !knownTaskRefs.has(item)) errors.push(`Manifest includes unknown task context ${item}.`);

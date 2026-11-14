@@ -12,6 +12,8 @@ const helperTags = new Set(['p', 'small']);
 const formControlTags = new Set(['input', 'select', 'textarea']);
 const interactiveTags = new Set(['a', 'button', 'input', 'select', 'textarea', 'summary']);
 const decorativeRoles = new Set(['slogan', 'eyebrow', 'section-intro']);
+const decorativeClassPattern = /(?:^|[\s_-])(eyebrow|kicker|overline|supertitle|pretitle|surtitle)(?:$|[\s_-])/i;
+const vagueEvaluativeHeadingPattern = /^(?:这一轮|本轮|这一(?:步|次)|这一次|现在|接下来)[，,:：]?(?:可以|还能|会)?更(?:自然|清晰|轻松|高效|专业|简单|智能|贴心)[。.!！]?$/u;
 
 function decodeEntities(value) {
   return value
@@ -92,6 +94,9 @@ export function extractContentItems(html) {
       role: node.attrs['data-content-role'] ?? null,
       delivery: node.attrs['data-content-delivery'] ?? (node.attrs.role === 'tooltip' ? 'tooltip' : null),
       justified: Boolean(node.attrs['data-content-justification']),
+      className: node.attrs.class ?? '',
+      id: node.attrs.id ?? '',
+      lang: node.attrs.lang ?? '',
       index
     });
   }
@@ -146,6 +151,8 @@ export function lintContentHTML(html, path = '<html>', { contentManifest = null 
   const structure = parseHTMLStructure(html);
   const elements = walkElements(structure.root);
   const parents = parentMap(structure.root);
+  const documentLanguage = elements.find(node => node.tag === 'html')?.attrs.lang?.toLowerCase() ?? '';
+  const sourceBackedKeys = new Set((contentManifest?.entries ?? []).filter(entry => entry?.source).map(entry => entry.key));
   for (let leftIndex = 0; leftIndex < items.length; leftIndex += 1) {
     const left = items[leftIndex];
     if (left.exempt || left.normalized.length < 4) continue;
@@ -229,6 +236,22 @@ export function lintContentHTML(html, path = '<html>', { contentManifest = null 
     add('content-decorative-copy', `${item.tag} “${item.text}” is marked ${item.role} without a business or brand justification.`);
   }
 
+  const nonEnglishSurface = documentLanguage
+    ? !documentLanguage.startsWith('en')
+    : items.some(item => /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u.test(item.text));
+  for (const item of items) {
+    const sourceBacked = item.source_exempt || item.justified || (item.key && sourceBackedKeys.has(item.key));
+    const targetLanguageSample = item.lang && documentLanguage && item.lang.toLowerCase() !== documentLanguage;
+    const latinWords = item.text.match(/[A-Za-z]{2,}/g) ?? [];
+    const inferredDecorativeRole = decorativeClassPattern.test(`${item.className} ${item.id}`);
+    if (nonEnglishSurface && !sourceBacked && !targetLanguageSample && inferredDecorativeRole && latinWords.length >= 2) {
+      add('content-decorative-english', `${item.tag} “${item.text}” looks like unsupported decorative English on a non-English surface; remove it or declare its user, brand or business basis.`);
+    }
+    if (!sourceBacked && headingTags.has(item.tag) && vagueEvaluativeHeadingPattern.test(item.text.replace(/\s+/g, ''))) {
+      add('content-vague-evaluative-heading', `${item.tag} “${item.text}” makes a vague improvement judgment without a concrete state or source; remove it or replace it with observable task information.`);
+    }
+  }
+
   if (contentManifest) {
     const validation = validateContentContract(contentManifest);
     for (const message of validation.errors) add('content-contract-invalid', message);
@@ -266,11 +289,16 @@ export async function lintContentPaths(target, options = {}) {
   return result;
 }
 
-async function main() {
-  const args = process.argv.slice(2);
+export function parseContentLintArgs(args = []) {
   const manifestIndex = args.indexOf('--manifest');
   const manifestPath = manifestIndex >= 0 ? args[manifestIndex + 1] : null;
-  const target = args.find((arg, index) => !arg.startsWith('--') && index !== manifestIndex + 1) ?? '.';
+  const manifestValueIndex = manifestIndex >= 0 ? manifestIndex + 1 : -1;
+  const target = args.find((arg, index) => !arg.startsWith('--') && index !== manifestValueIndex) ?? '.';
+  return { target, manifestPath };
+}
+
+async function main() {
+  const { target, manifestPath } = parseContentLintArgs(process.argv.slice(2));
   const contentManifest = manifestPath ? JSON.parse(await readFile(manifestPath, 'utf8')) : null;
   const result = await lintContentPaths(target, { contentManifest });
   for (const item of result.warnings) console.warn(`WARN ${item.path} [${item.rule}] ${item.message}`);

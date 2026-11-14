@@ -14,6 +14,17 @@
     "official_constraints": {"type": "array", "items": {"$ref": "#/$defs/contextItem"}},
     "semantic_intent": {"type": ["object", "null"]},
     "continuity_contract": {"type": ["object", "null"]},
+    "design_contracts": {
+      "type": "object",
+      "properties": {
+        "product_truth": {"type": ["object", "null"]},
+        "attention": {"type": ["object", "null"]},
+        "terminology": {"type": ["object", "null"]},
+        "prototype": {"type": ["object", "null"]},
+        "reference_synthesis": {"type": ["object", "null"]}
+      },
+      "additionalProperties": false
+    },
     "read_policy": {
       "type": "object",
       "properties": {

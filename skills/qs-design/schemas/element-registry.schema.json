@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/element-registry.schema.json",
+  "title": "QS Design Stable Element Registry",
+  "type": "object",
+  "required": ["schema", "candidate_id", "elements"],
+  "properties": {
+    "schema": {"const": 1},
+    "candidate_id": {"type": "string", "pattern": "^candidate-[a-z0-9-]+$"},
+    "elements": {"type": "array", "items": {"type": "object", "required": ["id", "kind", "semantic_role", "parent_id", "properties", "source"], "properties": {"id": {"type": "string", "pattern": "^qs-[a-z0-9-]+$"}, "kind": {"type": "string", "minLength": 1}, "semantic_role": {"type": "string", "minLength": 1}, "parent_id": {"type": ["string", "null"]}, "properties": {"type": "object", "propertyNames": {"enum": ["copy", "layout", "visual", "behavior", "visibility", "children", "data-binding", "accessibility"]}}, "source": {"type": "string", "minLength": 1}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

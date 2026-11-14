@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qs.design/schemas/product-truth.schema.json",
+  "title": "QS Design Product Truth",
+  "type": "object",
+  "required": ["schema", "task_id", "source_mode", "affordance_policy", "primary_jobs", "critical_journeys", "routes", "visible_affordances", "states", "forbidden_inventions", "unknowns", "terminology_risks", "representative_task", "fixture_policy"],
+  "properties": {
+    "schema": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^task-[a-z0-9-]+$"},
+    "source_mode": {"enum": ["conversation", "product", "mixed"]},
+    "affordance_policy": {"const": "allowlist"},
+    "primary_jobs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/job"}},
+    "critical_journeys": {"type": "array", "items": {"$ref": "#/$defs/journey"}},
+    "routes": {"type": "array", "items": {"$ref": "#/$defs/route"}},
+    "visible_affordances": {"type": "array", "items": {"$ref": "#/$defs/affordance"}},
+    "states": {"type": "array", "items": {"$ref": "#/$defs/state"}},
+    "forbidden_inventions": {"type": "array", "items": {"$ref": "#/$defs/prohibition"}},
+    "unknowns": {"type": "array", "items": {"$ref": "#/$defs/unknown"}},
+    "terminology_risks": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "representative_task": {
+      "type": ["object", "null"],
+      "properties": {
+        "job_id": {"type": "string"},
+        "journey_id": {"type": ["string", "null"]},
+        "rationale": {"type": "string", "minLength": 1},
+        "frequency": {"enum": ["high", "medium", "low", "unknown"]},
+        "risk": {"enum": ["high", "medium", "low", "unknown"]},
+        "source": {"type": "string", "minLength": 1}
+      },
+      "required": ["job_id", "journey_id", "rationale", "frequency", "risk", "source"],
+      "additionalProperties": false
+    },
+    "fixture_policy": {
+      "type": "object",
+      "required": ["mode", "shared_across_directions", "source"],
+      "properties": {
+        "mode": {"enum": ["none", "source-backed", "clearly-labeled-demo"]},
+        "shared_across_directions": {"const": true},
+        "source": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["id", "source", "confidence", "status"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "confidence": {"enum": ["high", "medium", "low", "unknown"]},
+        "status": {"enum": ["existing", "confirmed", "required", "planned", "proposed", "unknown"]}
+      }
+    },
+    "job": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["statement", "priority"], "properties": {"statement": {"type": "string", "minLength": 1}, "priority": {"type": "integer", "minimum": 1}}}
+      ]
+    },
+    "journey": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["job_id", "entry", "steps", "outcome"], "properties": {"job_id": {"type": "string"}, "entry": {"type": "string", "minLength": 1}, "steps": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "outcome": {"type": "string", "minLength": 1}}}
+      ]
+    },
+    "route": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["label"], "properties": {"label": {"type": "string", "minLength": 1}}}
+      ]
+    },
+    "affordance": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["label", "kind", "route_id", "state_id"], "properties": {"label": {"type": "string", "minLength": 1}, "kind": {"enum": ["action", "navigation", "input", "selection", "disclosure", "system"]}, "route_id": {"type": ["string", "null"]}, "state_id": {"type": ["string", "null"]}}}
+      ]
+    },
+    "state": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["owner", "trigger"], "properties": {"owner": {"type": "string", "minLength": 1}, "trigger": {"type": "string", "minLength": 1}}}
+      ]
+    },
+    "prohibition": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["claim"], "properties": {"claim": {"type": "string", "minLength": 1}}}
+      ]
+    },
+    "unknown": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["question", "impact"], "properties": {"question": {"type": "string", "minLength": 1}, "impact": {"type": "string", "minLength": 1}}}
+      ]
+    }
+  },
+  "additionalProperties": false
+}

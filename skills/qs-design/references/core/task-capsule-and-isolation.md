@@ -27,15 +27,19 @@
 
 Task Capsule 的 `read_policy` 是所有运行的权限上界。profile 项即使已获保存同意，也默认不进入任何新任务；只有当前 Task Capsule 在 `allowed_profile_context` 中点名后才能读取。
 
+Task Capsule 的 `design_contracts` 可携带 Product Truth、Attention、Terminology、Prototype 与 Reference Synthesis。普通运行读取当前合同；soft reset 默认只保留 Product Truth，其他合同通过 `softResetContractKinds` 逐项再授权；hard reset 通过 `hardResetContractKinds` 逐项确认。合同属于任务上下文，不因为存在项目目录而提升为 project memory。
+
 ## 物理隔离
 
-新根方向必须使用不继承聊天历史的设计工作器或等价隔离。协调器先编译 `context-manifest.json`，工作器只能得到由其编译出的哈希 payload。旧截图、源码、方向解释和视觉指纹不得出现在 fresh-root、soft-reset 或 hard-reset 的生成输入中。子进程的 stdin/环境隔离不等同于操作系统文件沙箱；涉及本地工作器时还需宿主提供独立工作目录与文件系统隔离。
+新根方向必须使用不继承聊天历史的设计工作器或等价隔离。协调器先编译 `context-manifest.json`，工作器只能得到 `buildWorkerPayload()` 生成的完整哈希 payload；不得手工重写成更短的 brief。payload 的 `execution_policy` 固定携带内容准入、平台边界与验证要求，它是过程基础设施，不是可被重置或拒绝稿隔离删除的设计上下文。旧截图、源码、方向解释和视觉指纹不得出现在 fresh-root、soft-reset 或 hard-reset 的生成输入中。子进程的 stdin/环境隔离不等同于操作系统文件沙箱；涉及本地工作器时还需宿主提供独立工作目录与文件系统隔离。
 
 生成后可由独立检测器判断新结果是否与拒绝稿过度相似，但旧视觉细节不能返回给生成工作器。用户要求完全不读取旧稿时关闭该检测。
 
 ## 反馈作用域
 
 默认 `candidate`。只有用户明确表达“接下来”“这个产品”“以后”时才分别提升到 task、project 或 profile；profile 必须明确同意。模糊反馈如“太 AI”“太普通”只说明当前候选未达预期，不能被改写成永久元素黑名单。
+
+进入新工作器前，调整或拒绝反馈应转换成 Feedback Delta。清单中的 `feedback_delta` 与 relation 必须一致；soft/hard reset 还必须记录 `explicit-user` reset authority。局部继续、方面继承或融合可同时携带 Mutation Scope，且只能指向已授权父候选。
 
 ## 透明说明
 
